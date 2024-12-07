@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Home.module.css'; // If you're using a custom CSS module
 import logo from '../src/school-logo.png';
-import coverphoto from '../src/schoolcover.jpg';
+
 
 export default function Home() {
   return (
@@ -39,7 +39,7 @@ export default function Home() {
 
       <main>
         <div className={styles.coverphoto}>
-          <Image src={coverphoto} alt="Cover Photo" />
+          <img alt="Cover Photo" />
         </div>
 
         <div className={styles.mainpage}>
