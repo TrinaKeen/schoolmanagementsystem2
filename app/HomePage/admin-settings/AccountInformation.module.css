@@ -1,94 +1,193 @@
+/* AccountInformation.module.css */
+
+/* Layout for the entire page */
 .container {
-    display: flex;
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif; /* Modern font */
+  background-color: #f7f7f7;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 280px;
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 8px;
+  border-right: 2px solid #ccc; /* Border on the right side */
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+
+.sidebar h2 {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center; /* Align icon and text horizontally */
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.sidebar li svg {
+  margin-right: 10px; /* Space between icon and text */
+  color: #555; /* Set icon color */
+}
+
+.sidebar li:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
+  transform: translateX(5px); /* Slight movement on hover */
+}
+
+.sidebar li.active {
+  background-color: #4caf50; /* Highlight active tab */
+  transform: scale(1.05);
+}
+
+.sidebar li.active svg {
+  color: white; /* Change icon color for active item */
+}
+
+/* Content area styling */
+.content {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  margin-left: 30px;
+  transition: all 0.3s ease;
+  min-width: 300px; /* Ensure content area doesn’t collapse on small screens */
+}
+
+/* Content Tab Styling */
+.tabContent {
+  background-color: white;
+  color: black;
+  padding: 30px;
+  border-radius: 8px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form Styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px; /* Prevent form from being too wide */
+  margin: 0 auto; /* Center form */
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px; /* Space between label and input */
+}
+
+.input {
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ccc; /* Light border for input */
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding and border are included in width */
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #4caf50; /* Green border on focus */
+}
+
+.select {
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+/* Button Styling */
+.button {
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.button:disabled {
+  background-color: #ccc; /* Grey out the button when disabled */
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-bottom: 20px; /* Space between sidebar and content */
+    border-right: none;
+  }
+
+  .content {
+    margin-left: 0;
     width: 100%;
   }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar {
-    display: flex;
-    align-items: center;
-  }
-  
-  .loginDropdown {
-    position: relative;
-  }
-  
-  .dropdownButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .dropdownContent {
-    position: absolute;
-    right: 0;
-    top: 40px;
-    background-color: white;
-    border: 1px solid #ddd;
-    padding: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar {
-    width: 250px;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    padding: 10px 0;
-    cursor: pointer;
-  }
-  
-  .sidebar li.active {
-    font-weight: bold;
-    color: #007bff;
-  }
-  
-  .content {
-    flex: 1;
+
+  .form {
+    width: 100%;
     padding: 20px;
   }
-  
-  .tabContent {
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .formGroup {
-    margin-bottom: 10px;
-  }
-  
-  button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
+}

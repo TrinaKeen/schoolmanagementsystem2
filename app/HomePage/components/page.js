@@ -4,7 +4,7 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "../styles/HomePage.module.css"; // Adjust this path if needed
+import styles from "../components/HomePage.module.css"; // Adjust this path if needed
 import logo from "/src/school-logo.png";
 import { FaHome, FaEnvelope, FaBell, FaBars } from "react-icons/fa";
 
@@ -29,7 +29,7 @@ export default function AdminHeader() {
         </div>
 
         <nav className={styles.navbar}>
-          <Link href="#"><FaHome size={35} /></Link>
+          <Link href="../HomePage/admin-dashboard"><FaHome size={35} /></Link>
           <Link href="#"><FaBell size={35} /></Link>
           <Link href="#"><FaEnvelope size={35} /></Link>
 

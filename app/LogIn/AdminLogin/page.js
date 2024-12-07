@@ -35,7 +35,7 @@ const AdminLogin = () => {
         <Image src={logo} alt="School Logo" width={200} height={200} />
       </div>
 
-      <h2 className={styles.loginTitle}>ADMIN LOG IN</h2>
+      <h2 className={styles.loginTitle}>EMPLOYEE PORTAL</h2>
 
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.inputGroup}>

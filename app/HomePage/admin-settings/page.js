@@ -1,36 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./AccountInformation.module.css"; // Ensure this path is correct
-import logo from "/src/school-logo.png"; // Replace with your correct logo path
-import { FaBars } from "react-icons/fa";
+import AdminHeader from "../components/page";
+import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 
 export default function AccountInformation() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown visibility
-  const [activeTab, setActiveTab] = useState("update"); // Active tab state
-
-  // Toggle dropdown visibility
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const [activeTab, setActiveTab] = useState("update");
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "update":
         return (
           <div className={styles.tabContent}>
-            <h3>Update Information</h3>
+            <h1>Account Information</h1>
             <form>
               <div className={styles.formGroup}>
-                <label>Name:</label>
-                <input type="text" placeholder="Enter your name" />
+                <label>Admin UID:</label>
+                <input type="text" placeholder="123456" disabled />
+              </div>
+              <div className={styles.formGroup}>
+                <label>First Name:</label>
+                <input type="text" placeholder="Diego" disabled />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Last Name:</label>
+                <input type="text" placeholder="San Pedro" disabled />
               </div>
               <div className={styles.formGroup}>
                 <label>Email:</label>
-                <input type="email" placeholder="Enter your email" />
+                <input type="email" placeholder="dsanpedro@gmail.com" disabled />
               </div>
-              <button type="submit">Save Changes</button>
+              <div className={styles.formGroup}>
+                <label>Phone Number:</label>
+                <input type="tel" placeholder="+14031234556" disabled />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Date of Birth:</label>
+                <input type="date" placeholder="09/09/1990" disabled />
+              </div>
             </form>
           </div>
         );
@@ -47,106 +55,125 @@ export default function AccountInformation() {
                 <label>New Password:</label>
                 <input type="password" placeholder="Enter new password" />
               </div>
-              <button type="submit">Change Password</button>
+              <button type="submit" className={styles.button}>
+                Change Password
+              </button>
             </form>
           </div>
         );
-      case "add":
-        return (
-          <div className={styles.tabContent}>
-            <h3>Add New Account</h3>
-            <form>
-              <div className={styles.formGroup}>
-                <label>Username:</label>
-                <input type="text" placeholder="Enter new username" />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Password:</label>
-                <input type="password" placeholder="Enter password" />
-              </div>
-              <button type="submit">Create Account</button>
-            </form>
-          </div>
-        );
+        case "add":
+          return (
+            <div className={styles.tabContent}>
+              <h3>Add New Account</h3>
+              <form>
+                {/* Admin UID */}
+                <div className={styles.formGroup}>
+                  <label>Admin UID:</label>
+                  <input type="text" placeholder="Enter new UID" />
+                </div>
+        
+                {/* First Name */}
+                <div className={styles.formGroup}>
+                  <label>First Name:</label>
+                  <input type="text" placeholder="Enter first name" />
+                </div>
+        
+                {/* Last Name */}
+                <div className={styles.formGroup}>
+                  <label>Last Name:</label>
+                  <input type="text" placeholder="Enter last name" />
+                </div>
+        
+                {/* Email */}
+                <div className={styles.formGroup}>
+                  <label>Email:</label>
+                  <input type="email" placeholder="Enter email" />
+                </div>
+        
+                {/* Phone Number */}
+                <div className={styles.formGroup}>
+                  <label>Phone Number:</label>
+                  <input type="tel" placeholder="Enter phone number" />
+                </div>
+        
+                {/* Date of Birth */}
+                <div className={styles.formGroup}>
+                  <label>Date of Birth:</label>
+                  <input type="date" placeholder="Enter DOB" />
+                </div>
+        
+                {/* Role Selection */}
+                <div className={styles.formGroup}>
+                  <label>Role:</label>
+                  <select>
+                    <option value="admin">Admin</option>
+                    <option value="superAdmin">Super Admin</option>
+                  </select>
+                </div>
+        
+                {/* Submit Button */}
+                <button type="submit" className={styles.button}>
+                  Create Account
+                </button>
+              </form>
+            </div>
+          );
+        
       case "help":
         return (
           <div className={styles.tabContent}>
             <h3>Help and Support</h3>
-            <p>If you need help, please contact our support team at support@company.com</p>
+            <p>
+              If you need help, please contact our support team at{" "}
+              <a href="mailto:support@company.com">support@company.com</a>
+            </p>
           </div>
         );
       default:
-        return <div className={styles.tabContent}>Please select a tab to view the content.</div>;
+        return (
+          <div className={styles.tabContent}>
+            <p>Please select a tab to view the content.</p>
+          </div>
+        );
     }
   };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Account Information</title>
-        <meta name="description" content="Manage your account settings" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.logo}>
-          <Image src={logo} alt="School Logo" width={100} height={100} />
-          <h1>EEFCI Management System</h1>
-        </div>
-
-        <nav className={styles.navbar}>
-          <div className={styles.loginDropdown}>
-            {/* Button to toggle dropdown */}
-            <button className={styles.dropdownButton} onClick={toggleDropdown}>
-              <FaBars size={35} />
-            </button>
-
-            {/* Conditionally render the dropdown based on state */}
-            {isDropdownOpen && (
-              <div className={styles.dropdownContent}>
-                <Link href="/">Log Out</Link>
-                <Link href="../HomePage/admin-settings">Account Settings</Link>
-                <Link href="#">Help Centre</Link>
-              </div>
-            )}
-          </div>
-        </nav>
-      </header>
-
-      <main className={styles.main}>
+    <div>
+      <AdminHeader />
+      <div className={styles.container}>
         <div className={styles.sidebar}>
-          <h2>Account Options</h2>
+          <h2>Account Settings</h2>
           <ul>
             <li
               className={activeTab === "update" ? styles.active : ""}
               onClick={() => setActiveTab("update")}
             >
-              Update Information
+              <FaUser size={20} /> Account Information
             </li>
             <li
               className={activeTab === "password" ? styles.active : ""}
               onClick={() => setActiveTab("password")}
             >
-              Change Password
+              <FaLock size={20} /> Change Password
             </li>
             <li
               className={activeTab === "add" ? styles.active : ""}
               onClick={() => setActiveTab("add")}
             >
-              Add New Account
+              <FaUserPlus size={20} /> Add New Account
             </li>
             <li
               className={activeTab === "help" ? styles.active : ""}
               onClick={() => setActiveTab("help")}
             >
-              Help and Support
+              <FaQuestionCircle size={20} /> Help and Support
             </li>
           </ul>
         </div>
 
         <div className={styles.content}>{renderTabContent()}</div>
-      </main>
+      </div>
     </div>
   );
 }

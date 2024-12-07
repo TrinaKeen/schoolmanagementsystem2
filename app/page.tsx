@@ -31,8 +31,8 @@ export default function Home() {
           <div className={styles.loginDropdown}>
           <button className={styles.dropdownButton}>LOG IN</button>
           <div className={styles.dropdownContent}>
-          <Link href="/LogIn/AdminLogin">Admin Portal</Link>
-          <Link href="/AdminLogin">Student Portal</Link>
+          <Link href="/LogIn/AdminLogin">Employee</Link>
+          <Link href="/LogIn/StudentLogin">Student</Link>
           </div>
           </div>
           
