@@ -52,7 +52,7 @@ export default function Home() {
             {isDropdownOpen && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
-                <Link href="#">Account Setting</Link>
+                <Link href="../HomePage/admin-settings">Account Setting</Link>
                 <Link href="#">Help Centre</Link>
               </div>
             )}
