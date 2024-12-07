@@ -1,7 +1,10 @@
+"use client";
+
+import { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './../HomePage.module.css'; // If you're using a custom CSS module
+import styles from './../HomePage.module.css'; // Ensure this path is correct
 import logo from '/src/school-logo.png';
 import teacherlogo from '/src/teachericon.png';
 import studentlogo from '/src/studentlogo.png';
@@ -9,83 +12,102 @@ import courseslogo from '/src/courseslogo.png';
 import departmentslogo from '/src/departmentslogo.png';
 import studentfeeslogo from '/src/studentfeeslogo.png';
 import reportlogo from '/src/reportlogo.png';
-import { FaHome, FaUsers, FaBars , FaEnvelope, FaBell } from 'react-icons/fa';
+import { FaHome, FaEnvelope, FaBell, FaBars } from 'react-icons/fa';
 
 export default function Home() {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);  // Toggle dropdown visibility
+
+  // Toggle dropdown visibility
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
   return (
     <div className={styles.container}>
-    <Head>
-      <title>School Management System</title>
-      <meta name="description" content="School Management System for efficient management" />
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
-    <header className={styles.header}>
+      <Head>
+        <title>School Management System</title>
+        <meta name="description" content="School Management System for efficient management" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      
+      <header className={styles.header}>
         <div className={styles.logo}>
           <Image src={logo} alt="School Logo" width={100} height={100} />
-          <h1>Evelyn E. Fabie College Inc.</h1>
+          <h1>EEFCI Management System</h1>
         </div>
-        
-        <nav className={styles.navbar}>
-          <Link href="/"><FaHome size={24} /> Dashboard</Link>
-          <Link href="/"><FaBell size={24} /> Notification</Link>
-          <Link href="/students"><FaEnvelope size={24} /> Messages</Link>
-          <Link href="/teachers"><FaBars  size={24} /> Settings</Link>
 
+        <nav className={styles.navbar}>
+          <Link href="#"><FaHome size={35} /></Link>
+          <Link href="#"><FaBell size={35} /></Link>
+          <Link href="#"><FaEnvelope size={35} /></Link>
+          
+          <div className={styles.loginDropdown}>
+            {/* Button to toggle dropdown */}
+            <button 
+              className={styles.dropdownButton} 
+              onClick={toggleDropdown}  // Toggle dropdown on button click
+            >
+              <FaBars size={35} />
+            </button>
+
+            {/* Conditionally render the dropdown based on state */}
+            {isDropdownOpen && (
+              <div className={styles.dropdownContent}>
+                <Link href="/">Log Out</Link>
+                <Link href="#">Account Setting</Link>
+                <Link href="#">Help Centre</Link>
+              </div>
+            )}
+          </div>
         </nav>
-        
       </header>
- 
+
       <main className={styles.main}>
-        <h2>Welcome to the Super Admin</h2>
-        <p>
-          Manage your school's daily activities, student records, teacher assignments, and more.
-        </p>
+        <h2>Welcome to the Super Admin Account</h2>
+        <p>Manage your school's daily activities, student records, teacher assignments, and more.</p>
 
         <div className={styles.grid}>
           <div className={styles.card}>
-          <Image src={studentlogo} alt="Teacher Logo" width={200} height={200} />
+            <Image src={studentlogo} alt="Student Logo" width={200} height={200} />
             <h3>Student Management</h3>
             <p>Manage student records and progress.</p>
-            <Link href="/">Go to Student Management</Link>
+            <Link href="#">Go to Student Management</Link>
           </div>
 
           <div className={styles.card}>
-          <Image src={teacherlogo} alt="Teacher Logo" width={200} height={200} />
+            <Image src={teacherlogo} alt="Teacher Logo" width={200} height={200} />
             <h3>Teacher Management</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="/">Go to Teacher Management </Link>
+            <Link href="#">Go to Teacher Management </Link>
           </div>
 
           <div className={styles.card}>
-          <Image src={departmentslogo} alt="Teacher Logo" width={200} height={200} />
+            <Image src={departmentslogo} alt="Departments Logo" width={200} height={200} />
             <h3>School Departments</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="/">Go to Departments Management </Link>
+            <Link href="#">Go to Departments Management </Link>
           </div>
-
         </div>
+
         <div className={styles.grid}>
           <div className={styles.card}>
-          <Image src={courseslogo} alt="Teacher Logo" width={200} height={200} />
+            <Image src={courseslogo} alt="Courses Logo" width={200} height={200} />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="/">Go to Student Courses Management </Link>
+            <Link href="#">Go to Student Courses Management </Link>
           </div>
 
           <div className={styles.card}>
-          <Image src={studentfeeslogo} alt="Teacher Logo" width={200} height={200} />
+            <Image src={studentfeeslogo} alt="Student Fees Logo" width={200} height={200} />
             <h3>Student Fees</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="/">Go to Tuition Fees Management </Link>
+            <Link href="#">Go to Tuition Fees Management </Link>
           </div>
 
           <div className={styles.card}>
-          <Image src={reportlogo} alt="Report Logo" width={200} height={200} />
+            <Image src={reportlogo} alt="Report Logo" width={200} height={200} />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="/">Go to Reports Management </Link>
+            <Link href="#">Go to Reports Management </Link>
           </div>
-
         </div>
       </main>
     </div>
