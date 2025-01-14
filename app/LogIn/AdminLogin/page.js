@@ -5,6 +5,7 @@ import Image from 'next/image'; // Ensure to import Image from next/image
 import styles from '../LoginPage.module.css'; // Assuming you use a CSS module for styling
 import logo from '../school-logo.png'; // Ensure this path is correct
 
+
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +19,7 @@ const AdminLogin = () => {
     if (username === 'admin' && password === 'password123') {
       alert('Logged in as Admin!');
       // Redirect to Admin Dashboard
-      window.location.href = '../HomePage/admin-dashboard'; // Uncomment if needed
+      window.location.href = '../../AdminPortal/admin-dashboard'; // Uncomment if needed
     } else {
       setError('Invalid credentials. Please try again.');
     }

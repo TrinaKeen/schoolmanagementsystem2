@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './../HomePage.module.css'; // Ensure this path is correct
+import styles from '../HomePage.module.css'
 import logo from '/src/school-logo.png';
 import teacherlogo from '/src/teachericon.png';
 import studentlogo from '/src/studentlogo.png';
@@ -52,7 +52,7 @@ export default function Home() {
             {isDropdownOpen && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
-                <Link href="../HomePage/admin-settings">Account Setting</Link>
+                <Link href="../AdminPortal/admin-settings">Account Setting</Link>
                 <Link href="#">Help Centre</Link>
               </div>
             )}
