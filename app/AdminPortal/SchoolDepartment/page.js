@@ -14,6 +14,7 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
+                        <p>Test 1</p>
                     </div>
                 );
             
@@ -21,18 +22,21 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
+                        <p>Test 2</p>
                     </div>
                 );
             case "science-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
+                        <p>Test 3</p>
                     </div>
                     );
             case "tech-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
+                        <p>Test 4</p>
                     </div>
                     );
         }
@@ -54,8 +58,8 @@ export default function SchoolDepartment() {
                         <li className={activeTab === "science-bachelor" ? styles.active : ""}
                         onClick={() => setActiveTab("science-bachelor")}> Bachelor of Science in Midwifery </li>
 
-                        <li className={activeTab === "science-bachelor" ? styles.active : ""}
-                        onClick={() => setActiveTab("science-bachelor")}> Bachelor of Technical-Vocational Teacher Education </li>
+                        <li className={activeTab === "tech-bachelor" ? styles.active : ""}
+                        onClick={() => setActiveTab("tech-bachelor")}> Bachelor of Technical-Vocational Teacher Education </li>
                     </ul>
                 </div>
                 <div className={styles.content}>{renderTab()}</div>
