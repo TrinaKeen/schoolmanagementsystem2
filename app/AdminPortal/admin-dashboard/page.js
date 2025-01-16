@@ -114,7 +114,7 @@ export default function Home() {
             />
             <h3>School Departments</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="#">Go to Departments Management </Link>
+            <Link href="../AdminPortal/SchoolDepartment">Go to Departments Management </Link>
           </div>
         </div>
 
