@@ -83,7 +83,7 @@ export default function Home() {
             <Image src={departmentslogo} alt="Departments Logo" width={200} height={200} />
             <h3>School Departments</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="#">Go to Departments Management </Link>
+            <Link href="../AdminPortal/SchoolDepartment">Go to Departments Management </Link>
           </div>
         </div>
 
