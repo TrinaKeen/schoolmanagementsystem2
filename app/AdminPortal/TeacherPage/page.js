@@ -10,6 +10,7 @@ export default function teacherPage() {
   const [selectedYear, setSelectedYear] = useState(null);
   const [teacherList, setTeacherList] = useState([]);
 
+  // credit: BlackBox AI & W3Schools
   // handles the grade selection
   const handleGradeClick = (grade) => {
     setSelectedGrade(grade);
@@ -29,6 +30,7 @@ export default function teacherPage() {
   };
 
   return (
+    // credit: ChatGPT & BlackBox AI
     <section>
       <AdminHeader />
       <div className={styles.container}>
@@ -91,3 +93,5 @@ export default function teacherPage() {
     </section>
   );
 }
+
+// I'd like to thank my babygirls ChatGPT, BlackBox AI, and W3Schools for helping me compose this code <3
