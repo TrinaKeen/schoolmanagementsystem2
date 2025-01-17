@@ -102,7 +102,9 @@ export default function Home() {
             />
             <h3>Teacher Management</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="#">Go to Teacher Management </Link>
+            <Link href="../AdminPortal/TeacherPage">
+              Go to Teacher Management{" "}
+            </Link>
           </div>
 
           <div className={styles.card}>
@@ -114,7 +116,9 @@ export default function Home() {
             />
             <h3>School Departments</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="../AdminPortal/SchoolDepartment">Go to Departments Management </Link>
+            <Link href="../AdminPortal/SchoolDepartment">
+              Go to Departments Management{" "}
+            </Link>
           </div>
         </div>
 
