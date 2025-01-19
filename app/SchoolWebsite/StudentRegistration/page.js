@@ -1,8 +1,11 @@
 'use client';
 import { useState } from 'react';
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    country: '',
     username: '',
     password: '',
   });
@@ -15,10 +18,18 @@ const Login = () => {
   };
 
   const validateForm = () => {
-    const { username, password } = formData;
+    const { fullName, email, country, username, password } = formData;
 
-    if (!username || !password) {
-      return 'Both fields are required.';
+    if (!fullName || !email || !country || !username || !password) {
+      return 'All fields are required.';
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long.';
     }
 
     return null;
@@ -28,24 +39,25 @@ const Login = () => {
     e.preventDefault();
     setMessage('');
     setError('');
-
+  
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       return;
     }
-
+  
     try {
       const response = await fetch('/api/studentlogin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
+  
+      // Check if the response is valid JSON
       const text = await response.text(); // Read the response as text
       console.log('Response text:', text); // Log the response
       let data;
-
+  
       try {
         data = JSON.parse(text); // Try to parse the response as JSON
       } catch (err) {
@@ -53,24 +65,34 @@ const Login = () => {
         setError('Unexpected server response. Please try again.');
         return;
       }
-
+  
       if (response.ok) {
-        setMessage('Login successful!');
-        // Handle successful login (redirect, etc.)
+        setMessage('Student successfully registered!');
+        setFormData({
+          fullName: '',
+          email: '',
+          country: '',
+          username: '',
+          password: '',
+        });
       } else {
-        setError(data.message || 'Invalid username or password');
+        setError(data.message || 'An error occurred. Please try again.');
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('Error during registration:', error);
       setError('An unexpected error occurred. Please try again.');
     }
   };
+  
 
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
-      <h1>Login as a Student</h1>
+      <h1>Register as a Student</h1>
       <form onSubmit={handleSubmit}>
-        {[{ label: 'Username', name: 'username', type: 'text' },
+        {[{ label: 'Full Name', name: 'fullName', type: 'text' },
+          { label: 'Email', name: 'email', type: 'email' },
+          { label: 'Country', name: 'country', type: 'text' },
+          { label: 'Username', name: 'username', type: 'text' },
           { label: 'Password', name: 'password', type: 'password' },
         ].map(({ label, name, type }) => (
           <div key={name} style={{ marginBottom: '15px' }}>
@@ -102,7 +124,7 @@ const Login = () => {
             cursor: 'pointer',
           }}
         >
-          Login
+          Register
         </button>
       </form>
       {message && <p style={{ color: 'green', marginTop: '20px' }}>{message}</p>}
@@ -111,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
