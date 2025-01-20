@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Importing useRouter for navigation
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const Login = () => {
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter(); // Initialize useRouter
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,8 +19,9 @@ const Login = () => {
   const validateForm = () => {
     const { username, password } = formData;
 
+    // Only check if both username and password are provided
     if (!username || !password) {
-      return 'Both fields are required.';
+      return 'Username and password are required.';
     }
 
     return null;
@@ -44,19 +47,25 @@ const Login = () => {
 
       const text = await response.text(); // Read the response as text
       console.log('Response text:', text); // Log the response
-      let data;
 
+      // Check if the response is JSON
+      let data;
       try {
         data = JSON.parse(text); // Try to parse the response as JSON
       } catch (err) {
         console.error('Failed to parse JSON:', err);
-        setError('Unexpected server response. Please try again.');
+        if (text.includes('<html>')) {
+          setError('Unexpected error page returned from server. Please check server configuration.');
+        } else {
+          setError('Unexpected server response. Please try again.');
+        }
         return;
       }
 
       if (response.ok) {
         setMessage('Login successful!');
-        // Handle successful login (redirect, etc.)
+        // Redirect after successful login
+        router.push('/StudentPortal/student-dashboard');
       } else {
         setError(data.message || 'Invalid username or password');
       }
@@ -107,6 +116,9 @@ const Login = () => {
       </form>
       {message && <p style={{ color: 'green', marginTop: '20px' }}>{message}</p>}
       {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
+      <div style={{ marginTop: '10px' }}>
+        <a href="/forgot-password" style={{ color: '#4CAF50' }}>Forgot Password?</a>
+      </div>
     </div>
   );
 };

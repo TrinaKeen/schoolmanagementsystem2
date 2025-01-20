@@ -20,7 +20,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
       email TEXT UNIQUE NOT NULL,
       country TEXT NOT NULL,
       username TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL
+      password TEXT NOT NULL,
+      studentNumber TEXT UNIQUE, -- Optional field to link with main database
+      lastLogin TEXT,           -- Track the last login date
+      role TEXT DEFAULT 'Student' -- Role-based access: 'Student' or 'Admin'
     );
   `;
 

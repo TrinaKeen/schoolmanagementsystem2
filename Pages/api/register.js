@@ -63,6 +63,7 @@ export default async function handler(req, res) {
     }
   });
 
+  // Promisify the run function for easier async/await usage
   const runQuery = promisify(db.run.bind(db));
 
   const insertQuery = `
@@ -78,6 +79,7 @@ export default async function handler(req, res) {
       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     )
   `;
+
   const values = [
     firstName, middleName, lastName, dob, gender, age, nationality, placeOfBirth,
     email, phoneNumber, homeAddress, emergencyContactName, emergencyContactPhoneNumber,
@@ -111,7 +113,7 @@ export default async function handler(req, res) {
   } catch (err) {
     // Handle UNIQUE constraint violations for email or username
     if (err.message.includes('UNIQUE constraint failed')) {
-      return res.status(400).json({ message: 'Email or username already exists.' });
+      return res.status(400).json({ message: 'Email already exists.' });
     }
     console.error('Error during database insertion:', err.message);
     return res.status(500).json({ message: 'Internal server error during database insertion.', error: err.message });

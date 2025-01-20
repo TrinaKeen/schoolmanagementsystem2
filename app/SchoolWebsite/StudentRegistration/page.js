@@ -39,34 +39,39 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setError('');
-  
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       return;
     }
-  
+
     try {
-      const response = await fetch('/api/studentlogin', {
+      const response = await fetch('/api/studentlogin', { // Use the correct route for registration
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-  
-      // Check if the response is valid JSON
+
       const text = await response.text(); // Read the response as text
-      console.log('Response text:', text); // Log the response
+      console.log('Response text:', text);
+
+      if (!response.ok) {
+        setError('Registration failed. Please check your details and try again.');
+        return;
+      }
+
+      // Try to parse the response as JSON
       let data;
-  
       try {
-        data = JSON.parse(text); // Try to parse the response as JSON
+        data = JSON.parse(text);
       } catch (err) {
         console.error('Failed to parse JSON:', err);
         setError('Unexpected server response. Please try again.');
         return;
       }
-  
-      if (response.ok) {
+
+      if (data.success) {
         setMessage('Student successfully registered!');
         setFormData({
           fullName: '',
@@ -83,7 +88,6 @@ const Register = () => {
       setError('An unexpected error occurred. Please try again.');
     }
   };
-  
 
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
