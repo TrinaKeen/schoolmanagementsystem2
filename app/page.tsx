@@ -26,7 +26,7 @@ export default function Home() {
           <Link href="/">HOME</Link>
           <Link href="/">ADMISSION</Link>
           <Link href="/">ABOUT US</Link>
-          <Link href="/">REGISTRATION</Link>
+          <Link href="/SchoolWebsite/StudentRegistration">REGISTRATION</Link>
           <div className={styles.loginDropdown}>
             <button className={styles.dropdownButton}>LOG IN</button>
             <div className={styles.dropdownContent}>
