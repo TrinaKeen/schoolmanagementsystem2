@@ -3,7 +3,7 @@ import path from 'path';
 import bcrypt from 'bcrypt';  // For secure password hashing
 
 // Path to the database
-const dbPath = path.resolve('studentsLogin.db'); // Adjust path if needed
+const dbPath = path.resolve('studentsLogin1.db'); // Adjust path if needed
 
 // Initialize the database
 const db = new sqlite3.Database(dbPath, (err) => {
