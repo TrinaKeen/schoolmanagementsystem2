@@ -1,8 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation';  // Use router to handle navigation
 import '../components/studentapplication.css'; // Import the CSS file
 import Sidebar from '../components/Sidebar'; // Adjust the path as needed
+
 
 export default function StudentApplication() {
   const [studentNumber, setStudentNumber] = useState(null); // Default to null instead of 'Unknown'
@@ -96,244 +98,252 @@ export default function StudentApplication() {
       [name]: files[0],
     }));
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Create formDataToSend as an object instead of FormData
-    const formDataToSend = { ...formData };
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] instanceof File) {
+        formDataToSend.append(key, formData[key]);
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
   
     try {
       const response = await fetch('/api/studentappRegistration', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',  // Specify JSON format
-        },
-        body: JSON.stringify(formDataToSend),  // Send as JSON
+        body: formDataToSend,
       });
   
-      const result = await response.json();
-  
       if (response.ok) {
-        // Successfully submitted
-        alert('Application submitted successfully!');
-        router.push('/StudentPortal/application-status');
+        router.push('/success');
       } else {
-        // Handle error
-        alert(`Error: ${result.message || 'Something went wrong. Please try again.'}`);
+        // Parse the error response
+        const errorData = await response.json();
+        console.error('Error details:', errorData);
+  
+        // Log the error and alert the user with a more generic message
+        alert(`Error: ${errorData.message || 'An unexpected error occurred.'}`);
       }
-    } catch (error) {
-      // Improved error handling
-      if (error instanceof Error) {
-        console.error('Error submitting form:', error.message);
-      } else {
-        console.error('Unexpected error submitting form:', error);
-      }
-      alert('Error: Failed to submit form. Please try again.');
+    } catch (err) {
+      // Catch and log any network or unexpected errors
+      console.error('Submission error:', err);
+      alert('Error submitting form. Please check your internet connection or try again later.');
     }
   };
+
   
   
+
   
-  
-  
-  
+
   return (
-    <div>
-      {/* Sidebar */}
-      <Sidebar studentNumber={studentNumber} />
-      <div className="form-container">
-        <h1>Student Enrollment Application</h1>
-        <form onSubmit={handleSubmit}>
-          {step === 1 && (
-            <div className="form-page">
-              <h2>1. Personal Information</h2>
-              <div className="form-group">
+      <div>
+     {/* Sidebar */}
+     <Sidebar studentNumber={studentNumber} />
+    <div className="form-container">
+     
+      <h1>Student Enrollment Application</h1>
+      <form onSubmit={handleSubmit}>
+        {step === 1 && (
+          <div className="form-page">
+            <h2>1. Personal Information</h2>
+            <div className="form-group">
                 <label htmlFor="studentNumber">Student Number:</label>
                 <input
+                  type="text"
+                  id="studentNumber"
+                  name="studentNumber"
                   value={formData.studentNumber}
                   readOnly
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="firstName">First Name:</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="middleName">Middle Name:</label>
-                <input
-                  type="text"
-                  id="middleName"
-                  name="middleName"
-                  value={formData.middleName}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name:</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="dob">Date of Birth:</label>
-                <input
-                  type="date"
-                  id="dob"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="gender">Gender:</label>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="age">Age:</label>
-                <input
-                  type="number"
-                  id="age"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="nationality">Nationality:</label>
-                <input
-                  type="text"
-                  id="nationality"
-                  name="nationality"
-                  value={formData.nationality}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="placeOfBirth">Place of Birth:</label>
-                <input
-                  type="text"
-                  id="placeOfBirth"
-                  name="placeOfBirth"
-                  value={formData.placeOfBirth}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-buttons">
-                <button type="button" onClick={() => setStep(2)}>
-                  Next
-                </button>
-              </div>
+            <div className="form-group">
+              <label htmlFor="firstName">First Name:</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
             </div>
-          )}
-
-          {step === 2 && (
-            <div className="form-page">
-              <h2>2. Contact Information</h2>
-              <div className="form-group">
-                <label htmlFor="email">Email Address:</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="phoneNumber">Phone Number:</label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="homeAddress">Home Address:</label>
-                <input
-                  type="text"
-                  id="homeAddress"
-                  name="homeAddress"
-                  value={formData.homeAddress}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="emergencyContactName">Emergency Contact Name:</label>
-                <input
-                  type="text"
-                  id="emergencyContactName"
-                  name="emergencyContactName"
-                  value={formData.emergencyContactName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="emergencyContactPhoneNumber">Emergency Contact Phone Number:</label>
-                <input
-                  type="tel"
-                  id="emergencyContactPhoneNumber"
-                  name="emergencyContactPhoneNumber"
-                  value={formData.emergencyContactPhoneNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="emergencyContactRelationship">Emergency Contact Relationship:</label>
-                <input
-                  type="text"
-                  id="emergencyContactRelationship"
-                  name="emergencyContactRelationship"
-                  value={formData.emergencyContactRelationship}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-buttons">
-                <button type="button" onClick={() => setStep(3)}>
-                  Next
-                </button>
-              </div>
+            <div className="form-group">
+              <label htmlFor="middleName">Middle Name:</label>
+              <input
+                type="text"
+                id="middleName"
+                name="middleName"
+                value={formData.middleName}
+                onChange={handleChange}
+              />
             </div>
-          )}
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name:</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="dob">Date of Birth:</label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="gender">Gender:</label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="age">Age:</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="nationality">Nationality:</label>
+              <input
+                type="text"
+                id="nationality"
+                name="nationality"
+                value={formData.nationality}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="placeOfBirth">Place of Birth:</label>
+              <input
+                type="text"
+                id="placeOfBirth"
+                name="placeOfBirth"
+                value={formData.placeOfBirth}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-buttons">
+              <button type="button" onClick={() => setStep(2)}>
+                Next
+              </button>
+            </div>
+          </div>
+        )}
 
-
-
+        {step === 2 && (
+          <div className="form-page">
+            <h2>2. Contact Information</h2>
+            <div className="form-group">
+              <label htmlFor="email">Email Address:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Phone Number:</label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="homeAddress">Home Address:</label>
+              <input
+                type="text"
+                id="homeAddress"
+                name="homeAddress"
+                value={formData.homeAddress}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="emergencyContactName">Emergency Contact Name:</label>
+              <input
+                type="text"
+                id="emergencyContactName"
+                name="emergencyContactName"
+                value={formData.emergencyContactName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="emergencyContactPhoneNumber">Emergency Contact Phone Number:</label>
+              <input
+                type="tel"
+                id="emergencyContactPhoneNumber"
+                name="emergencyContactPhoneNumber"
+                value={formData.emergencyContactPhoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="emergencyContactRelationship">Emergency Contact Relationship:</label>
+              <select
+                id="emergencyContactRelationship"
+                name="emergencyContactRelationship"
+                value={formData.emergencyContactRelationship}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Relationship</option>
+                <option value="Parent">Parent</option>
+                <option value="Sibling">Sibling</option>
+                <option value="Relative">Relative</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="form-buttons">
+              <button type="button" onClick={() => setStep(1)}>
+                Back
+              </button>
+              <button type="button" onClick={() => setStep(3)}>
+                Next
+              </button>
+            </div>
+          </div>
+        )}
 
         {step === 3 && (
           <div className="form-page">

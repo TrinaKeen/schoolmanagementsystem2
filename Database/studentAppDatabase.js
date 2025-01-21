@@ -3,8 +3,8 @@ import path from 'path';
 import fs from 'fs';
 
 // Define the paths for the databases
-const dbPath = path.resolve('Database', 'studentsApp.db');
-const counterDbPath = path.resolve('Database', 'studentCounter.db');
+const dbPath = path.resolve('Database', 'studentsApp1.db');
+const counterDbPath = path.resolve('Database', 'studentCounter1.db');
 
 // Ensure the database directory exists before proceeding
 const createDatabaseDirectoryIfNotExists = () => {

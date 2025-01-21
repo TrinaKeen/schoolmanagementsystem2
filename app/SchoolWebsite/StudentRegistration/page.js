@@ -47,7 +47,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch('/api/studentlogin', { // Use the correct route for registration
+      const response = await fetch('/api/studentloginregistration', { // Use the correct route for registration
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -57,7 +57,16 @@ const Register = () => {
       console.log('Response text:', text);
 
       if (!response.ok) {
-        setError('Registration failed. Please check your details and try again.');
+        let errorMessage = 'Registration failed. Please check your details and try again.';
+        
+        try {
+          const data = JSON.parse(text);
+          errorMessage = data.message || errorMessage; // Use specific error message if available
+        } catch (err) {
+          console.error('Failed to parse JSON:', err);
+        }
+
+        setError(errorMessage);
         return;
       }
 
