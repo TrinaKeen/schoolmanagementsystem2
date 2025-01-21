@@ -1,0 +1,53 @@
+/* components/Sidebar.module.css */
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+  
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.sidebar h1 {
+  font-size: 20px;
+  margin-top: 10px;
+  color: white;
+  margin-right: 50px;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 10px 0;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.navbar .h1 {
+  color: white;
+}
+
+.navbar a:hover {
+  background-color: #575757;
+}
+  
+  .studentInfo {
+    margin-bottom: 20px;
+  }
+  
+
+  
