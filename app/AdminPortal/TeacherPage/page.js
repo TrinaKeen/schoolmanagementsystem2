@@ -31,7 +31,7 @@ export default function teacherPage() {
 
   return (
     // credit: ChatGPT & BlackBox AI
-    <section>
+    <div>
       <AdminHeader />
       <div className={styles.container}>
         <div className={styles.sidebar}>
@@ -90,7 +90,7 @@ export default function teacherPage() {
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
