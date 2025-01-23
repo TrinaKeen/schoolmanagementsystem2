@@ -17,12 +17,12 @@ const Sidebar = () => {
           </Link>
         </li>
         <li>
-          <Link href="/AdminPortal/StudentCourses/Midwifery">
+          <Link href="/AdminPortal/StudentCourses/BachelorWifery">
             Bachelor of Science in Midwifery
           </Link>
         </li>
         <li>
-          <Link href="/AdminPortal/StudentCourses/Vocational">
+          <Link href="/AdminPortal/StudentCourses/BachelorEducation">
             Bachelor of Technical-Vocational Teacher Education
           </Link>
         </li>

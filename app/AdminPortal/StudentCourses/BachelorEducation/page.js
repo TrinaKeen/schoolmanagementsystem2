@@ -2,7 +2,7 @@
 
 // Import necessary libraries and components
 import React, { useState } from 'react';
-import styles from './Grade12.module.css';
+import styles from './BachelorEducation.module.css';
 import Sidebar from '../components/Sidebar';
 import Banner from '../components/Banner';
 
@@ -21,7 +21,7 @@ const StudentCourses = () => {
 
                 <main className={styles.courseContent}>
                     <div className={styles.mainHeader}>
-                        <h2>Senior High School Grade 12 Courses</h2>
+                        <h2>Bachelor of Technical-Vocational Teacher Education</h2>
                         <button onClick={handleEditClick} className={styles.editButton}>
                             {isEditing ? 'Cancel' : 'Edit Courses'}
                         </button>
@@ -31,7 +31,7 @@ const StudentCourses = () => {
                         <div>
                             <div className={styles.editActions}>
                                 <select className={styles.dropdown}>
-                                    <option>Track/Strand</option>
+                                    <option>Year Level</option>
                                 </select>
                                 <button className={styles.actionButton}>Add Course</button>
                                 <button className={styles.actionButton}>Delete Course</button>
