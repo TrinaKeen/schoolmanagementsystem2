@@ -28,7 +28,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table2}>
                             <ul>
                                 <label>Description</label>
                                 <li>Nemo enim ipsam voluptatem</li>
@@ -42,7 +42,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table3}>
                             <ul>
                                 <label>Charges</label>
                                 <li>$1,500.00</li>
@@ -76,7 +76,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table2}>
                             <ul>
                                 <label>Description</label>
                                 <li>Nemo enim ipsam voluptatem</li>
@@ -90,7 +90,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table3}>
                             <ul>
                                 <label>Instructor</label>
                                 <li>John McDonald</li>
@@ -123,7 +123,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table2}>
                             <ul>
                                 <label>Description</label>
                                 <li>Nemo enim ipsam voluptatem</li>
@@ -137,7 +137,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table3}>
                             <ul>
                                 <label>Charges</label>
                                 <li>$1,500.00</li>
@@ -170,7 +170,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table2}>
                             <ul>
                                 <label>Student Name</label>
                                 <li>Jake</li>
@@ -184,7 +184,7 @@ export default function SchoolDepartment() {
                             </ul>
                         </div>
 
-                        <div>
+                        <div className={styles.Table3}>
                             <ul>
                                 <label>Status</label>
                                 <li>Active</li>
