@@ -13,7 +13,7 @@ export default function SchoolDepartment() {
             case "studentfees":
                 return(
                     <div className={styles.tabContent}>
-                        <h1>Semester Course Details</h1>
+                        <h1>Student Fees Details</h1>
                         <p>Test 1</p>
                     </div>
                 );
@@ -28,14 +28,14 @@ export default function SchoolDepartment() {
             case "semesterfees":
                 return(
                     <div className={styles.tabContent}>
-                        <h1>Semester Course Details</h1>
+                        <h1>Semester Fees Details</h1>
                         <p>Test 3</p>
                     </div>
                     );
             case "enrolled":
                 return(
                     <div className={styles.tabContent}>
-                        <h1>Semester Course Details</h1>
+                        <h1>Student Enrollment Details</h1>
                         <p>Test 4</p>
                     </div>
                     );
