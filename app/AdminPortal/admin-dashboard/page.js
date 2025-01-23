@@ -106,7 +106,7 @@ export default function Home() {
             <Image src={reportlogo} alt="Report Logo" width={200} height={200} />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="#">Go to Reports Management </Link>
+            <Link href="../AdminPortal/Reports">Go to Reports Management </Link>
           </div>
         </div>
       </main>
