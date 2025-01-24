@@ -25,8 +25,10 @@ export default function teacherPage() {
 
   // handles the college yr selection
   const handleYearClick = (year) => {
+    console.log("Year clicked:", year);
+    console.log("Teachers for selected year:", TEACHERS[0]["College"][year]);
     setSelectedYear(year);
-    setSelectedGrade(null);
+    setTeacherList(TEACHERS[0]["College"][year]); //update teacher list for the selected yr
   };
 
   return (
