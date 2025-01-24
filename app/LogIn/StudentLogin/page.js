@@ -1,82 +1,88 @@
-"use client";
-
+'use client';
 import { useState } from 'react';
-import Image from 'next/image'; // Ensure to import Image from next/image
-import styles from '../LoginPage.module.css'; // Assuming you use a CSS module for styling
-import logo from '../school-logo.png'; // Ensure this path is correct
+import { useRouter } from 'next/navigation';
 
-const AdminLogin = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility toggle
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
+    setError('');
 
-    // Example authentication logic
-    if (username === 'admin' && password === 'password1234') {
-      alert('Logged in as Admin!');
-      // Redirect to Admin Dashboard
-      window.location.href = '../HomePage/admin-dashboard'; // Uncomment if needed
-    } else {
-      setError('Invalid credentials. Please try again.');
+    try {
+      const response = await fetch('/api/studentlogin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Login successful!');
+        localStorage.setItem('studentNumber', data.studentNumber); // Store student number
+        router.push('/StudentPortal/student-dashboard'); // Redirect after login
+      } else {
+        setError(data.message || 'Invalid email or password.');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setError('An unexpected error occurred. Please try again.');
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible); // Toggle password visibility
-  };
-
   return (
-    <div className={styles.loginContainer}>
-      <div className={styles.logo}>
-        {/* Ensure Image component is used correctly */}
-        <Image src={logo} alt="School Logo" width={200} height={200} />
-      </div>
-
-      <h2 className={styles.loginTitle}>STUDENT PORTAL</h2>
-
-      <form onSubmit={handleSubmit} className={styles.loginForm}>
-        <div className={styles.inputGroup}>
-          <label htmlFor="username" className={styles.inputLabel}>Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className={styles.inputField}
-            required
-          />
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label htmlFor="password" className={styles.inputLabel}>Password</label>
-          <div className={styles.passwordWrapper}>
+    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
+      <h1>Login as a Student</h1>
+      <form onSubmit={handleSubmit}>
+        {['email', 'password'].map((field) => (
+          <div key={field} style={{ marginBottom: '15px' }}>
+            <label htmlFor={field} style={{ display: 'block', marginBottom: '5px' }}>
+              {field.charAt(0).toUpperCase() + field.slice(1)}
+            </label>
             <input
-              type={isPasswordVisible ? "text" : "password"} // Toggle between password and text
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={styles.inputField}
+              id={field}
+              name={field}
+              type={field === 'password' ? 'password' : 'email'}
+              value={formData[field]}
+              onChange={handleChange}
               required
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
             />
-            <button
-              type="button"
-              className={styles.showButton}
-              onClick={togglePasswordVisibility}
-            >
-              {isPasswordVisible ? 'Hide' : 'Show'}
-            </button>
           </div>
-        </div>
-
-        {error && <p className={styles.error}>{error}</p>}
-
-        <button type="submit" className={styles.submitButton}>Log In</button>
+        ))}
+        <button
+          type="submit"
+          style={{
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Login
+        </button>
       </form>
+      {message && <p style={{ color: 'green', marginTop: '20px' }}>{message}</p>}
+      {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
     </div>
   );
 };
 
-export default AdminLogin;
+export default Login;
