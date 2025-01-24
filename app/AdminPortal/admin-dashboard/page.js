@@ -132,7 +132,7 @@ export default function Home() {
             />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="#">Go to Student Courses Management </Link>
+            <Link href="StudentCourses/grade11">Go to Student Courses Management </Link>
           </div>
 
           <div className={styles.card}>
@@ -156,7 +156,7 @@ export default function Home() {
             />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="#">Go to Reports Management </Link>
+            <Link href="../AdminPortal/Reports">Go to Reports Management </Link>
           </div>
         </div>
       </main>
