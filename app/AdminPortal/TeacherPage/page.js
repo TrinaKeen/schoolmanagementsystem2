@@ -16,7 +16,7 @@ export default function teacherPage() {
     setSelectedGrade(grade);
     setSelectedYear(null);
 
-    if (grade != "college") {
+    if (grade !== "College") {
       setTeacherList(TEACHERS[0][grade]);
     } else {
       setTeacherList([]);
@@ -31,7 +31,7 @@ export default function teacherPage() {
 
   return (
     // credit: ChatGPT & BlackBox AI
-    <div>
+    <div className="text-black">
       <AdminHeader />
       <div className={styles.container}>
         <div className={styles.sidebar}>
@@ -39,21 +39,21 @@ export default function teacherPage() {
           <ul>
             <li
               className={selectedGrade === "Grade11" ? styles.active : ""}
-              onclick={() => handleGradeClick("Grade11")}
+              onClick={() => handleGradeClick("Grade11")}
             >
               {" "}
               Grade 11
             </li>
             <li
               className={selectedGrade === "Grade12" ? styles.active : ""}
-              onclick={() => handleGradeClick("Grade12")}
+              onClick={() => handleGradeClick("Grade12")}
             >
               {" "}
               Grade 12
             </li>
             <li
               className={selectedYear === "College" ? styles.active : ""}
-              onclick={() => handleGradeClick("College")}
+              onClick={() => handleGradeClick("College")}
             >
               {" "}
               College
@@ -66,7 +66,7 @@ export default function teacherPage() {
                   <li
                     key={year}
                     className={selectedYear === year ? styles.active : ""}
-                    onclick={() => handleYearClick(year)}
+                    onClick={() => handleYearClick(year)}
                   >
                     {year}
                   </li>
