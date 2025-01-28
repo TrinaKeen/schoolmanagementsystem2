@@ -32,15 +32,9 @@ export default function AdminHeader() {
         </div>
 
         <nav className={styles.navbar}>
-          <Link href="../AdminPortal/admin-dashboard">
-            <FaHome size={35} />
-          </Link>
-          <Link href="#">
-            <FaBell size={35} />
-          </Link>
-          <Link href="#">
-            <FaEnvelope size={35} />
-          </Link>
+          <Link href="/AdminPortal/admin-dashboard"><FaHome size={35} /></Link>
+          <Link href="#"><FaBell size={35} /></Link>
+          <Link href="#"><FaEnvelope size={35} /></Link>
 
           <div className={styles.loginDropdown}>
             {/* Button to toggle dropdown */}

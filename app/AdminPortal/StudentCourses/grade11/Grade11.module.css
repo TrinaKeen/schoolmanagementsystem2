@@ -1,23 +1,37 @@
 /* Main page container */
+.container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif; /* Modern font */
+  background-color: #f7f7f7;
+  flex-wrap: wrap;
+}
+
 .pageContainer {
-    display: flex;
-    height: 100vh; /* Full viewport height */
-    background-color: #1a1a1a; /* Matches the black background */
-    overflow: hidden; /* Prevents unwanted overflow from the container */
-  }
+  display: flex;
+  flex-direction: column; /* AdminHeader on top */
+  height: 100vh;
+  width: 100%;
+}
+
+.contentArea {
+  display: flex;
+  flex: 1; /* Ensures Sidebar and mainContent share the space */
+}
   
   
-  /* Main content section */
-  .mainContent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 8px;
-    margin: 20px;
-    overflow-y: auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+/* Main content section */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 0;
+  margin: 0;
+  overflow-y: auto;
+  box-shadow: none;
+  width: 100%;
+}
   
   /* Content inside the main section */
   .courseContent {
@@ -150,5 +164,3 @@
   .editActions button {
     color: black;
   }
-  
-  
