@@ -52,7 +52,7 @@ export default function Sidebar({ studentNumber }) {
           Fees Payment
         </Link>
         <Link href="/StudentPortal/account-settings">
-          Profile Settings
+          Account Settings
         </Link>
         <button onClick={handleLogout} className={styles.logoutButton}>
           Log out
