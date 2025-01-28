@@ -15,10 +15,12 @@ import reportlogo from "/src/reportlogo.png";
 import { FaHome, FaEnvelope, FaBell, FaBars } from "react-icons/fa";
 
 export default function Home() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown visibility
+  const [isDropdownOpen, setIsDropdownOpen] = useState(null); // tracks which dropdown is opened
 
-  // Toggle dropdown visibility
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  // Toggle specific dropdown
+  const toggleDropdown = (type) => {
+    setIsDropdownOpen(isDropdownOpen === type ? null : type);
+  };
 
   return (
     <div className={styles.container}>
@@ -40,31 +42,58 @@ export default function Home() {
         </Link>
 
         <nav className={styles.navbar}>
-          <Link href="#">
+          <Link href="../AdminPortal/admin-dashboard">
             <FaHome size={35} />
           </Link>
-          <Link href="#">
-            <FaBell size={35} />
-          </Link>
-          <Link href="#">
-            <FaEnvelope size={35} />
-          </Link>
+
+          <div className={styles.loginDropdown}>
+            <button
+              className={styles.dropdownButton}
+              onClick={() => toggleDropdown("notifications")}
+            >
+              <FaBell size={35} />
+            </button>
+
+            {isDropdownOpen === "notifications" && (
+              <div className={styles.dropdownContent}>
+                <p className="text-black flex justify-center">
+                  No new notifications
+                </p>
+              </div>
+            )}
+          </div>
+          <div className={styles.loginDropdown}>
+            <button
+              className={styles.dropdownButton}
+              onClick={() => toggleDropdown("messages")}
+            >
+              <FaEnvelope size={35} />
+            </button>
+
+            {isDropdownOpen === "messages" && (
+              <div className={styles.dropdownContent}>
+                <p className="text-black flex justify-center">
+                  No new messages
+                </p>
+              </div>
+            )}
+          </div>
 
           <div className={styles.loginDropdown}>
             {/* Button to toggle dropdown */}
             <button
               className={styles.dropdownButton}
-              onClick={toggleDropdown} // Toggle dropdown on button click
+              onClick={() => toggleDropdown("account")} // Toggle dropdown on button click
             >
               <FaBars size={35} />
             </button>
 
             {/* Conditionally render the dropdown based on state */}
-            {isDropdownOpen && (
+            {isDropdownOpen === "account" && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
                 <Link href="../AdminPortal/admin-settings">
-                  Account Setting
+                  Account Settings
                 </Link>
                 <Link href="#">Help Centre</Link>
               </div>
@@ -102,7 +131,9 @@ export default function Home() {
             />
             <h3>Teacher Management</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="#">Go to Teacher Management </Link>
+            <Link href="../AdminPortal/TeacherPage">
+              Go to Teacher Management{" "}
+            </Link>
           </div>
 
           <div className={styles.card}>
@@ -114,7 +145,9 @@ export default function Home() {
             />
             <h3>School Departments</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="../AdminPortal/SchoolDepartment">Go to Departments Management </Link>
+            <Link href="../AdminPortal/SchoolDepartment">
+              Go to Departments Management{" "}
+            </Link>
           </div>
         </div>
 
@@ -128,7 +161,9 @@ export default function Home() {
             />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="StudentCourses/grade11">Go to Student Courses Management </Link>
+            <Link href="StudentCourses/grade11">
+              Go to Student Courses Management{" "}
+            </Link>
           </div>
 
           <div className={styles.card}>
@@ -152,7 +187,7 @@ export default function Home() {
             />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="#">Go to Reports Management </Link>
+            <Link href="../AdminPortal/Reports">Go to Reports Management </Link>
           </div>
         </div>
       </main>
