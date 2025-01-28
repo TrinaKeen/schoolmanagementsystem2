@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import '../components/applicationstatus.css';
 import Sidebar from '../components/Sidebar'; 
+import '../components/studentapplication.css';
 
 const StudentDetails = () => {
   const [studentNumber, setStudentNumber] = useState(null);

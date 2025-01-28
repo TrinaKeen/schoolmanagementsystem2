@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import WebsiteHeader from '../components/websiteheader'; 
+import WebsiteFooter from '../components/websitefooter'; 
+import styles from '../components/Register.module.css'; 
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -80,60 +83,46 @@ export default function Register() {
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
-      <h1>Register</h1>
-      <form style={{ color: 'black' }} onSubmit={handleSubmit}>
+    <div >
+       {/* Header */}
+       <WebsiteHeader/>
+      <main className={styles.mainpage}>
+   
+     
+      <form className={styles.form} onSubmit={handleSubmit}>
+      <h1>Please fill up the form for Account Registration</h1>
         {['fullname', 'email', 'country', 'username', 'password'].map((field) => (
+          
           <div style={{ marginBottom: '15px' }} key={field}>
             <label htmlFor={field} style={{ display: 'block', marginBottom: '5px' }}>
               {field.charAt(0).toUpperCase() + field.slice(1)}
             </label>
+            
             <input
               type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
               id={field}
               placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
               value={formData[field]}
               onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
+              className={styles.input}
             />
           </div>
         ))}
-        <button
-          type="submit"
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginRight: '10px',
-          }}
-        >
+        <button className={styles.button1} type="submit">
           Register
         </button>
-        <button
-          type="button"
-          onClick={handleCancel}
-          style={{
-            backgroundColor: '#f44336',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
+        <button className={styles.button2} type="button"
+          onClick={handleCancel}>
           Cancel
         </button>
-      </form>
-      {success && <p style={{ color: 'green', marginTop: '20px' }}>{success}</p>}
+      
+      {success && <p style={{ color: 'green', marginTop: '20px'}}>{success}</p>}
       {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
+      </form>
+    
+    </main>
+    <WebsiteFooter/>
     </div>
+    
   );
 }
