@@ -14,7 +14,47 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 1</p>
+                        <div className={styles.Table1}>
+                            <ul>
+                                <label>Detail Code</label>
+                                <li>GAGAA01</li>
+                                <li>YAWA22</li>
+                                <li>HELP00</li>
+                                <li>HALO13</li>
+                                <li>GAGO10</li>
+                                <li>FFAII01</li>
+                                <li>HSHS17</li>
+                                <li>WEEH08</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table2}>
+                            <ul>
+                                <label>Description</label>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table3}>
+                            <ul>
+                                <label>Instructor</label>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                            </ul>
+                        </div>
                     </div>
                 );
             
@@ -22,21 +62,141 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 2</p>
+                        <div className={styles.Table1}>
+                            <ul>
+                                <label>Detail Code</label>
+                                <li>GAGAA01</li>
+                                <li>YAWA22</li>
+                                <li>HELP00</li>
+                                <li>HALO13</li>
+                                <li>GAGO10</li>
+                                <li>FFAII01</li>
+                                <li>HSHS17</li>
+                                <li>WEEH08</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table2}>
+                            <ul>
+                                <label>Description</label>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table3}>
+                            <ul>
+                                <label>Instructor</label>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                            </ul>
+                        </div>
                     </div>
                 );
             case "science-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 3</p>
+                        <div className={styles.Table1}>
+                            <ul>
+                                <label>Detail Code</label>
+                                <li>GAGAA01</li>
+                                <li>YAWA22</li>
+                                <li>HELP00</li>
+                                <li>HALO13</li>
+                                <li>GAGO10</li>
+                                <li>FFAII01</li>
+                                <li>HSHS17</li>
+                                <li>WEEH08</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table2}>
+                            <ul>
+                                <label>Description</label>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table3}>
+                            <ul>
+                                <label>Instructor</label>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                            </ul>
+                        </div>
                     </div>
                     );
             case "tech-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 4</p>
+                        <div className={styles.Table1}>
+                            <ul>
+                                <label>Detail Code</label>
+                                <li>GAGAA01</li>
+                                <li>YAWA22</li>
+                                <li>HELP00</li>
+                                <li>HALO13</li>
+                                <li>GAGO10</li>
+                                <li>FFAII01</li>
+                                <li>HSHS17</li>
+                                <li>WEEH08</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table2}>
+                            <ul>
+                                <label>Description</label>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                                <li>Nemo enim ipsam voluptatem</li>
+                            </ul>
+                        </div>
+
+                        <div className={styles.Table3}>
+                            <ul>
+                                <label>Instructor</label>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                                <li>John McDonald</li>
+                                <li>Laura Vincent</li>
+                            </ul>
+                        </div>
                     </div>
                     );
         }
