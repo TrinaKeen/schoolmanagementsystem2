@@ -1,88 +1,116 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from "next/image"; // For displaying the logo
+import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
+import logo from "../school-logo.png"; // Ensure this path is correct
 
-const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
+export default function StudentLogin() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
+    setLoading(true);
+
+    const normalizedUsername = username.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+    const loginTimestamp = new Date().toISOString(); // Get the current timestamp
 
     try {
-      const response = await fetch('/api/studentlogin', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: normalizedUsername,
+          password: trimmedPassword,
+          loginTimestamp, // Send the timestamp
+        }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
-        setMessage('Login successful!');
-        localStorage.setItem('studentNumber', data.studentNumber); // Store student number
-        router.push('/StudentPortal/student-dashboard'); // Redirect after login
+      if (res.ok) {
+        // Store student number and token
+        localStorage.setItem('studentNumber', data.studentNumber);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('loginTimestamp', loginTimestamp); // Save timestamp locally if needed
+
+        // Redirect to dashboard
+        router.push('/StudentPortal/student-dashboard');
       } else {
-        setError(data.message || 'Invalid email or password.');
+        setError(data.error || 'An unexpected error occurred');
       }
     } catch (error) {
-      console.error('Error during login:', error);
-      setError('An unexpected error occurred. Please try again.');
+      setError('Network error, please try again later');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
-      <h1>Login as a Student</h1>
-      <form onSubmit={handleSubmit}>
-        {['email', 'password'].map((field) => (
-          <div key={field} style={{ marginBottom: '15px' }}>
-            <label htmlFor={field} style={{ display: 'block', marginBottom: '5px' }}>
-              {field.charAt(0).toUpperCase() + field.slice(1)}
-            </label>
+    <div className={styles.loginContainer}>
+      <div className={styles.logo}>
+        <Image src={logo} alt="School Logo" width={200} height={200} />
+      </div>
+
+      <h2 className={styles.loginTitle}>STUDENT PORTAL</h2>
+
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
+        <div className={styles.inputGroup}>
+          <label htmlFor="username" className={styles.inputLabel}>
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={styles.inputField}
+            required
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label htmlFor="password" className={styles.inputLabel}>
+            Password
+          </label>
+          <div className={styles.passwordWrapper}>
             <input
-              id={field}
-              name={field}
-              type={field === 'password' ? 'password' : 'email'}
-              value={formData[field]}
-              onChange={handleChange}
+              type={isPasswordVisible ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.inputField}
               required
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
             />
+            <button
+              type="button"
+              className={styles.showButton}
+              onClick={togglePasswordVisibility}
+            >
+              {isPasswordVisible ? "Hide" : "Show"}
+            </button>
           </div>
-        ))}
-        <button
-          type="submit"
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Login
+        </div>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <button type="submit" className={styles.submitButton}>
+          Log In
         </button>
       </form>
-      {message && <p style={{ color: 'green', marginTop: '20px' }}>{message}</p>}
-      {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
     </div>
   );
-};
-
-export default Login;
+}
