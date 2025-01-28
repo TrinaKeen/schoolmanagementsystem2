@@ -1,26 +1,32 @@
 'use client';
-import { useState } from 'react';
 
-const Register = () => {
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import WebsiteHeader from '../components/websiteheader'; 
+import WebsiteFooter from '../components/websitefooter'; 
+import styles from '../components/Register.module.css'; 
+
+export default function Register() {
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     email: '',
     country: '',
     username: '',
     password: '',
   });
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { id, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
   const validateForm = () => {
-    const { fullName, email, country, username, password } = formData;
+    const { fullname, email, country, username, password } = formData;
 
-    if (!fullName || !email || !country || !username || !password) {
+    if (!fullname || !email || !country || !username || !password) {
       return 'All fields are required.';
     }
 
@@ -32,118 +38,91 @@ const Register = () => {
       return 'Password must be at least 6 characters long.';
     }
 
-    return null;
+    return null; // Validation passed
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
 
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
+      setSuccess('');
       return;
     }
 
     try {
-      const response = await fetch('/api/studentloginregistration', { // Use the correct route for registration
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formData),
       });
 
-      const text = await response.text(); // Read the response as text
-      console.log('Response text:', text);
+      const data = await res.json();
 
-      if (!response.ok) {
-        let errorMessage = 'Registration failed. Please check your details and try again.';
-        
-        try {
-          const data = JSON.parse(text);
-          errorMessage = data.message || errorMessage; // Use specific error message if available
-        } catch (err) {
-          console.error('Failed to parse JSON:', err);
-        }
-
-        setError(errorMessage);
-        return;
-      }
-
-      // Try to parse the response as JSON
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        console.error('Failed to parse JSON:', err);
-        setError('Unexpected server response. Please try again.');
-        return;
-      }
-
-      if (data.success) {
-        setMessage('Student successfully registered!');
-        setFormData({
-          fullName: '',
-          email: '',
-          country: '',
-          username: '',
-          password: '',
-        });
+      if (res.ok) {
+        setSuccess('Student successfully registered!');
+        setError('');
+        setTimeout(() => {
+          router.push('/LogIn/StudentLogin');
+        }, 2000); // Delay for 2 seconds to show the success message
       } else {
-        setError(data.message || 'An error occurred. Please try again.');
+        setError(data.error || 'Registration failed. Please try again.');
+        setSuccess('');
       }
     } catch (error) {
-      console.error('Error during registration:', error);
-      setError('An unexpected error occurred. Please try again.');
+      setError('An unexpected error occurred. Please try again later.');
+      setSuccess('');
     }
   };
 
+  const handleCancel = () => {
+    router.push('/');
+  };
+
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', color: 'black', background: 'white' }}>
-      <h1>Register as a Student</h1>
-      <form onSubmit={handleSubmit}>
-        {[{ label: 'Full Name', name: 'fullName', type: 'text' },
-          { label: 'Email', name: 'email', type: 'email' },
-          { label: 'Country', name: 'country', type: 'text' },
-          { label: 'Username', name: 'username', type: 'text' },
-          { label: 'Password', name: 'password', type: 'password' },
-        ].map(({ label, name, type }) => (
-          <div key={name} style={{ marginBottom: '15px' }}>
-            <label htmlFor={name} style={{ display: 'block', marginBottom: '5px' }}>{label}</label>
+    <div >
+       {/* Header */}
+       <WebsiteHeader/>
+      <main className={styles.mainpage}>
+   
+     
+      <form className={styles.form} onSubmit={handleSubmit}>
+      <h1>Please fill up the form for Account Registration</h1>
+        {['fullname', 'email', 'country', 'username', 'password'].map((field) => (
+          
+          <div style={{ marginBottom: '15px' }} key={field}>
+            <label htmlFor={field} style={{ display: 'block', marginBottom: '5px' }}>
+              {field.charAt(0).toUpperCase() + field.slice(1)}
+            </label>
+            
             <input
-              id={name}
-              name={name}
-              type={type}
-              value={formData[name]}
+              type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
+              id={field}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              value={formData[field]}
               onChange={handleChange}
-              required
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
+              className={styles.input}
             />
           </div>
         ))}
-        <button
-          type="submit"
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
+        <button className={styles.button1} type="submit">
           Register
         </button>
-      </form>
-      {message && <p style={{ color: 'green', marginTop: '20px' }}>{message}</p>}
+        <button className={styles.button2} type="button"
+          onClick={handleCancel}>
+          Cancel
+        </button>
+      
+      {success && <p style={{ color: 'green', marginTop: '20px'}}>{success}</p>}
       {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
+      </form>
+    
+    </main>
+    <WebsiteFooter/>
     </div>
+    
   );
-};
-
-export default Register;
+}

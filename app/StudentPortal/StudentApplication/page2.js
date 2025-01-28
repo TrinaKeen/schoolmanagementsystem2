@@ -68,6 +68,9 @@ export default function StudentApplication() {
     // Consent and Agreement
     termsAndConditions: false,
     dataPrivacyConsent: false,
+
+    //Application status
+    applicationstatus: 'Pending',
   });
 
   useEffect(() => {

@@ -1,50 +1,68 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar'; // Adjust the path as needed
-// Adjust the path as needed
 import styles from '../components/Home.module.css'; // Adjust the path to your CSS module
 import styles1 from '../components/Sidebar.module.css';
- 
+
 export default function StudentDashboard() {
-  const [studentNumber, setStudentNumber] = useState(null); // Default to null instead of 'Unknown'
+  const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch the student number from localStorage
-    const storedStudentNumber = localStorage.getItem('studentNumber');
-    
-    if (storedStudentNumber) {
-      setStudentNumber(storedStudentNumber);
-    } else {
-      setStudentNumber('Unavailable'); // Handle case when no student number is available
-    }
-    
-    setLoading(false); // Set loading to false after the check
+    fetchStudentData();
   }, []);
+
+  const fetchStudentData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token not found');
+
+      const res = await fetch('/api/students/student-data', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to fetch student data');
+      }
+
+      const data = await res.json();
+      setStudentData(data); // Set the student data (studentNumber & lastLogin)
+    } catch (err) {
+      console.error('Error fetching student data:', err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
-      {/* Sidebar */}
-      <Sidebar className={styles1.container} studentNumber={studentNumber} />
-
-      {/* Main Content */}
+      <Sidebar
+        className={styles1.container}
+        studentNumber={studentData?.studentNumber || ''}
+      />
       <div className={styles.content}>
         <header className={styles.header}>
-        
           {loading ? (
             <p>Loading...</p>
+          ) : error ? (
+            <p>{error}</p>
           ) : (
             <p>
-              Welcome, <strong>Student {studentNumber}</strong>!
+              Welcome, <strong>Student {studentData.studentNumber}</strong>!
+              <br />
+              Last Login: <strong>{new Date(studentData.lastLogin).toLocaleString()}</strong>
             </p>
           )}
         </header>
-
         <main className={styles.main}>
           <h2>Welcome to the School Management System</h2>
           <p>Manage your school's admission, fees, and applications.</p>
-          
-          
         </main>
         <footer className={styles.footer}>
           <p>&copy; 2024 School Management System</p>

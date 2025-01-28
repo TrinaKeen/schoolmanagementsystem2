@@ -4,7 +4,7 @@ export const TEACHERS = [
     Grade12: [
       "Mr. Hugh Jass",
       "Ms. Crystal Shandy Leer",
-      "Mrs. Taylor Marie Joy Batumbakal",
+      "Mrs. Taylor Marie Joy Batumbakal Swift",
     ],
     College: {
       "1st Year": ["Dr. Ben Dover", "Prof. Anita Mann"],
