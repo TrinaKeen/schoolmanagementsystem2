@@ -8,6 +8,7 @@ import styles from "./Reports.module.css";
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("studentfees");
 
+    /*renderTab reference in admin-settings*/
     const renderTab = () => {
         switch (activeTab) {
             case "studentfees":
