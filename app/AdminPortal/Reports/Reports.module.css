@@ -90,47 +90,23 @@
 }
 
 .Table1 {
-    width: 280px;
+    width: 500px;
     padding: 30px;
     border-right: 2px;
+    text-align: center;
+    border: #4c8eaf solid;
+    border-radius: 4px;
+}
+
+.editButton {
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #4c8eaf;
+    margin-bottom: 10px;
     align-items: center;
 }
 
-.Table1 label {
-    border: #4c8eaf solid;
-    border-radius: 4px;
-    font-weight: bold;
-}
 
-.Table1 li {
-    text-align: left;
-}
-
-.Table2 {
-    width: 280px;
-    padding: 30px;
-    border-right: 2px;
-    align-items: center;
-}
-
-.Table2 label {
-    border: #4c8eaf solid;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.Table3 {
-    width: 280px;
-    padding: 30px;
-    border-right: 2px;
-    align-items: center;
-}
-
-.Table3 label {
-    border: #4c8eaf solid;
-    border-radius: 4px;
-    font-weight: bold;
-}
 @keyframes fadeIn {
     0% {
       opacity: 0;

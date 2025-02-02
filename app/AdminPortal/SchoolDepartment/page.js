@@ -14,47 +14,59 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Instructor</label>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 );
             
@@ -62,141 +74,177 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Instructor</label>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 );
             case "science-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Instructor</label>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
             case "tech-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Instructor</label>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
         }
