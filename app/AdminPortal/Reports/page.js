@@ -15,47 +15,59 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Student Fees Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Charges</label>
-                                <li>$1,500.00</li>
-                                <li>$540.00</li>
-                                <li>$3,399.00</li>
-                                <li>$290.00</li>
-                                <li>$129.00</li>
-                                <li>$7,100.00</li>
-                                <li>$1,580.00</li>
-                                <li>$1,400.00</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Fees</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Charges</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,500.00</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$540.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$3,399.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$290.00</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$129.00</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$7,100.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,580.00</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,400.00</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 );
             
@@ -63,141 +75,178 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Semester Course Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
 
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Instructor</label>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                                <li>John McDonald</li>
-                                <li>Laura Vincent</li>
-                            </ul>
-                        </div>
                     </div>
                 );
             case "semesterfees":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Semester Fees Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Detail Code</label>
-                                <li>GAGAA01</li>
-                                <li>YAWA22</li>
-                                <li>HELP00</li>
-                                <li>HALO13</li>
-                                <li>GAGO10</li>
-                                <li>FFAII01</li>
-                                <li>HSHS17</li>
-                                <li>WEEH08</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Description</label>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                                <li>Nemo enim ipsam voluptatem</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Charges</label>
-                                <li>$1,500.00</li>
-                                <li>$540.00</li>
-                                <li>$3,399.00</li>
-                                <li>$290.00</li>
-                                <li>$129.00</li>
-                                <li>$7,100.00</li>
-                                <li>$1,580.00</li>
-                                <li>$1,400.00</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Fees</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Charges</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,500.00</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$540.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$3,399.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$290.00</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$129.00</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$7,100.00</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,580.00</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>$1,400.00</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
             case "enrolled":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Student Enrollment Details</h1>
-                        <div className={styles.Table1}>
-                            <ul>
-                                <label>Student ID</label>
-                                <li>0000</li>
-                                <li>1111</li>
-                                <li>2222</li>
-                                <li>3333</li>
-                                <li>4444</li>
-                                <li>5555</li>
-                                <li>6666</li>
-                                <li>7777</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table2}>
-                            <ul>
-                                <label>Student Name</label>
-                                <li>Jake</li>
-                                <li>Vincent</li>
-                                <li>Martha</li>
-                                <li>Eric</li>
-                                <li>Derrick</li>
-                                <li>Lana</li>
-                                <li>Finn</li>
-                                <li>Melissa</li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.Table3}>
-                            <ul>
-                                <label>Status</label>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                                <li>Active</li>
-                            </ul>
-                        </div>
+                        <button className={styles.editButton}>Edit Fees</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>0000</td>
+                                    <td>Melissa</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>1111</td>
+                                    <td>Finn</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>2222</td>
+                                    <td>Lana</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>3333</td>
+                                    <td>Derrick</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>4444</td>
+                                    <td>Eric</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>5555</td>
+                                    <td>Martha</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>6666</td>
+                                    <td>Vincent</td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td>7777</td>
+                                    <td>Jake</td>
+                                    <td>Active</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
         }
