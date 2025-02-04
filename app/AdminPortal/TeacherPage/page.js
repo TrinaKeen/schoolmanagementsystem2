@@ -78,7 +78,9 @@ export default function teacherPage() {
 
         {/**content to display teachers */}
         <div className={styles.content}>
-          <h1>Teachers</h1>
+          <div className={styles.tabContent}>
+            <h1>Teachers</h1>
+          </div>
           {teacherList.length > 0 ? (
             <ul>
               {teacherList.map((teacher, index) => (
