@@ -21,7 +21,7 @@ const StudentCourses = () => {
     const [editCourseId, setEditCourseId] = useState(null);
     const [showAddCourseModal, setShowAddCourseModal] = useState(false);
     const [showModifyCourseModal, setShowModifyCourseModal] = useState(false);
-    
+
     const handleEditClick = () => {
         setIsEditing(!isEditing);
     };
@@ -57,6 +57,19 @@ const StudentCourses = () => {
         }
     };
 
+    const handleDeleteCourse = () => {
+        const checkedCourses = courses.filter(course => course.checked);
+        if (checkedCourses.length > 0) {
+            setDeletedCourses(checkedCourses);
+            setCourses(prevCourses => prevCourses.filter(course => !course.checked));
+        }
+    };
+
+    const handleUndoDelete = () => {
+        setCourses(prevCourses => [...prevCourses, ...deletedCourses]);
+        setDeletedCourses([]);
+    };
+
     return (
         <div className={styles.pageContainer}>
             <AdminHeader />
@@ -75,6 +88,10 @@ const StudentCourses = () => {
                                 <div className={styles.editActions}>
                                     <button onClick={() => setShowAddCourseModal(true)} className={styles.actionButton}>Add Course</button>
                                     <button onClick={handleModifyCourse} className={styles.actionButton}>Modify Course</button>
+                                    <button onClick={handleDeleteCourse} className={styles.actionButton}>Delete Course</button>
+                                    {deletedCourses.length > 0 && (
+                                        <button onClick={handleUndoDelete} className={styles.actionButton}>Undo Delete</button>
+                                    )}
                                 </div>
                                 <div className={styles.courseList}>
                                     {courses.map((course) => (
@@ -99,6 +116,7 @@ const StudentCourses = () => {
                     </main>
                 </div>
             </div>
+
             {showAddCourseModal && (
                 <div className={styles.modal}>
                     <div className={styles.modalContent}>
@@ -110,6 +128,7 @@ const StudentCourses = () => {
                     </div>
                 </div>
             )}
+
             {showModifyCourseModal && (
                 <div className={styles.modal}>
                     <div className={styles.modalContent}>
