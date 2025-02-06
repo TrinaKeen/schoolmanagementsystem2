@@ -1,24 +1,23 @@
-/* teacherPage.module.css */
-
-/* page layout */
+/* Page Layout */
 .container {
   display: flex;
   min-height: 100vh;
-  font-family: "Roboto", sans-serif; /* Modern font */
+  font-family: "Roboto", sans-serif;
   background-color: #f7f7f7;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  flex-wrap: wrap;
 }
 
-/* Sidebar styling */
+/* Sidebar Styling */
 .sidebar {
   width: 280px;
   background: white;
   color: black;
   padding: 30px;
   border-radius: 8px;
-  border-right: 2px solid #ccc; /* Border on the right side */
-  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  border-right: 2px solid #ccc;
+  flex-shrink: 0;
 }
+
 .sidebar h2 {
   font-size: 1.3rem;
   margin-bottom: 20px;
@@ -32,8 +31,6 @@
 }
 
 .sidebar li {
-  display: flex;
-  align-items: center; /* Align icon and text horizontally */
   padding: 15px;
   cursor: pointer;
   border-radius: 8px;
@@ -42,42 +39,161 @@
 }
 
 .sidebar li:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
-  transform: translateX(5px); /* Slight movement on hover */
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: translateX(5px);
 }
 
 .sidebar li.active {
-  background-color: #4caf50; /* Highlight active tab */
+  background-color: #4c8eaf;
   transform: scale(1.05);
 }
 
-.sidebar li:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
-  transform: translateX(5px); /* Slight movement on hover */
-}
-
-.sidebar li.active {
-  background-color: #4c8eaf; /* Highlight active tab */
-  transform: scale(1.05);
-}
-
-/* tab area styling */
+/* Tab Area Styling */
 .tabContent {
   background-color: white;
   color: black;
-  padding: 30px;
+  padding: 20px;
   border-radius: 8px;
   animation: fadeIn 0.5s ease-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tabContent h1 {
   font-size: 1.3rem;
-  margin-bottom: 20px;
   font-weight: bold;
-  text-align: center;
 }
 
-/* Content area styling */
+/* Add Button */
+.addButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.addButton:hover {
+  background: #45a049;
+}
+
+/* Teacher List */
+.teacherList {
+  margin-top: 10px;
+}
+
+.teacherList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.teacherList li:hover {
+  background: #f1f1f1;
+}
+
+/* Edit and Delete Buttons */
+.editButton,
+.deleteButton {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-left: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.editButton {
+  background: #ffcc00;
+  color: black;
+}
+
+.editButton:hover {
+  background: #e6b800;
+}
+
+.deleteButton {
+  background: #e74c3c;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #c0392b;
+}
+
+/* Modal Styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px; /* Adjusted for a compact form */
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal h2 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+/* Input Fields & Dropdowns */
+.modal input,
+.modal select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Modal Buttons */
+.modal button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submitButton {
+  background: #4caf50;
+  color: white;
+}
+
+.submitButton:hover {
+  background: #45a049;
+}
+
+.cancelButton {
+  background: #e74c3c;
+  color: white;
+}
+
+.cancelButton:hover {
+  background: #c0392b;
+}
+
+/* Content Area Styling */
 .content {
   flex-grow: 1;
   padding: 30px;
@@ -88,6 +204,7 @@
   min-width: 300px;
 }
 
+/* Fade-in Animation */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -108,7 +225,7 @@
 
   .sidebar {
     width: 100%;
-    margin-bottom: 20px; /* Space between sidebar and content */
+    margin-bottom: 20px;
     border-right: none;
   }
 
@@ -117,3 +234,63 @@
     width: 100%;
   }
 }
+
+
+/* Teacher List */
+.teacherList {
+  margin-top: 10px;
+}
+
+.teacherList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: white;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Align teacher names to the left */
+.teacherName {
+  flex-grow: 1; /* Ensures name takes available space */
+  text-align: left;
+}
+
+/* Move buttons to the right */
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Edit and Delete Buttons */
+.editButton,
+.deleteButton {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.editButton {
+  background: #ffcc00;
+  color: black;
+}
+
+.editButton:hover {
+  background: #e6b800;
+}
+
+.deleteButton {
+  background: #e74c3c;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #c0392b;
+}
+
