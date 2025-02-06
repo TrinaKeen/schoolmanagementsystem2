@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import WebsiteHeader from '../components/websiteheader'; 
-import WebsiteFooter from '../components/websitefooter';
-import styles from '../components/MainPage.module.css'; 
+import WebsiteFooter from '../components/websitefooter'; 
+import styles from '../components/Register.module.css'; 
+import Head from 'next/head';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -83,11 +84,15 @@ export default function Register() {
   };
 
   return (
-    
-<div style={{ backgroundColor: 'white', height: '100vh' }}>
-<WebsiteHeader/>
-<form className={styles.form} onSubmit={handleSubmit}>
-      <h1>Please fill up the form for Account Registration</h1>
+    <div >
+       {/* Header */}
+       <WebsiteHeader/>
+      <main className={styles.mainpage}>
+ 
+     
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <h1>School Account Registration Form</h1>
+      <h2>Please fill out the following information to create your account. All fields are required.</h2>
         {['fullname', 'email', 'country', 'username', 'password'].map((field) => (
           
           <div style={{ marginBottom: '15px' }} key={field}>
@@ -105,7 +110,7 @@ export default function Register() {
             />
           </div>
         ))}
-        <button className={styles.button1}  type="submit">
+        <button className={styles.button1} type="submit">
           Register
         </button>
         <button className={styles.button2} type="button"
@@ -116,9 +121,10 @@ export default function Register() {
       {success && <p style={{ color: 'green', marginTop: '20px'}}>{success}</p>}
       {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
       </form>
-</div>
-
-  
+    
+    </main>
+    <WebsiteFooter/>
+    </div>
     
   );
 }
