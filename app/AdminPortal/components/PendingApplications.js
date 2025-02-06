@@ -102,7 +102,7 @@ const [errorMessage, setErrorMessage] = useState(null);
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'white', height: '100vh' }}>
     
     <AdminHeader />
     <div className={styles.container}>
@@ -131,6 +131,9 @@ const [errorMessage, setErrorMessage] = useState(null);
                 <td>{application.applicationstatus}</td>
                 <td>
                   <button className="view-btn" onClick={() => handleViewDetails(application)}>View</button>
+                </td>
+                <td>
+               
                 </td>
               </tr>
             ))}
@@ -260,6 +263,7 @@ const [errorMessage, setErrorMessage] = useState(null);
               <button type="button" className="close-btn" onClick={() => setSelectedApplication(null)}>
                 Close
               </button>
+              
             </form>
           </div>
         </>
