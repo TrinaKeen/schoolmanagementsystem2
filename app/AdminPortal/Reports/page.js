@@ -76,8 +76,8 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Semester Course Details</h1>
                         <button className={styles.editButton}>Edit Courses</button>
-                        <div>
-                            <select>
+                        <div className={styles.dropdownContainer}>
+                            <select className={styles.dropdown}>
                                 <option value="0"> Select Course:</option>
                                 <option value="1"> Senior Highschool Grade 11</option>
                                 <option value="2"> Senior Highschool Grade 12</option>
@@ -145,8 +145,8 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Semester Fees Details</h1>
                         <button className={styles.editButton}>Edit Fees</button>
-                        <div>
-                            <select>
+                        <div className={styles.dropdownContainer}>
+                            <select className={styles.dropdown}>
                                 <option value="0"> Select Course:</option>
                                 <option value="1"> Senior Highschool Grade 11</option>
                                 <option value="2"> Senior Highschool Grade 12</option>
@@ -213,8 +213,8 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Student Enrollment Details</h1>
                         <button className={styles.editButton}>Edit Fees</button>
-                        <div>
-                            <select>
+                        <div className={styles.dropdownContainer}>
+                            <select className={styles.dropdown}>
                                 <option value="0"> Select Status:</option>
                                 <option value="1"> Active</option>
                                 <option value="2"> Inactive</option>
