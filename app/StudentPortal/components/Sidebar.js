@@ -48,7 +48,7 @@ export default function Sidebar({ studentNumber }) {
         <Link href="/StudentPortal/application-status">
           Track My Application
         </Link>
-        <Link href="/StudentPortal/payment">
+        <Link href="/StudentPortal/student-fees">
           Fees Payment
         </Link>
         <Link href="/StudentPortal/account-settings">
