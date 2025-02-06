@@ -89,6 +89,22 @@
     min-width: 300px; 
 }
 
+.Table1 {
+  width: 500px;
+  padding: 30px;
+  border-right: 2px;
+  text-align: center;
+  border: #4c8eaf solid;
+  border-radius: 4px;
+}
+
+.editButton {
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #4c8eaf;
+  margin-bottom: 10px;
+  align-items: center;
+}
 @keyframes fadeIn {
     0% {
       opacity: 0;

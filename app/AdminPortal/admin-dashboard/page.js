@@ -119,7 +119,7 @@ export default function Home() {
             />
             <h3>Student Management</h3>
             <p>Manage student records and progress.</p>
-            <Link href="#">Go to Student Management</Link>
+            <Link href="../AdminPortal/StudentPage">Go to Student Management</Link>
           </div>
 
           <div className={styles.card}>

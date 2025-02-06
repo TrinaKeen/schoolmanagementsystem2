@@ -14,7 +14,59 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 1</p>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 );
             
@@ -22,21 +74,177 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 2</p>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 );
             case "science-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 3</p>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
             case "tech-bachelor":
                 return(
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
-                        <p>Test 4</p>
+                        <button className={styles.editButton}>Edit Courses</button>
+                        <table className={styles.Table1}>
+                            <thead>
+                                <tr>
+                                    <th>Detail Code</th>
+                                    <th>Description</th>
+                                    <th>Instructor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td>GAGAA01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>YAWA22</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HELP00</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HALO13</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>GAGO10</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>FFAII01</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                                <tr>
+                                    <td>HSHS17</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>John McDonald</td>
+                                </tr>
+                                <tr>
+                                    <td>WEEH08</td>
+                                    <td>Nemo enim ipsam voluptatem</td>
+                                    <td>Laura Vincent</td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
                     </div>
                     );
         }

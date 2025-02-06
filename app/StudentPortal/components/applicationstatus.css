@@ -1,0 +1,86 @@
+/* applicationstatus.css */
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-family: Arial, sans-serif;
+  }
+  
+  .form-container h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .details-table th,
+  .details-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .details-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .details-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .details-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .details-table td {
+    font-size: 14px;
+    color: #444;
+  }
+  
+  .student-photo {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    object-fit: cover; /* Ensures the image scales nicely */
+  }
+  
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+ 
+  
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 15px;
+    }
+  
+    .details-table th,
+    .details-table td {
+      font-size: 12px;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  }
+  
