@@ -18,7 +18,10 @@ export default function AdminHeader() {
     <div className={styles.container}>
       <Head>
         <title>School Management System</title>
-        <meta name="description" content="School Management System for efficient management" />
+        <meta
+          name="description"
+          content="School Management System for efficient management"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -30,6 +33,7 @@ export default function AdminHeader() {
 
         <nav className={styles.navbar}>
           <Link href="../AdminPortal/admin-dashboard"><FaHome size={35} /></Link>
+
           <Link href="#"><FaBell size={35} /></Link>
           <Link href="#"><FaEnvelope size={35} /></Link>
 
@@ -43,7 +47,9 @@ export default function AdminHeader() {
             {isDropdownOpen && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
-                <Link href="#">Account Setting</Link>
+                <Link href="../AdminPortal/admin-settings">
+                  Account Setting
+                </Link>
                 <Link href="#">Help Centre</Link>
               </div>
             )}

@@ -1,0 +1,182 @@
+/* Page Layout */
+.container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7f7f7;
+    flex-wrap: wrap;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 280px;
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    border-right: 2px solid #ccc;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.sidebar li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar li.active {
+    background-color: #4c8eaf;
+    transform: scale(1.05);
+}
+
+/* Tab Area Styling */
+.tabContent {
+    background-color: white;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.tabContent h1 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Content Area Styling */
+.content {
+    flex-grow: 1;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    margin-left: 30px;
+    transition: all 0.3s ease;
+    min-width: 300px;
+}
+
+/* Dropdown and Button Container */
+.dropdownContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dropdown {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.editButton {
+    padding: 10px 15px;
+    background-color: #4c8eaf;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.editButton:hover {
+    background-color: #357aab;
+    transform: scale(1.05);
+}
+
+/* Student Fees Table */
+.semester {
+    margin-top: 20px;
+}
+
+.semester h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center;
+}
+
+.feesTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.feesTable th {
+    background-color: #4c8eaf;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.feesTable td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.feesTable tr:hover {
+    background-color: #f1f1f1;
+}
+
+.totalCharges {
+    margin-top: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: right;
+    color: #333;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        border-right: none;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+}

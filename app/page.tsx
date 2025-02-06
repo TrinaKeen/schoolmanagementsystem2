@@ -24,8 +24,8 @@ export default function Home() {
         </div>
         <nav className={styles.navbar}>
           <Link href="/">HOME</Link>
-          <Link href="/">ADMISSION</Link>
-          <Link href="/">ABOUT US</Link>
+          <Link href="/SchoolWebsite/Admission">ADMISSION</Link>
+          <Link href="/SchoolWebsite/AboutUs">ABOUT US</Link>
           <Link href="/SchoolWebsite/StudentRegistration">REGISTRATION</Link>
           <div className={styles.loginDropdown}>
             <button className={styles.dropdownButton}>LOG IN</button>
