@@ -90,21 +90,51 @@
 }
 
 .Table1 {
-  width: 500px;
+  /* width: 500px;
   padding: 30px;
   border-right: 2px;
   text-align: center;
   border: #4c8eaf solid;
-  border-radius: 4px;
+  border-radius: 4px; */
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.Table1 th {
+  background-color: #4c8eaf;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.Table1 td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+.Table1 tr:hover {
+  background-color: #f1f1f1;
 }
 
 .editButton {
-  border-radius: 4px;
-  padding: 5px;
-  background-color: #4c8eaf;
-  margin-bottom: 10px;
-  align-items: center;
+  border-radius: 5px;
+    padding: 10px 15px;
+    background-color: #4c8eaf;
+    margin-bottom: 10px;
+    align-items: center;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
+
+.editButton:hover {
+  background-color: #357aab;
+  transform: scale(1.05);
+}
+
 @keyframes fadeIn {
     0% {
       opacity: 0;
