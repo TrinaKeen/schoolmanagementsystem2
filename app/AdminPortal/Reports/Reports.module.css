@@ -150,7 +150,11 @@
   transform: scale(1.05);
 }
 
-
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
 @keyframes fadeIn {
     0% {
