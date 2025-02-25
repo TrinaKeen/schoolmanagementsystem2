@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import Banner from '../components/Banner';
-import Footer from '../components/Footer';
+import Banner from '../../SchoolWebsite/components/Banner';
+import Footer from '../../SchoolWebsite/components/Footer';
 import styles from './AboutUs.module.css';
 
 const About = () => {

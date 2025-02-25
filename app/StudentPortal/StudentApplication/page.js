@@ -5,8 +5,44 @@ import Sidebar from '../components/Sidebar';
 import styles1 from '../components/Sidebar.module.css';
 
 export default function CreateStudent() {
-    const [studentData, setStudentData] = useState(null); // Default to null instead of 'Unknown'
-  
+    const [studentData, setStudentData] = useState(null); 
+    const [formData, setFormData] = useState({
+      studentnumber: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      dob: '',
+      gender: '',
+      age: '',
+      nationality: '',
+      placeofbirth: '',
+      email: '',
+      phonenumber: '',
+      homeaddress: '',
+      emergencycontactname: '',
+      emergencycontactphonenumber: '',
+      emergencycontactrelationship: '',
+      previousschools: '',
+      yearofgraduation: '',
+      gpa: '',
+      extracurricularactivities: '',
+      specialachievements: '',
+      desiredprogram: '',
+      modeofstudy: '',
+      startdate: '',
+      preferredcampus: '',
+      identityproof: '',
+      transcripts: '',
+      letterofrecommendation: '',
+      resume: '',
+      photo: '',
+      termsandconditions: false,
+      dataprivacyconsent: false,
+      applicationstatus: 'Pending',
+    });
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchStudentData();
@@ -16,6 +52,8 @@ export default function CreateStudent() {
         try {
           const token = localStorage.getItem('token');
           if (!token) throw new Error('Token not found');
+    
+          console.log('Fetching student data with token:', token); // Log the token for debugging
     
           const res = await fetch('/api/students/student-data', {
             method: 'GET',
@@ -30,90 +68,25 @@ export default function CreateStudent() {
           }
     
           const data = await res.json();
-          setStudentData(data); // Set the student data (studentNumber & lastLogin)
+          setStudentData(data);
         } catch (err) {
-          console.error('Error fetching student data:', err.message);
-          setError(err.message);
+          console.error('Error fetching student data:', err); // Log the error
+          setError(err.message || 'An unexpected error occurred');
         } finally {
           setLoading(false);
         }
       };
-    
- 
 
-    const [formData, setFormData] = useState({
-      studentnumber: '',
-      firstname: '',
-        middlename: '',
-        lastname: '',
-        dob: '',
-        gender: '',
-        age: '',
-        nationality: '',
-        placeofbirth: '',
-        email: '',
-        phonenumber: '',
-        homeaddress: '',
-        emergencycontactname: '',
-        emergencycontactphonenumber: '',
-        emergencycontactrelationship: '',
-        previousschools: '',
-        yearofgraduation: '',
-        gpa: '',
-        extracurricularactivities: '',
-        specialachievements: '',
-        desiredprogram: '',
-        modeofstudy: '',
-        startdate: '',
-        preferredcampus: '',
-        identityproof: '',
-        transcripts: '',
-        letterofrecommendation: '',
-        resume: '',
-        photo: '',
-        termsandconditions: false,
-        dataprivacyconsent: false,
-        applicationstatus: 'Pending',
-     });
-
-
-
-     const [loading, setLoading] = useState(true);
-
-     useEffect(() => {
-      // Fetch the student number from localStorage
-      const storedStudentNumber = localStorage.getItem('studentNumber');
-  
-      if (storedStudentNumber) {
-        setFormData((prev) => ({
-          ...prev,
-          studentnumber: storedStudentNumber, // Reflect the field name change here
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          studentnumber: 'Unavailable', // Handle when no student number is available
-        }));
-      }
-  
-      setLoading(false); // Set loading to false after the check
-    }, []);
-  
-    // Handle form field changes
     const handleChange = (e) => {
       const { name, value } = e.target;
       setFormData((prev) => ({
         ...prev,
-        [name]: value, // Dynamically update the correct field in formData
+        [name]: value,
       }));
     };
 
-
-   
-
     const handleSubmit = async (e) => {
       e.preventDefault();
-  
       try {
           const response = await fetch('/api/auth/student-registration', {
               method: 'POST',
@@ -122,12 +95,10 @@ export default function CreateStudent() {
               },
               body: JSON.stringify(formData),
           });
-  
+
           if (response.ok) {
-              // If successful, show a success alert for admission
               alert('Admission application submitted successfully!');
           } else {
-              // If there's an error, check the response for specific error details
               const errorData = await response.json();
               alert(errorData.error || 'Failed to submit admission application');
           }
@@ -135,7 +106,7 @@ export default function CreateStudent() {
           console.error('Error submitting admission application:', error);
           alert('An unexpected error occurred. Please try again later.');
       }
-  };
+    };
   
 
     return (
@@ -152,9 +123,10 @@ export default function CreateStudent() {
       <h1>Student Registration for Admission</h1>
         <form onSubmit={handleSubmit}>
         <label>
-                Student Number:
-                <input type="text" name="studentnumber" value={formData.studentnumber} onChange={handleChange} readOnly />
-            </label>
+    Student Number:
+    <input type="text" name="studentnumber" value={formData.studentnumber} onChange={handleChange} readOnly />
+</label>
+
            
             <label>
                 First Name:

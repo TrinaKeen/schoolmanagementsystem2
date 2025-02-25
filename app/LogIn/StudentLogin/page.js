@@ -23,7 +23,7 @@ export default function StudentLogin() {
     const loginTimestamp = new Date().toISOString(); // Get the current timestamp
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/students/studentlogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

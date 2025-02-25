@@ -18,6 +18,8 @@ export default function StudentDashboard() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Token not found');
 
+      console.log('Fetching student data with token:', token); // Log the token for debugging
+
       const res = await fetch('/api/students/student-data', {
         method: 'GET',
         headers: {
@@ -31,10 +33,10 @@ export default function StudentDashboard() {
       }
 
       const data = await res.json();
-      setStudentData(data); // Set the student data (studentNumber & lastLogin)
+      setStudentData(data);
     } catch (err) {
-      console.error('Error fetching student data:', err.message);
-      setError(err.message);
+      console.error('Error fetching student data:', err); // Log the error
+      setError(err.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
