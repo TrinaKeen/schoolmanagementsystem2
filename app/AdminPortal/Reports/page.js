@@ -4,9 +4,120 @@ import { useState } from "react";
 import AdminHeader from "../components/page";
 import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./Reports.module.css";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+// Initialize fonts
+pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
+
+// Data configuration
+const reportData = {
+  studentfees: {
+    title: "Student Fees Details",
+    headers: ["Detail Code", "Description", "Charges"],
+    rows: [
+      ["GAGAA01", "Nemo enim ipsam voluptatem", "$1,500.00"],
+      ["YAWA22", "Nemo enim ipsam voluptatem", "$540.00"],
+      ["HELP00", "Nemo enim ipsam voluptatem", "$3,399.00"],
+      ["HALO13", "Nemo enim ipsam voluptatem", "$290.00"],
+      ["GAGO10", "Nemo enim ipsam voluptatem", "$129.00"],
+      ["FFAII01", "Nemo enim ipsam voluptatem", "$7,100.00"],
+      ["HSHS17", "Nemo enim ipsam voluptatem", "$1,580.00"],
+      ["WEEH08", "Nemo enim ipsam voluptatem", "$1,400.00"]
+    ]
+  },
+  courses: {
+    title: "Semester Course Details",
+    headers: ["Detail Code", "Description", "Instructor"],
+    rows: [
+      ["GAGAA01", "Nemo enim ipsam voluptatem", "John McDonald"],
+      ["YAWA22", "Nemo enim ipsam voluptatem", "Laura Vincent"],
+      ["HELP00", "Nemo enim ipsam voluptatem", "Laura Vincent"],
+      ["HALO13", "Nemo enim ipsam voluptatem", "Laura Vincent"],
+      ["GAGO10", "Nemo enim ipsam voluptatem", "John McDonald"],
+      ["FFAII01", "Nemo enim ipsam voluptatem", "Laura Vincent"],
+      ["HSHS17", "Nemo enim ipsam voluptatem", "John McDonald"],
+      ["WEEH08", "Nemo enim ipsam voluptatem", "Laura Vincent"]
+    ]
+  },
+  semesterfees: {
+    title: "Semester Fees Details",
+    headers: ["Detail Code", "Description", "Charges"],
+    rows: [
+      ["GAGAA01", "Nemo enim ipsam voluptatem", "$1,500.00"],
+      ["YAWA22", "Nemo enim ipsam voluptatem", "$540.00"],
+      ["HELP00", "Nemo enim ipsam voluptatem", "$3,399.00"],
+      ["HALO13", "Nemo enim ipsam voluptatem", "$290.00"],
+      ["GAGO10", "Nemo enim ipsam voluptatem", "$129.00"],
+      ["FFAII01", "Nemo enim ipsam voluptatem", "$7,100.00"],
+      ["HSHS17", "Nemo enim ipsam voluptatem", "$1,580.00"],
+      ["WEEH08", "Nemo enim ipsam voluptatem", "$1,400.00"]
+    ]
+  },
+  enrolled: {
+    title: "Student Enrollment Details",
+    headers: ["Student ID", "Student Name", "Status"],
+    rows: [
+      ["0000", "Melissa", "Active"],
+      ["1111", "Finn", "Active"],
+      ["2222", "Lana", "Active"],
+      ["3333", "Derrick", "Active"],
+      ["4444", "Eric", "Active"],
+      ["5555", "Martha", "Active"],
+      ["6666", "Vincent", "Active"],
+      ["7777", "Jake", "Active"]
+    ]
+  }
+};
+
 
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("studentfees");
+    const handleExportPDF = () => {
+        const { title, headers, rows } = reportData[activeTab];
+        
+        const documentDefinition = {
+          content: [
+            { text: title, style: "header" },
+            {
+              table: {
+                headerRows: 1,
+                widths: Array(headers.length).fill("*"),
+                body: [
+                  headers.map(header => ({ text: header, style: "tableHeader" })),
+                  ...rows
+                ]
+              }
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              alignment: "center",
+              margin: [0, 0, 0, 10]
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 12,
+              fillColor: "#f5f5f5"
+            }
+          },
+          defaultStyle: {
+            fontSize: 10,
+            font: "Roboto"
+          }
+        };
+    
+        pdfMake.createPdf(documentDefinition).download(`${activeTab}-report.pdf`);
+      };
+    
+      // Add PDF button to all tabs
+      const renderExportButton = () => (
+        <button className={styles.editButton} onClick={handleExportPDF}>
+          Export PDF
+        </button>
+    );
 
     /*renderTab reference in admin-settings*/
     const renderTab = () => {
@@ -15,7 +126,10 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Student Fees Details</h1>
+                        <div className={styles.buttonGroup}>
                         <button className={styles.editButton}>Edit Fees</button>
+                        {renderExportButton()}
+                        </div>
                         <table className={styles.Table1}>
                             <thead>
                                 <tr>
@@ -75,7 +189,10 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Semester Course Details</h1>
-                        <button className={styles.editButton}>Edit Courses</button>
+                        <div className={styles.buttonGroup}>
+                        <button className={styles.editButton}>Edit Fees</button>
+                        {renderExportButton()}
+                        </div>
                         <div className={styles.dropdownContainer}>
                             <select className={styles.dropdown}>
                                 <option value="0"> Select Course:</option>
@@ -144,7 +261,10 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Semester Fees Details</h1>
+                        <div className={styles.buttonGroup}>
                         <button className={styles.editButton}>Edit Fees</button>
+                        {renderExportButton()}
+                        </div>
                         <div className={styles.dropdownContainer}>
                             <select className={styles.dropdown}>
                                 <option value="0"> Select Course:</option>
@@ -212,7 +332,10 @@ export default function SchoolDepartment() {
                 return(
                     <div className={styles.tabContent}>
                         <h1>Student Enrollment Details</h1>
+                        <div className={styles.buttonGroup}>
                         <button className={styles.editButton}>Edit Fees</button>
+                        {renderExportButton()}
+                        </div>
                         <div className={styles.dropdownContainer}>
                             <select className={styles.dropdown}>
                                 <option value="0"> Select Status:</option>

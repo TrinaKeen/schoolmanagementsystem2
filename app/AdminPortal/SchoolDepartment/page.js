@@ -4,9 +4,83 @@ import { useState } from "react";
 import AdminHeader from "../components/page";
 import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./StudentDepartment.module.css";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+// Initialize fonts
+pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
+
+const courses = [
+    { code: 'GAGAA01', description: 'Nemo enim ipsam voluptatem', instructor: 'John McDonald' },
+    { code: 'YAWA22', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
+    { code: 'HELP00', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
+    { code: 'HALO13', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
+    { code: 'GAGO10', description: 'Nemo enim ipsam voluptatem', instructor: 'John McDonald' },
+    { code: 'FFAII01', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
+    { code: 'HSHS17', description: 'Nemo enim ipsam voluptatem', instructor: 'John McDonald' },
+    { code: 'WEEH08', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
+];
 
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("grade11");
+
+    const handleExportPDF = () => {
+        const documentDefinition = {
+            content: [
+                {
+                  text: `Department Details - ${activeTab.toUpperCase()}`,
+                  style: 'header',
+                  margin: [0, 0, 0, 10]
+                },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['*', '*', '*'],
+                    body: [
+                      [
+                        { text: 'Detail Code', style: 'tableHeader' }, 
+                        { text: 'Description', style: 'tableHeader' }, 
+                        { text: 'Instructor', style: 'tableHeader' }
+                      ],
+                      ...courses.map(course => [
+                        course.code, 
+                        course.description, 
+                        course.instructor
+                      ])
+                    ]
+                  }
+                }
+              ],
+              styles: {
+                header: {
+                  fontSize: 18,
+                  bold: true,
+                  alignment: 'center'
+                },
+                tableHeader: {
+                  bold: true,
+                  fontSize: 12,
+                  color: 'black',
+                  fillColor: '#f5f5f5'
+                }
+              },
+              // Add fonts definition
+              fonts: {
+                Roboto: {
+                  normal: 'Roboto-Regular.ttf',
+                  bold: 'Roboto-Medium.ttf',
+                  italics: 'Roboto-Italic.ttf',
+                  bolditalics: 'Roboto-MediumItalic.ttf'
+                }
+              },
+              defaultStyle: {
+                font: 'Roboto', // Changed from Helvetica
+                fontSize: 10
+              }
+            };
+          
+            pdfMake.createPdf(documentDefinition).download(`${activeTab}-courses.pdf`);
+          };
 
     const renderTab = () => {
         switch (activeTab) {
@@ -15,6 +89,12 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
                         <button className={styles.editButton}>Edit Courses</button>
+                        <button 
+                            className={styles.editButton}
+                            onClick={handleExportPDF}
+                            >
+                            Export PDF
+                        </button>
                         <table className={styles.Table1}>
                             <thead>
                                 <tr>
@@ -75,6 +155,12 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
                         <button className={styles.editButton}>Edit Courses</button>
+                        <button 
+                            className={styles.editButton}
+                            onClick={handleExportPDF}
+                            >
+                            Export PDF
+                        </button>
                         <table className={styles.Table1}>
                             <thead>
                                 <tr>
@@ -134,6 +220,12 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
                         <button className={styles.editButton}>Edit Courses</button>
+                        <button 
+                            className={styles.editButton}
+                            onClick={handleExportPDF}
+                            >
+                            Export PDF
+                        </button>
                         <table className={styles.Table1}>
                             <thead>
                                 <tr>
@@ -193,6 +285,12 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Department Details</h1>
                         <button className={styles.editButton}>Edit Courses</button>
+                        <button 
+                            className={styles.editButton}
+                            onClick={handleExportPDF}
+                            >
+                            Export PDF
+                        </button>
                         <table className={styles.Table1}>
                             <thead>
                                 <tr>
