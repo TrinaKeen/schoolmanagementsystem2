@@ -1,8 +1,11 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Pages/api/admin/update-application.js
 import { neon } from '@neondatabase/serverless';
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 import { neon } from "@neondatabase/serverless";
@@ -36,6 +39,7 @@ export default async function handler(req, res) {
         reviewercomments,
       } = req.body; // Destructure the necessary fields from the request body
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
 
 
@@ -59,6 +63,11 @@ JOIN
 JOIN 
   instructors ON courses.instructor_id = instructors.instructor_id;
 =======
+=======
+
+      const { id } = req.query; // Get the application ID from the URL query parameters
+
+>>>>>>> Stashed changes
 =======
 
       const { id } = req.query; // Get the application ID from the URL query parameters
@@ -105,6 +114,9 @@ JOIN
   }
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
