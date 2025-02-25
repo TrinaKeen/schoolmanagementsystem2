@@ -1,62 +1,58 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
 import Image from "next/image"; // For displaying the logo
 import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
 import logo from "../school-logo.png"; // Ensure this path is correct
 
-export default function StudentLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+const StudentLogin = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Password visibility toggle
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    const normalizedUsername = username.trim().toLowerCase();
-    const trimmedPassword = password.trim();
-    const loginTimestamp = new Date().toISOString(); // Get the current timestamp
-
+    setError(""); // Reset error state
+  
     try {
-      const res = await fetch('/api/students/studentlogin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: normalizedUsername,
-          password: trimmedPassword,
-          loginTimestamp, // Send the timestamp
-        }),
+      const response = await fetch("/api/studentlogin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        // Store student number and token
-        localStorage.setItem('studentNumber', data.studentNumber);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('loginTimestamp', loginTimestamp); // Save timestamp locally if needed
-
-        // Redirect to dashboard
-        router.push('/StudentPortal/student-dashboard');
+  
+      // Log the full response data for debugging
+      const data = await response.json();
+      console.log("API Response Data:", data); // Log the raw response
+  
+      // Check if the response status is okay
+      if (response.ok) {
+        alert("Logged in successfully!");
+        // Redirect to student's dashboard
+        window.location.href = "../HomePage/student-dashboard"; // Redirect here
       } else {
-        setError(data.error || 'An unexpected error occurred');
+        const errorMessage = data?.message || "Invalid credentials. Please try again.";
+        console.error("API Error:", errorMessage); // Log the error message
+        
+        // If no message is present in the response, log the entire raw response for better debugging
+        if (!data?.message) {
+          console.error("Raw response from API:", data);
+        }
+        
+        setError(errorMessage); // Show the error message to the user
       }
     } catch (error) {
-      setError('Network error, please try again later');
-    } finally {
-      setLoading(false);
+      // Log any unexpected errors that occur during the fetch
+      console.error("Unexpected error during login:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
+  
+  
 
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
+    setIsPasswordVisible(!isPasswordVisible); // Toggle password visibility
   };
 
   return (
@@ -88,7 +84,7 @@ export default function StudentLogin() {
           </label>
           <div className={styles.passwordWrapper}>
             <input
-              type={isPasswordVisible ? "text" : "password"}
+              type={isPasswordVisible ? "text" : "password"} // Toggle password visibility
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -113,4 +109,6 @@ export default function StudentLogin() {
       </form>
     </div>
   );
-}
+};
+
+export default StudentLogin;

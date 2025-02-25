@@ -1,0 +1,169 @@
+/* SchoolDepartment.module.css */
+
+/* page layout */
+.container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif; /* Modern font */
+    background-color: #f7f7f7;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 280px;
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    border-right: 2px solid #ccc; /* Border on the right side */
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+.sidebar h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center; /* Align icon and text horizontally */
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.sidebar li:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
+    transform: translateX(5px); /* Slight movement on hover */
+}
+  
+.sidebar li.active {
+    background-color: #4caf50; /* Highlight active tab */
+    transform: scale(1.05);
+}
+
+.sidebar li:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
+  transform: translateX(5px); /* Slight movement on hover */
+}
+
+.sidebar li.active {
+  background-color: #4c8eaf; /* Highlight active tab */
+  transform: scale(1.05);
+}
+
+/* tab area styling */
+.tabContent {
+    background-color: white;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.tabContent h1 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Content area styling */
+.content {
+    flex-grow: 1;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    margin-left: 30px;
+    transition: all 0.3s ease;
+    min-width: 300px; 
+}
+
+.Table1 {
+  /* width: 500px;
+  padding: 30px;
+  border-right: 2px;
+  text-align: center;
+  border: #4c8eaf solid;
+  border-radius: 4px; */
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.Table1 th {
+  background-color: #4c8eaf;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.Table1 td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+.Table1 tr:hover {
+  background-color: #f1f1f1;
+}
+
+.editButton {
+  border-radius: 5px;
+    padding: 10px 15px;
+    background-color: #4c8eaf;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    align-items: center;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: #357aab;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .sidebar {
+      width: 100%;
+      margin-bottom: 20px; /* Space between sidebar and content */
+      border-right: none;
+    }
+  
+    .content {
+      margin-left: 0;
+      width: 100%;
+    }
+}
+  
