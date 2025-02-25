@@ -1,19 +1,27 @@
 "use client";
 
+<<<<<<< Updated upstream
 import { useState } from 'react';
 import Image from 'next/image'; // Ensure to import Image from next/image
 import styles from '../LoginPage.module.css'; // Assuming you use a CSS module for styling
 import logo from '../school-logo.png'; // Ensure this path is correct
+=======
+import { useState } from "react";
+import Image from "next/image"; // Ensure to import Image from next/image
+import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
+import logo from "../school-logo.png"; // Ensure this path is correct
+>>>>>>> Stashed changes
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility toggle
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+<<<<<<< Updated upstream
     // Example authentication logic
     if (username === 'admin' && password === 'password123') {
       alert('Logged in as Admin!');
@@ -21,6 +29,27 @@ const AdminLogin = () => {
       window.location.href = '../HomePage/admin-dashboard'; // Uncomment if needed
     } else {
       setError('Invalid credentials. Please try again.');
+=======
+    try {
+      const response = await fetch("/api/admin/adminLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        // Redirect to Admin Dashboard
+        window.location.href = "../../AdminPortal/admin-dashboard";
+      } else {
+        setError(data.error || "Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+>>>>>>> Stashed changes
     }
   };
 
@@ -39,7 +68,9 @@ const AdminLogin = () => {
 
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.inputGroup}>
-          <label htmlFor="username" className={styles.inputLabel}>Username</label>
+          <label htmlFor="username" className={styles.inputLabel}>
+            Username
+          </label>
           <input
             type="text"
             id="username"
@@ -51,7 +82,9 @@ const AdminLogin = () => {
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor="password" className={styles.inputLabel}>Password</label>
+          <label htmlFor="password" className={styles.inputLabel}>
+            Password
+          </label>
           <div className={styles.passwordWrapper}>
             <input
               type={isPasswordVisible ? "text" : "password"} // Toggle between password and text
@@ -66,14 +99,16 @@ const AdminLogin = () => {
               className={styles.showButton}
               onClick={togglePasswordVisibility}
             >
-              {isPasswordVisible ? 'Hide' : 'Show'}
+              {isPasswordVisible ? "Hide" : "Show"}
             </button>
           </div>
         </div>
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>Log In</button>
+        <button type="submit" className={styles.submitButton}>
+          Log In
+        </button>
       </form>
     </div>
   );
