@@ -16,8 +16,12 @@ const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility toggle
 
+  const handleSubmit = async (e) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,6 +75,9 @@ const AdminLogin = () => {
           <label htmlFor="username" className={styles.inputLabel}>
             Username
           </label>
+          <label htmlFor="username" className={styles.inputLabel}>
+            Username
+          </label>
           <input
             type="text"
             id="username"
@@ -82,6 +89,9 @@ const AdminLogin = () => {
         </div>
 
         <div className={styles.inputGroup}>
+          <label htmlFor="password" className={styles.inputLabel}>
+            Password
+          </label>
           <label htmlFor="password" className={styles.inputLabel}>
             Password
           </label>
@@ -100,12 +110,16 @@ const AdminLogin = () => {
               onClick={togglePasswordVisibility}
             >
               {isPasswordVisible ? "Hide" : "Show"}
+              {isPasswordVisible ? "Hide" : "Show"}
             </button>
           </div>
         </div>
 
         {error && <p className={styles.error}>{error}</p>}
 
+        <button type="submit" className={styles.submitButton}>
+          Log In
+        </button>
         <button type="submit" className={styles.submitButton}>
           Log In
         </button>

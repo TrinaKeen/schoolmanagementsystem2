@@ -1,7 +1,10 @@
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Pages/api/admin/update-application.js
 import { neon } from '@neondatabase/serverless';
 
 =======
+=======
+>>>>>>> Stashed changes
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL);
@@ -32,6 +35,7 @@ export default async function handler(req, res) {
         rejectionreason,
         reviewercomments,
       } = req.body; // Destructure the necessary fields from the request body
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
 
 
@@ -55,6 +59,11 @@ JOIN
 JOIN 
   instructors ON courses.instructor_id = instructors.instructor_id;
 =======
+=======
+
+      const { id } = req.query; // Get the application ID from the URL query parameters
+
+>>>>>>> Stashed changes
       if (!id) {
         return res.status(400).json({ error: "Application ID is required" });
       }
@@ -95,4 +104,7 @@ JOIN
     res.status(405).json({ error: "Method Not Allowed" });
   }
 }
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
+=======
+>>>>>>> Stashed changes
