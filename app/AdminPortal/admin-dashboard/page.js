@@ -175,7 +175,7 @@ export default function Home() {
             />
             <h3>Student Fees</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="#">Go to Tuition Fees Management </Link>
+            <Link href="../AdminPortal/StudentFees">Go to Tuition Fees Management </Link>
           </div>
 
           <div className={styles.card}>
