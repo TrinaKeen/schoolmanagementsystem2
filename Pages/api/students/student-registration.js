@@ -1,12 +1,11 @@
-import { query } from '/Database/db.js';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { neon } from '@neondatabase/serverless';
 
-dotenv.config();
+const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const {
+      studentnumber,
       firstname,
       middlename,
       lastname,
@@ -24,100 +23,97 @@ export default async function handler(req, res) {
       previousschools,
       yearofgraduation,
       gpa,
-      extracurricularactivities,
-      specialachievements,
-      desiredprogram,
-      modeofstudy,
-      startdate,
-      preferredcampus,
+      program_id, // Ensure this is passed from the frontend
+      schoolterm, // Ensure this is passed from the frontend
+      schoolcampus, // Ensure this is passed from the frontend
       identityproof,
       transcripts,
       letterofrecommendation,
-      resume,
+      birthcertificate,
       photo,
+      form138, // Adjusted to match your frontend input
+      certificateofgoodmoral,
+      certificateoflowincome,
       termsandconditions,
       dataprivacyconsent,
-      studentnumber,
     } = req.body;
 
-    // Validate required fields
-    if (!studentnumber || !firstname || !lastname || !email || !termsandconditions) {
-      console.error('Validation Error: Missing required fields!', req.body);
-      return res.status(400).json({ message: 'Missing required fields!' });
-    }
-
-    // Check if the student already exists
-    const checkStudentQuery = 'SELECT * FROM students WHERE email = $1';
-    const existingStudent = await query(checkStudentQuery, [email]);
-
-    if (existingStudent.length > 0) {
-      return res.status(400).json({ message: 'Student with this email already exists.' });
-    }
-
-    // Insert the new student into the database
-    const insertQuery = `
-      INSERT INTO students (
-        firstname, middlename, lastname, dob, gender, age, nationality, placeofbirth, 
-        email, phonenumber, homeaddress, emergencycontactname, emergencycontactphonenumber, 
-        emergencycontactrelationship, previousschools, yearofgraduation, gpa, extracurricularactivities, 
-        specialachievements, desiredprogram, modeofstudy, startdate, preferredcampus, identityproof, 
-        transcripts, letterofrecommendation, resume, photo, termsandconditions, dataprivacyconsent, studentnumber
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, 
-        $23, $24, $25, $26, $27, $28, $29, $30
-      )`;
-    
-    const values = [
-      firstname,
-      middlename,
-      lastname,
-      dob,
-      gender,
-      age,
-      nationality,
-      placeofbirth,
-      email,
-      phonenumber,
-      homeaddress,
-      emergencycontactname,
-      emergencycontactphonenumber,
-      emergencycontactrelationship,
-      previousschools,
-      yearofgraduation,
-      gpa,
-      extracurricularactivities,
-      specialachievements,
-      desiredprogram,
-      modeofstudy,
-      startdate,
-      preferredcampus,
-      identityproof,
-      transcripts,
-      letterofrecommendation,
-      resume,
-      photo,
-      termsandconditions,
-      dataprivacyconsent,
-      studentnumber,
-    ];
-
     try {
-      const result = await query(insertQuery, values);
-      
-      // Generate a JWT token
-      const token = jwt.sign(
-        { email, studentnumber },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-      );
+      // Insert the student data into the database
+      await sql`
+        INSERT INTO students (
+          student_number,
+          first_name,
+          middle_name,
+          last_name,
+          dob,
+          gender,
+          age,
+          nationality,
+          place_of_birth,
+          email,
+          phone_number,
+          home_address,
+          emergency_contact_name,
+          emergency_contact_phone,
+          emergency_contact_relationship,
+          previous_schools,
+          year_of_graduation,
+          gpa,
+          program_id,
+          school_term,
+          school_campus,
+          identity_proof,
+          transcripts,
+          letter_of_recommendation,
+          birth_certificate,
+          photo,
+          form_138,
+          certificate_of_good_moral,
+          certificate_of_low_income,
+          terms_and_conditions,
+          data_privacy_consent
+        ) VALUES (
+          ${studentnumber},
+          ${firstname},
+          ${middlename},
+          ${lastname},
+          ${dob},
+          ${gender},
+          ${age},
+          ${nationality},
+          ${placeofbirth},
+          ${email},
+          ${phonenumber},
+          ${homeaddress},
+          ${emergencycontactname},
+          ${emergencycontactphonenumber},
+          ${emergencycontactrelationship},
+          ${previousschools},
+          ${yearofgraduation},
+          ${gpa},
+          ${program_id},
+          ${schoolterm},
+          ${schoolcampus},
+          ${identityproof},
+          ${transcripts},
+          ${letterofrecommendation},
+          ${birthcertificate},
+          ${photo},
+          ${form138},
+          ${certificateofgoodmoral},
+          ${certificateoflowincome},
+          ${termsandconditions},
+          ${dataprivacyconsent}
+        )
+      `;
 
-      // Respond with success message and the JWT token
-      res.status(200).json({ success: true, message: 'Student added successfully', token, result });
-    } catch (dbError) {
-      console.error('Database Error:', dbError);
-      return res.status(500).json({ success: false, message: 'Database error occurred', error: dbError.message });
+      res.status(201).json({ message: 'Application submitted successfully' });
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      res.status(500).json({ error: 'An error occurred while submitting the application.' });
     }
   } else {
-    res.status(405).json({ success: false, message: 'Method Not Allowed' });
+    res.status(405).json({ error: 'Method Not Allowed' });
   }
 }
