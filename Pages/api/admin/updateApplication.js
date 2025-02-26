@@ -1,122 +1,67 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream:Pages/api/admin/update-application.js
-import { neon } from '@neondatabase/serverless';
-
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    // Fetching pending applications
     try {
-      console.log("Fetching pending applications...");
-      const result = await query(`
-        SELECT * FROM students WHERE applicationstatus = 'Pending'
-      `);
-      console.log("Fetched applications:", result.rows);
-      return res.status(200).json(result.rows);
+      console.log("Fetching all student applications");
+      const result = await sql`
+        SELECT * FROM student_applications
+      `;
+      console.log("Student applications fetched successfully", result);
+      return res.status(200).json(result);
     } catch (error) {
-      console.error("Error fetching applications:", error);
+      console.error("Error fetching student applications:", error);
       return res
         .status(500)
-        .json({ error: "Failed to fetch pending applications" });
+        .json({
+          error: "An error occurred while fetching student applications",
+        });
     }
   } else if (req.method === "PUT") {
-    // Updating an application
     try {
       const {
-        applicationstatus,
-        reviewername,
-        approvaldate,
-        rejectionreason,
-        reviewercomments,
-      } = req.body; // Destructure the necessary fields from the request body
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
+        application_status,
+        reviewer_name,
+        approval_date,
+        rejection_reason,
+        reviewer_comments,
+      } = req.body;
 
-
-<<<<<<< Updated upstream:Pages/api/admin/update-application.js
-SELECT 
-  students.student_id,
-  students.student_name,
-  courses.course_id,
-  courses.course_name,
-  departments.department_name,
-  instructors.instructor_id,
-  instructors.instructor_name
-FROM 
-  students
-JOIN 
-  enrollments ON students.student_id = enrollments.student_id
-JOIN 
-  courses ON enrollments.course_id = courses.course_id
-JOIN 
-  departments ON courses.department_id = departments.department_id
-JOIN 
-  instructors ON courses.instructor_id = instructors.instructor_id;
-=======
-=======
-
-      const { id } = req.query; // Get the application ID from the URL query parameters
-
->>>>>>> Stashed changes
-=======
-
-      const { id } = req.query; // Get the application ID from the URL query parameters
-
->>>>>>> Stashed changes
+      const { id } = req.query;
       if (!id) {
         return res.status(400).json({ error: "Application ID is required" });
       }
 
-      // Update the application in the database
-      const result = await query(
-        `
-        UPDATE students 
+      //Update the student application in the database :D
+      const updateResult = await sql`
+        UPDATE student_applications
         SET 
-          applicationstatus = $1,
-          reviewername = $2,
-          approvaldate = $3,
-          rejectionreason = $4,
-          reviewercomments = $5
-        WHERE id = $6
+          application_status = ${application_status},
+          reviewer_name = ${reviewer_name},
+          approval_date = ${approval_date},
+          rejection_reason = ${rejection_reason},
+          reviewer_comments = ${reviewer_comments}
+        WHERE id = ${id}
         RETURNING *;
-      `,
-        [
-          applicationstatus,
-          reviewername,
-          approvaldate,
-          rejectionreason,
-          reviewercomments,
-          id,
-        ]
-      );
+      `;
 
-      console.log("Updated application:", result.rows[0]);
+      if (result.length === 0) {
+        return res.status(404).json({ error: "Application not found" });
+      }
 
-      // Respond with the updated application data
-      return res.status(200).json(result.rows[0]);
+      console.log("Student application updated successfully", updateResult[0]);
+      return res.status(200).json(updateResult[0]);
     } catch (error) {
-      console.error("Error updating application:", error);
-      return res.status(500).json({ error: "Failed to update application" });
+      console.error("Error updating student application:", error);
+      return res
+        .status(500)
+        .json({
+          error: "An error occurred while updating student application",
+        });
     }
   } else {
-    // Method not allowed for any other HTTP methods
     res.status(405).json({ error: "Method Not Allowed" });
   }
 }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes:Pages/api/admin/updateApplication.js
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
