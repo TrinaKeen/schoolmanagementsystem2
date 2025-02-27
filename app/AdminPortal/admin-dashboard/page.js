@@ -161,7 +161,7 @@ export default function Home() {
             />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="StudentCourses/grade11">
+            <Link href="../AdminPortal/StudentCourses">
               Go to Student Courses Management{" "}
             </Link>
           </div>
