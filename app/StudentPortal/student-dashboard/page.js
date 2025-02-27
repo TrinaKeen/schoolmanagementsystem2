@@ -43,7 +43,7 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className={styles.container}>
+    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black' }}>
       <Sidebar
         className={styles1.container}
         studentNumber={studentData?.studentNumber || ''}
@@ -63,7 +63,7 @@ export default function StudentDashboard() {
           )}
         </header>
         <main className={styles.main}>
-          <h2>Welcome to the School Management System</h2>
+          <h2>Welcome to the Student Portal</h2>
           <p>Manage your school's admission, fees, and applications.</p>
         </main>
         <footer className={styles.footer}>
