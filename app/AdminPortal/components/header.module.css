@@ -1,6 +1,7 @@
 /* Header Styling */
 .header {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -128,6 +129,8 @@
     align-items: center;
   }
 =======
+=======
+>>>>>>> Stashed changes
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -252,5 +255,9 @@
 .dropdownButton {
   background: none; /* Remove background */
   border: none;      /* Remove border */
+<<<<<<< Updated upstream
+}
+>>>>>>> Stashed changes
+=======
 }
 >>>>>>> Stashed changes
