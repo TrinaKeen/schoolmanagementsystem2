@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     try {
       // Fetch user from the database
       const userResult = await sql`
-        SELECT * FROM admins_logins WHERE username = 'username'
+        SELECT * FROM admins_logins WHERE username = ${username}
       `;
 
       if (userResult.length === 0) {
@@ -23,8 +23,11 @@ export default async function handler(req, res) {
       // Check password
       const isPasswordValid = password === user.password;
       // const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      console.log("Received password:", password);
+      console.log("Stored password in DB:", user.password);
+
       if (!isPasswordValid) {
-        console.log("Password does not match.");
         return res.status(401).json({ error: "Invalid password." });
       }
 

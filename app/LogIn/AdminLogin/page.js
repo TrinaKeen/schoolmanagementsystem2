@@ -18,26 +18,25 @@ const AdminLogin = () => {
     setLoading(true);
 
     const normalizedUsername = username.trim().toLowerCase();
-    const trimmedPassword = password.trim;
     const loginTimestamp = new Date().toISOString(); // Get the current timestamp
 
     try {
       // Make API request to login
-      const response = await fetch("/api/admin/adminlogin", {
+      const res = await fetch("/api/admin/adminlogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: normalizedUsername,
-          password: trimmedPassword,
+          password: password.trim(),
           loginTimestamp,
         }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
+      if (res.ok) {
         // Store admin username and token
         localStorage.setItem("adminUsername", data.username);
         localStorage.setItem("token", data.token);
@@ -52,6 +51,10 @@ const AdminLogin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const togglePasswordVisibility = () => {
@@ -91,7 +94,7 @@ const AdminLogin = () => {
               type={isPasswordVisible ? "text" : "password"} // Toggle between password and text
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               className={styles.inputField}
               required
             />
