@@ -1,7 +1,7 @@
 /* components/Sidebar.module.css */
 .sidebar {
   width: 250px;
-  background-color: #333;
+  background: linear-gradient(135deg, #005f73, #0a9396);
   color: white;
   padding: 20px;
   position: fixed;
@@ -17,7 +17,7 @@
 }
 
 .sidebar h1 {
-  font-size: 20px;
+  font-size: 15px;
   margin-top: 10px;
   color: white;
   margin-right: 50px;
@@ -42,7 +42,8 @@
 }
 
 .navbar a:hover {
-  background-color: #575757;
+  background-color: rgba(255, 255, 255, 0.2); /* Soft white hover */
+  transform: translateY(-3px);
 }
   
   .studentInfo {

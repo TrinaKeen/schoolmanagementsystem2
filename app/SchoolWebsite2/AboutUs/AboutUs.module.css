@@ -1,0 +1,74 @@
+/* AboutUs.module.css */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: #f9f9f9; /* Light grey background for a soft look */
+}
+
+.hours {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2A06AE;
+  background-color: wheat; /* Consistent color for branding */
+  padding: 15px;
+  width: 100%;
+  margin-bottom: 30px;
+  border-radius: 8px; /* Rounded corners for a modern feel */
+}
+
+.contentArea {
+  max-width: 800px; /* Ensures content doesn't stretch too wide */
+  text-align: left;
+  color: #333;
+  line-height: 1.6; /* Better readability */
+}
+
+.contentArea h2 {
+  margin-top: 40px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2A06AE;
+  border-bottom: 2px solid #2A06AE; /* Underline for section headers */
+  padding-bottom: 10px;
+}
+
+.contentArea p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: #555;
+  text-align: justify; /* Improved readability */
+}
+
+.headerSection {
+  margin-bottom: 40px;
+}
+
+.missionVision {
+  margin-bottom: 40px;
+}
+
+.almaMater {
+  margin-bottom: 60px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hours {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .contentArea h2 {
+    font-size: 1.5rem;
+  }
+
+  .contentArea p {
+    font-size: 1rem;
+  }
+}

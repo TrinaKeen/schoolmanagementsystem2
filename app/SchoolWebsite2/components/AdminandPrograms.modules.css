@@ -1,0 +1,87 @@
+.body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f7fa; /* Light background color for the whole page */
+  color: black; /* Changed to black for better contrast */
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;    
+}
+
+/* Styles for desktop screens */
+@media (min-width: 1024px) {
+  .body {
+      background-color: #f0f0f0;
+      font-size: 18px;
+  }
+
+  .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      height: auto;
+  }
+}
+
+/* Styles for tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .body {
+      font-size: 16px;
+  }
+
+  .container {
+      padding: 15px;
+      height: auto;
+  }
+}
+
+/* Styles for mobile screens */
+@media (max-width: 767px) {
+  .body {
+      font-size: 14px;
+      background-color: #ffffff;
+  }
+
+  .container {
+      padding: 10px;
+      height: auto;
+  }
+}
+
+/* Main Section Styling */
+section {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: flex-start; /* Align top vertically */
+  text-align: center; /* Center text */
+  padding: 20px; /* Adjusted padding */
+  background-color: white;
+  margin-bottom: 40px; /* Space between sections */
+}
+
+h1 {
+  font-size: 2.5rem; /* Slightly smaller size */
+  color: #333; /* Dark color for better visibility */
+  font-weight: bold;
+  margin-bottom: 20px; /* Space below the header */
+  text-transform: uppercase;
+}
+
+table {
+  border-collapse: collapse;
+  width: 50%; /* Full width for better alignment */
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc; /* Lighter border for elegance */
+  padding: 12px;
+  text-align: left;
+  background-color: #f9f9f9; /* Light background for table cells */
+}
+
+th {
+  background-color: #e0e0e0; /* Header background color */
+  font-weight: bold;
+}

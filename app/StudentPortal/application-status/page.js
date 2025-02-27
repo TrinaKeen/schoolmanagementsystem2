@@ -5,227 +5,295 @@ import Sidebar from '../components/Sidebar';
 import '../components/studentapplication.css';
 
 const StudentDetails = () => {
-  const [studentNumber, setStudentNumber] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [studentData, setStudentData] = useState(null);
-  const [error, setError] = useState(null);
+    const [studentNumber, setStudentNumber] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [studentData, setStudentData] = useState(null);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const storedStudentNumber = localStorage.getItem('studentNumber');
-    setStudentNumber(storedStudentNumber);
+    useEffect(() => {
+        const fetchStudentNumber = async () => {
+            const token = localStorage.getItem('token');
 
-    const fetchStudentData = async () => {
-      if (!storedStudentNumber) {
-        setError('Student number is missing');
-        setLoading(false);
-        return;
-      }
+            if (!token) {
+                setError('Authorization token is missing');
+                setLoading(false);
+                return;
+            }
 
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Authorization token is missing');
-        setLoading(false);
-        return;
-      }
+            try {
+                const res = await fetch('/api/students/student-data', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
 
-      try {
-        const res = await fetch(`/api/students/student-admissiondata?studentNumber=${storedStudentNumber}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+                if (!res.ok) {
+                    const errorResponse = await res.json();
+                    setError(errorResponse.error || 'Failed to fetch student number');
+                    setLoading(false);
+                    return;
+                }
 
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          setError(errorResponse.error || 'An error occurred');
-          setStudentData(null);
-        } else {
-          const data = await res.json();
-          setStudentData(data);
-          setError(null);
+                const data = await res.json();
+                setStudentNumber(data.studentNumber); // Save the student number
+
+                // Now fetch student details with the student number
+                await fetchStudentData(data.studentNumber);
+            } catch (error) {
+                console.error('Error fetching student number:', error);
+                setError('Failed to fetch student number');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const fetchStudentData = async (number) => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Authorization token is missing');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/students/application-admissiondata?studentNumber=${number}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!res.ok) {
+                    const errorResponse = await res.json();
+                    setError(errorResponse.error || 'Failed to fetch student data');
+                    setStudentData(null);
+                } else {
+                    const data = await res.json();
+                    setStudentData(data);
+                    setError(null); // Clear any previous errors
+                }
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+                setError('Failed to fetch student data');
+            }
+        };
+
+        fetchStudentNumber();
+    }, []);
+
+    const getFieldValue = (field, fieldName) => {
+        if (typeof field === 'boolean') {
+            return field ? 'Yes' : 'No';
         }
-      } catch (err) {
-        setError('Failed to fetch student data');
-        setStudentData(null);
-      } finally {
-        setLoading(false);
-      }
+        // For attachment fields, return "No Attachment" if the field is empty or null
+        const attachmentFields = [
+            'diploma', 
+            'form137', 
+            'identification_card', 
+            'photo', 
+            'marriage_certificate', 
+            'birth_certificate', 
+            'good_moral', 
+            'honorable_dismissal',
+            'report_card'
+        ];
+        
+        if (attachmentFields.includes(fieldName)) {
+            return field ? field : 'No Attachment';
+        }
+        
+        return field ? field : 'Pending';
     };
+    
 
-    fetchStudentData();
-  }, []);
+    const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : 'N/A');
 
-  const getFieldValue = (field) => {
-    if (typeof field === 'boolean') {
-      return field ? 'Yes' : 'No';
+    if (loading) {
+        return <p>Loading student data...</p>;
     }
-    return field ? field : 'Pending';
-  };
 
-  const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : 'N/A');
+    if (error) {
+        return <p style={{ color: 'red' }}>{error}</p>;
+    }
 
-  if (loading) {
-    return <p>Loading student data...</p>;
-  }
+    if (!studentData) {
+        return <p>No student data found.</p>;
+    }
 
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
-
-  if (!studentData) {
-    return <p>No student data found.</p>;
-  }
+ 
 
   return (
-     <div>
-            {/* Sidebar */}
-         <Sidebar studentNumber={studentNumber} />
-    <div className="form-container">
-      <h2>Student Application Details</h2>
-      <table className="details-table">
-        <tbody>
-          <tr>
+    <div>
+    {/* Sidebar */}
+    <Sidebar studentNumber={studentNumber} />
+      
+  <div className="form-container">
+    <h2>Student Application Details</h2>
+    <table className="details-table">
+    <tbody>
+            <tr>
             <td><strong>Student Number:</strong></td>
-            <td>{getFieldValue(studentData.studentnumber)}</td>
-          </tr>
-          <tr>
-            <td><strong>Name:</strong></td>
-            <td>{getFieldValue(studentData.firstname)} {getFieldValue(studentData.middlename)} {getFieldValue(studentData.lastname)}</td>
-          </tr>
-          <tr>
-            <td><strong>Date of Birth:</strong></td>
-            <td>{formatDate(studentData.dob)}</td>
-          </tr>
-          <tr>
-            <td><strong>Age:</strong></td>
-            <td>{getFieldValue(studentData.age)}</td>
-          </tr>
-          <tr>
-            <td><strong>Gender:</strong></td>
-            <td>{getFieldValue(studentData.gender)}</td>
-          </tr>
-          <tr>
-            <td><strong>Nationality:</strong></td>
-            <td>{getFieldValue(studentData.nationality)}</td>
-          </tr>
-          <tr>
-            <td><strong>Place of Birth:</strong></td>
-            <td>{getFieldValue(studentData.placeofbirth)}</td>
-          </tr>
-          <tr>
-            <td><strong>Email:</strong></td>
-            <td>{getFieldValue(studentData.email)}</td>
-          </tr>
-          <tr>
-            <td><strong>Phone Number:</strong></td>
-            <td>{getFieldValue(studentData.phonenumber)}</td>
-          </tr>
-          <tr>
-            <td><strong>Home Address:</strong></td>
-            <td>{getFieldValue(studentData.homeaddress)}</td>
-          </tr>
-          <tr>
-            <td><strong>Emergency Contact:</strong></td>
-            <td>{getFieldValue(studentData.emergencycontactrelationship)}</td>
-          </tr>
-          <tr>
-            <td><strong></strong></td>
-            <td>{getFieldValue(studentData.emergencycontactname)}</td>
-          </tr>
-          <tr>
-            <td><strong></strong></td>
-            <td>{getFieldValue(studentData.emergencycontactphonenumber)}</td>
-          </tr>
+              <td>{getFieldValue(studentData.student_number)}</td>
+            </tr>
+        <tr>
+          <td><strong>Name:</strong></td>
+          <td>{getFieldValue(studentData.first_name)} {getFieldValue(studentData.middle_name)} {getFieldValue(studentData.last_name)}</td>
+        </tr>
+        <tr>
+          <td><strong>Date of Birth:</strong></td>
+          <td>{formatDate(studentData.dob)}</td>
+        </tr>
+        <tr>
+          <td><strong>Age:</strong></td>
+          <td>{getFieldValue(studentData.age)}</td>
+        </tr>
+        <tr>
+          <td><strong>Gender:</strong></td>
+          <td>{getFieldValue(studentData.gender)}</td>
+        </tr>
+        <tr>
+          <td><strong>Nationality:</strong></td>
+          <td>{getFieldValue(studentData.nationality)}</td>
+        </tr>
+        <tr>
+          <td><strong>Place of Birth:</strong></td>
+          <td>{getFieldValue(studentData.place_of_birth)}</td>
+        </tr>
+        <tr>
+          <td><strong>Email:</strong></td>
+          <td>{getFieldValue(studentData.email)}</td>
+        </tr>
+        <tr>
+          <td><strong>Phone Number:</strong></td>
+          <td>{getFieldValue(studentData.phone_number)}</td>
+        </tr>
+        <tr>
+          <td><strong>Home Address:</strong></td>
+          <td>{getFieldValue(studentData.home_address)}</td>
+        </tr>
+        <tr>
+          <td><strong>Emergency Contact:</strong></td>
+          <td>{getFieldValue(studentData.emergency_contact_relationship)}</td>
+        </tr>
+        <tr>
+          <td><strong></strong></td>
+          <td>{getFieldValue(studentData.emergency_contact_name)}</td>
+        </tr>
+        <tr>
+          <td><strong></strong></td>
+          <td>{getFieldValue(studentData.emergency_contact_phone)}</td>
+        </tr>
 
+        <tr>
+          <td><strong>Previous Schools:</strong></td>
+          <td>{getFieldValue(studentData.previous_schools)}</td>
+        </tr>
+        <tr>
+          <td><strong>Year of Graduation:</strong></td>
+          <td>{getFieldValue(studentData.year_of_graduation)}</td>
+        </tr>
+        <tr>
+          <td><strong>GPA:</strong></td>
+          <td>{getFieldValue(studentData.gpa)}</td>
+        </tr>
+        <tr>
+  <td><strong>Program Name:</strong></td>
+  <td>{getFieldValue(studentData.program_name)}</td>
+</tr>
+<tr>
+  <td><strong>Major:</strong></td>
+  <td>{getFieldValue(studentData.major)}</td>
+</tr>
+<tr>
+  <td><strong>Diploma:</strong></td>
+  <td>{getFieldValue(studentData.diploma, 'diploma')}</td>
+</tr>
+<tr>
+  <td><strong>Form 137:</strong></td>
+  <td>{getFieldValue(studentData.form137, 'form137')}</td>
+</tr>
+<tr>
+  <td><strong>Identification Card:</strong></td>
+  <td>{getFieldValue(studentData.identification_card, 'identification_card')}</td>
+</tr>
+<tr>
+  <td><strong>Photo:</strong></td>
+  <td>{getFieldValue(studentData.photo, 'photo')}</td>
+</tr>
+<tr>
+  <td><strong>Marriage Certificate:</strong></td>
+  <td>{getFieldValue(studentData.marriage_certificate, 'marriage_certificate')}</td>
+</tr>
+<tr>
+  <td><strong>Birth Certificate:</strong></td>
+  <td>{getFieldValue(studentData.birth_certificate, 'birth_certificate')}</td>
+</tr>
+<tr>
+  <td><strong>Good Moral:</strong></td>
+  <td>{getFieldValue(studentData.good_moral, 'good_moral')}</td>
+</tr>
+<tr>
+  <td><strong>Honorable Dismissal:</strong></td>
+  <td>{getFieldValue(studentData.honorable_dismissal, 'honorable_dismissal')}</td>
+</tr>
+<tr>
+  <td><strong>Report Card:</strong></td>
+  <td>{getFieldValue(studentData.report_card, 'report_card')}</td>
+</tr>
+
+    
+        <tr>
+          <td><strong>Terms and Conditions:</strong></td>
+          <td>{getFieldValue(studentData.terms_and_conditions)}</td>
+        </tr>
+        <tr>
+          <td><strong>Data Privacy Consent:</strong></td>
+          <td>{getFieldValue(studentData.data_privacy_consent)}</td>
+        </tr>
+        <tr>
+          <td><strong>Application Submitted:</strong></td>
+          <td>{formatDate(studentData.application_submitted_at)}</td>
+        </tr>
+        <tr>
+          <td><strong>Application Status:</strong></td>
+          <td>{getFieldValue(studentData.application_status)}</td>
+        </tr>
+        {studentData.rejection_reason && (
           <tr>
-            <td><strong>previousschools</strong></td>
-            <td>{getFieldValue(studentData.previousschools)}</td>
+            <td><strong>Reviewer Name:</strong></td>
+            <td>{getFieldValue(studentData.reviewer_name)}</td>
           </tr>
+        )}
+        {studentData.rejection_reason && (
           <tr>
-            <td><strong>desiredprogram</strong></td>
-            <td>{getFieldValue(studentData.desiredprogram)}</td>
+            <td><strong>Approval Date:</strong></td>
+            <td>{formatDate(studentData.approval_date)}</td>
           </tr>
+        )}
+        {studentData.rejection_reason && (
           <tr>
-            <td><strong>modeofstudy</strong></td>
-            <td>{getFieldValue(studentData.modeofstudy)}</td>
+            <td><strong>Rejection Reason:</strong></td>
+            <td>{getFieldValue(studentData.rejection_reason)}</td>
           </tr>
+        )}
+        {studentData.reviewer_comments && (
           <tr>
-            <td><strong>startdate</strong></td>
-            <td>{getFieldValue(studentData.startdate)}</td>
+            <td><strong>Reviewer Comments:</strong></td>
+            <td>{getFieldValue(studentData.reviewer_comments)}</td>
           </tr>
+        )}
+        {studentData.identity_proof && (
           <tr>
-            <td><strong>preferredcampus</strong></td>
-            <td>{getFieldValue(studentData.preferredcampus)}</td>
+            <td><strong>Identity Proof:</strong></td>
+            <td><a href={studentData.identity_proof} target="_blank" rel="noopener noreferrer">View / Download</a></td>
           </tr>
-          <tr>
-            <td><strong>Application Submitted</strong></td>
-            <td>{getFieldValue(studentData.applicationsubmittedat)}</td>
-          </tr>
-          {/* Add other fields similarly */}
-          <tr>
-            <td><strong>Application Status:</strong></td>
-            <td>{getFieldValue(studentData.applicationstatus)}</td>
-          </tr>
-          {studentData.rejectionreason && (
-            <tr>
-              <td><strong>Reviewer Name:</strong></td>
-              <td>{getFieldValue(studentData.reviewername)}</td>
-            </tr>
-          )}
-          {studentData.rejectionreason && (
-            <tr>
-              <td><strong>Approval Date:</strong></td>
-              <td>{getFieldValue(studentData.approvaldate)}</td>
-            </tr>
-          )}
-          {studentData.rejectionreason && (
-            <tr>
-              <td><strong>Rejection Reason:</strong></td>
-              <td>{getFieldValue(studentData.rejectionreason)}</td>
-            </tr>
-          )}
-          {studentData.reviewercomments && (
-            <tr>
-              <td><strong>Reviewer Comments:</strong></td>
-              <td>{getFieldValue(studentData.reviewercomments)}</td>
-            </tr>
-          )}
-          {studentData.identityproof && (
-            <tr>
-              <td><strong>Identity Proof:</strong></td>
-              <td><a href={studentData.identityproof} target="_blank" rel="noopener noreferrer">View   /  Download</a></td>
-            </tr>
-          )}
-          {studentData.photo && (
-            <tr>
-              <td><strong>Transcript:</strong></td>
-              <td><a href={studentData.transcripts} target="_blank" rel="noopener noreferrer">View   /  Download</a></td>
-            </tr>
-          )}
-          {studentData.photo && (
-            <tr>
-              <td><strong>Letter of Recommendation:</strong></td>
-              <td><a href={studentData.letterofrecommendation} target="_blank" rel="noopener noreferrer">View   /  Download</a></td>
-            </tr>
-          )}
-          {studentData.photo && (
-            <tr>
-              <td><strong>Resume:</strong></td>
-              <td><a href={studentData.resume} target="_blank" rel="noopener noreferrer">View   /  Download</a></td>
-            </tr>
-          )}
-          {studentData.photo && (
-            <tr>
-              <td><strong>Photo:</strong></td>
-              <td><a href={studentData.photo} target="_blank" rel="noopener noreferrer">View   /  Download</a></td>
-            </tr>
-          )}
-         
-        </tbody>
-      </table>
-    </div>
-    </div>
+        )}
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
   );
 };
 
