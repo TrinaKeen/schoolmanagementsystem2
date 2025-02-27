@@ -13,7 +13,7 @@ import React, { useState } from "react";
 // State refers to data that can change over time and cause the UI to re-render when updated.
 // We use `useState` here to manage UI interactions, such as toggling edit mode, managing selected courses, and handling modal visibility.
 import styles from "./teacherPage.module.css";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 
 export default function TeacherPage() {
   // useState to manage the list of teachers categorized by grade level and college year

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 import styles from "./StudentFees.module.css";
 
 export default function SchoolDepartment() {
