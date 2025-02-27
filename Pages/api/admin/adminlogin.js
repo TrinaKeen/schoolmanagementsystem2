@@ -11,19 +11,21 @@ export default async function handler(req, res) {
     try {
       // Fetch user from the database
       const userResult = await sql`
-        SELECT * FROM admins_logins WHERE username = ${username}
+        SELECT * FROM admins_logins WHERE username = 'username'
       `;
 
       if (userResult.length === 0) {
-        return res.status(401).json({ error: "Invalid username or password." });
+        return res.status(401).json({ error: "Invalid username." });
       }
 
       const user = userResult[0];
 
       // Check password
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = password === user.password;
+      // const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
-        return res.status(401).json({ error: "Invalid username or password." });
+        console.log("Password does not match.");
+        return res.status(401).json({ error: "Invalid password." });
       }
 
       // Update last_login timestamp
@@ -52,7 +54,7 @@ export default async function handler(req, res) {
         token, // Include the token in the response
       });
     } catch (error) {
-      console.error("Error during login:", error);
+      console.log("Error during login:", error);
       res.status(500).json({ error: "An error occurred while logging in." });
     }
   } else {

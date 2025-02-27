@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image"; // Ensure to import Image from next/image
 import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
 import logo from "../school-logo.png"; // Ensure this path is correct
@@ -9,31 +10,47 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility toggle
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const normalizedUsername = username.trim().toLowerCase();
+    const trimmedPassword = password.trim;
+    const loginTimestamp = new Date().toISOString(); // Get the current timestamp
+
     try {
       // Make API request to login
-      const response = await fetch("/api/admin-login", {
+      const response = await fetch("/api/admin/adminlogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username: normalizedUsername,
+          password: trimmedPassword,
+          loginTimestamp,
+        }),
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        alert("Logged in successfully");
-        // Redirect to dashboard or any other page
-        window.location.href = "../../AdminPortal/admin-dashboard";
+        // Store admin username and token
+        localStorage.setItem("adminUsername", data.username);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loginTimestamp", loginTimestamp); // Save timestamp locally if needed
+
+        router.push("/AdminPortal/admin-dashboard"); // Redirect to admin dashboard
       } else {
-        // Handle login error
-        setError(data.error || "An error occurred while logging in");
+        setError(data.error || "An unexpected error occurred");
       }
     } catch (error) {
-      console.error("An error occurred:", error);
-      setError("An error occurred while logging in");
+      setError("Network error, please try again later");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,7 +108,7 @@ const AdminLogin = () => {
         {error && <p className={styles.error}>{error}</p>}
 
         <button type="submit" className={styles.submitButton}>
-          Log In
+          {loading ? "Logging in..." : "Log In"}
         </button>
       </form>
     </div>
