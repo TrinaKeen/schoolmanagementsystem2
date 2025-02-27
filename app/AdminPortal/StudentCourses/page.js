@@ -24,7 +24,7 @@ const StudentCourses = () => {
   // useEffect runs once when the component mounts to fetch programs and courses
   useEffect(() => {
     fetchPrograms();
-    fetchCourses(selectedProgram);
+    fetchCourses(selectedProgram); // calls fetchCourses with the selected program ID
   }, []);
 
   // -------------------------------------
@@ -124,7 +124,7 @@ const StudentCourses = () => {
         `/api/admin/studentCourses?type=courses&id=${id}`,
         {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }, //
         }
       );
 
