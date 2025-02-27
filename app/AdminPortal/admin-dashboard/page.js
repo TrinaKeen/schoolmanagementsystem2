@@ -12,15 +12,34 @@ import courseslogo from "/src/courseslogo.png";
 import departmentslogo from "/src/departmentslogo.png";
 import studentfeeslogo from "/src/studentfeeslogo.png";
 import reportlogo from "/src/reportlogo.png";
-import { FaHome, FaEnvelope, FaBell, FaBars } from "react-icons/fa";
+import { FaHome, FaEnvelope, FaBell, FaBars, FaDownload } from "react-icons/fa";
 
 export default function Home() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(null); // tracks which dropdown is opened
+  const [isDropdownOpen, setIsDropdownOpen] = useState(null); // Tracks dropdown state
 
   // Toggle specific dropdown
   const toggleDropdown = (type) => {
     setIsDropdownOpen(isDropdownOpen === type ? null : type);
   };
+
+  // Function to handle downloading registration logs
+const handleDownloadLogs = async () => {
+  try {
+    const response = await fetch("/api/admin/logs"); // Fetch logs from the API endpoint
+    if (!response.ok) throw new Error("Failed to fetch logs"); // Check if the response is successful
+
+    const blob = await response.blob(); // Convert the response into a blob format (binary large object)
+    const url = window.URL.createObjectURL(blob); // Create a temporary URL for downloading the file
+    const a = document.createElement("a"); // Create a new anchor tag element
+    a.href = url; // Set the download URL as the anchor tag's href
+    a.download = "registration_logs.csv"; // Set the filename for the downloaded file
+    document.body.appendChild(a); // Append the anchor tag to the body to make it clickable
+    a.click(); // Programmatically click the anchor tag to trigger the download
+    document.body.removeChild(a); // Remove the anchor tag from the body after download starts
+  } catch (error) {
+    console.error("Download error:", error); // Log any errors that occur during the process
+  }
+};
 
   return (
     <div className={styles.container}>
@@ -83,12 +102,12 @@ export default function Home() {
             {/* Button to toggle dropdown */}
             <button
               className={styles.dropdownButton}
-              onClick={() => toggleDropdown("account")} // Toggle dropdown on button click
+              onClick={() => toggleDropdown("account")}
             >
               <FaBars size={35} />
             </button>
 
-            {/* Conditionally render the dropdown based on state */}
+            {/* Dropdown menu */}
             {isDropdownOpen === "account" && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
@@ -108,6 +127,17 @@ export default function Home() {
           Manage your school's daily activities, student records, teacher
           assignments, and more.
         </p>
+
+        {/* Download Logs Button */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleDownloadLogs} // Call function to download logs when button is clicked
+            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+          >
+            <FaDownload className="mr-2" />
+            Download Registration Logs {/* Button label indicating action */}
+          </button>
+        </div>
 
         <div className={styles.grid}>
           <div className={styles.card}>
@@ -161,7 +191,7 @@ export default function Home() {
             />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="../AdminPortal/StudentCourses">
+            <Link href="../AdminPortal/StudentCourses/grade11">
               Go to Student Courses Management{" "}
             </Link>
           </div>
@@ -175,7 +205,9 @@ export default function Home() {
             />
             <h3>Student Fees</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="../AdminPortal/StudentFees">Go to Tuition Fees Management </Link>
+            <Link href="../AdminPortal/StudentFees">
+              Go to Tuition Fees Management{" "}
+            </Link>
           </div>
 
           <div className={styles.card}>
@@ -187,7 +219,9 @@ export default function Home() {
             />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="../AdminPortal/Reports">Go to Reports Management </Link>
+            <Link href="../AdminPortal/Reports">
+              Go to Reports Management{" "}
+            </Link>
           </div>
         </div>
       </main>
