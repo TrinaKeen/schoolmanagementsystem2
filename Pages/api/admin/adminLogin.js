@@ -9,6 +9,7 @@ export default async function handler(req, res) {
     const { username, password } = req.body;
 
     try {
+      // I changed the student_login table to admins_logins to match the database schema
       // Fetch user from the database
       const userResult = await sql`
         SELECT * FROM admins_logins WHERE username = ${username}
@@ -23,7 +24,9 @@ export default async function handler(req, res) {
       // Check password
       const isPasswordValid = password === user.password; // this is a placeholder, replace with bcrypt compare
       // const isPasswordValid = await bcrypt.compare(password, user.password);
+      // I replaced the bcrypt compare with a simple password check for now since we're not using hash passwords
 
+      // I also added console logs to check the password values
       console.log("Received password:", password);
       console.log("Stored password in DB:", user.password);
 
@@ -65,5 +68,7 @@ export default async function handler(req, res) {
   }
 }
 
+// I used the student login code as a reference to fix the admin login code
 // OpenAI. (2025, February 26). Response to the prompt "why can't I log in after entering my details correctly after updating the code to match my database schema?"
 // ChatGPT (Version 4.0). Accessed and retrieved on Feb 24, 2025 from https://chat.openai.com
+// Thanks for my groupmates for helping me out <3

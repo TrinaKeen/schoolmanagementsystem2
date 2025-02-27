@@ -3,25 +3,35 @@
 import React, { useState, useEffect } from "react";
 import styles from "./studentCourses.module.css";
 import Sidebar from "./components/Sidebar";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 
 const StudentCourses = () => {
+  // state to toggle editing mode for courses
   const [isEditing, setIsEditing] = useState(false);
+  // state to store all programs fetched from the API
   const [programs, setPrograms] = useState([]);
+  // state to store all courses fetched from the selected program
   const [courses, setCourses] = useState([]);
-  const [selectedProgram, setSelectedProgram] = useState(""); // Stores selected program
+  // state to store the selected program ID
+  const [selectedProgram, setSelectedProgram] = useState("");
+  // state to store input values for a new course data
   const [newCourse, setNewCourse] = useState({
     course_name: "",
     course_code: "",
     program_id: "",
   });
 
+  // useEffect runs once when the component mounts to fetch programs and courses
   useEffect(() => {
     fetchPrograms();
     fetchCourses(selectedProgram);
   }, []);
 
-  // Fetch Programs
+  // -------------------------------------
+  // Fetch Programs from the API
+  // -------------------------------------
+  // This function sends a GET request to the API to get a list of programs
+  // On success, it saves the data in the 'programs' state
   const fetchPrograms = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -35,7 +45,11 @@ const StudentCourses = () => {
     }
   };
 
-  // Fetch Courses for Selected Program
+  // -------------------------------------
+  // Fetch Courses for a Selected Program
+  // -------------------------------------
+  // This function sends a GET request to the API using the selected program ID
+  // It then updates the 'courses' state with the list of courses for that program
   const fetchCourses = async (programId) => {
     try {
       const token = localStorage.getItem("token");
@@ -52,13 +66,19 @@ const StudentCourses = () => {
     }
   };
 
+  // -------------------------------------
   // Handle Sidebar Click (Switching Programs)
+  // -------------------------------------
+  // When a program is selected from the sidebar, this function updates the selected program state and fetches the courses for that program
   const handleSidebarClick = (programId) => {
     setSelectedProgram(programId);
     fetchCourses(programId);
   };
 
+  // -------------------------------------
   // Handle Adding a New Course
+  // -------------------------------------
+  // This function is called when adding a new course. It checks if all fields are filled, sends a POST request to the API to create the course, and then refreshes the courses list
   const handleAddCourse = async () => {
     if (!newCourse.course_name || !newCourse.course_code || !selectedProgram) {
       alert("Please fill in all fields.");
@@ -82,8 +102,8 @@ const StudentCourses = () => {
       });
 
       if (res.ok) {
-        fetchCourses(selectedProgram);
-        setNewCourse({ course_name: "", course_code: "", program_id: "" });
+        fetchCourses(selectedProgram); // Refresh courses list after adding a new course
+        setNewCourse({ course_name: "", course_code: "", program_id: "" }); // Clear input fields
       } else {
         console.error("Failed to add course");
       }
@@ -92,7 +112,11 @@ const StudentCourses = () => {
     }
   };
 
+  // -------------------------------------
   // Handle Deleting a Course
+  // -------------------------------------
+  // This function sends a DELETE request to the API to remove a course by its ID
+  // If successful, it refreshes the courses list to update the UI
   const handleDeleteCourse = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -266,3 +290,10 @@ export default StudentCourses;
 
 // OpenAI. (2025, February 26). Response to the prompt "Can you fix this code so that it matches my schema: I want to create an API endpoint that allows me to fetch, create, and delete data for programs, courses, and subjects."
 // ChatGPT (Version 4.0). Accessed and retrieved on Feb 24, 2025 from https://chat.openai.com
+
+// dictionaries:
+// 1. fetchPrograms - function to fetch programs from the API
+// 2. fetchCourses - function to fetch courses for a selected program
+// 3. handleSidebarClick - function to handle sidebar click and fetches courses for the selected program
+// 4. handleAddCourse - function to handle adding a new course
+// 5. handleDeleteCourse - function to handle deleting a course
