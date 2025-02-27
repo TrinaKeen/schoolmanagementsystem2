@@ -30,7 +30,74 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      
+      <header className={styles.header}>
+        <Link href={"/"}>
+          <div className={styles.logo}>
+            <Image src={logo} alt="School Logo" width={100} height={100} />
+            <h1>EEFCI Management System</h1>
+          </div>
+        </Link>
+
+        <nav className={styles.navbar}>
+          <Link href="../AdminPortal/admin-dashboard">
+            <FaHome size={35} />
+          </Link>
+
+          <div className={styles.loginDropdown}>
+            <button
+              className={styles.dropdownButton}
+              onClick={() => toggleDropdown("notifications")}
+            >
+              <FaBell size={35} />
+            </button>
+
+            {isDropdownOpen === "notifications" && (
+              <div className={styles.dropdownContent}>
+                <p className="text-black flex justify-center">
+                  No new notifications
+                </p>
+              </div>
+            )}
+          </div>
+          <div className={styles.loginDropdown}>
+            <button
+              className={styles.dropdownButton}
+              onClick={() => toggleDropdown("messages")}
+            >
+              <FaEnvelope size={35} />
+            </button>
+
+            {isDropdownOpen === "messages" && (
+              <div className={styles.dropdownContent}>
+                <p className="text-black flex justify-center">
+                  No new messages
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.loginDropdown}>
+            {/* Button to toggle dropdown */}
+            <button
+              className={styles.dropdownButton}
+              onClick={() => toggleDropdown("account")} // Toggle dropdown on button click
+            >
+              <FaBars size={35} />
+            </button>
+
+            {/* Conditionally render the dropdown based on state */}
+            {isDropdownOpen === "account" && (
+              <div className={styles.dropdownContent}>
+                <Link href="/">Log Out</Link>
+                <Link href="../AdminPortal/admin-settings">
+                  Account Settings
+                </Link>
+                <Link href="#">Help Centre</Link>
+              </div>
+            )}
+          </div>
+        </nav>
+      </header>
 
       <main className={styles.main}>
         <h2>Welcome to the Super Admin Account</h2>
@@ -91,7 +158,7 @@ export default function Home() {
             />
             <h3>Student Courses</h3>
             <p>Manage student records and progress.</p>
-            <Link href="../AdminPortal/StudentCourses">
+            <Link href="../AdminPortal/StudentCourses/grade11">
               Go to Student Courses Management{" "}
             </Link>
           </div>
@@ -105,7 +172,9 @@ export default function Home() {
             />
             <h3>Student Fees</h3>
             <p>Manage teacher assignments and performance.</p>
-            <Link href="../AdminPortal/StudentFees">Go to Tuition Fees Management </Link>
+            <Link href="../AdminPortal/StudentFees">
+              Go to Tuition Fees Management{" "}
+            </Link>
           </div>
 
           <div className={styles.card}>
@@ -117,7 +186,9 @@ export default function Home() {
             />
             <h3>Reports</h3>
             <p>Organize class schedules and attendance.</p>
-            <Link href="../AdminPortal/Reports">Go to Reports Management </Link>
+            <Link href="../AdminPortal/Reports">
+              Go to Reports Management{" "}
+            </Link>
           </div>
         </div>
       </main>

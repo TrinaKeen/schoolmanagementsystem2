@@ -1,28 +1,60 @@
 "use client";
-
-import { useState } from 'react';
-import Image from 'next/image'; // Ensure to import Image from next/image
-import styles from '../LoginPage.module.css'; // Assuming you use a CSS module for styling
-import logo from '../school-logo.png'; // Ensure this path is correct
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image"; // Ensure to import Image from next/image
+import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
+import logo from "../school-logo.png"; // Ensure this path is correct
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility toggle
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Example authentication logic
-    if (username === 'admin' && password === 'password123') {
-      alert('Logged in as Admin!');
-      // Redirect to Admin Dashboard
-      window.location.href = '../../AdminPortal/admin-dashboard'; // Uncomment if needed
-    } else {
-      setError('Invalid credentials. Please try again.');
+    const normalizedUsername = username.trim().toLowerCase();
+    const loginTimestamp = new Date().toISOString(); // Get the current timestamp
+
+    try {
+      // Make API request to login
+      const res = await fetch("/api/admin/adminlogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: normalizedUsername,
+          password: password.trim(),
+          loginTimestamp,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Store admin username and token
+        localStorage.setItem("adminUsername", data.username);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loginTimestamp", loginTimestamp); // Save timestamp locally if needed
+
+        router.push("/AdminPortal/admin-dashboard"); // Redirect to admin dashboard
+      } else {
+        setError(data.error || "An unexpected error occurred");
+      }
+    } catch (error) {
+      setError("Network error, please try again later");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const togglePasswordVisibility = () => {
@@ -40,7 +72,9 @@ const AdminLogin = () => {
 
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.inputGroup}>
-          <label htmlFor="username" className={styles.inputLabel}>Username</label>
+          <label htmlFor="username" className={styles.inputLabel}>
+            Username
+          </label>
           <input
             type="text"
             id="username"
@@ -52,13 +86,15 @@ const AdminLogin = () => {
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor="password" className={styles.inputLabel}>Password</label>
+          <label htmlFor="password" className={styles.inputLabel}>
+            Password
+          </label>
           <div className={styles.passwordWrapper}>
             <input
               type={isPasswordVisible ? "text" : "password"} // Toggle between password and text
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               className={styles.inputField}
               required
             />
@@ -67,14 +103,16 @@ const AdminLogin = () => {
               className={styles.showButton}
               onClick={togglePasswordVisibility}
             >
-              {isPasswordVisible ? 'Hide' : 'Show'}
+              {isPasswordVisible ? "Hide" : "Show"}
             </button>
           </div>
         </div>
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>Log In</button>
+        <button type="submit" className={styles.submitButton}>
+          {loading ? "Logging in..." : "Log In"}
+        </button>
       </form>
     </div>
   );
