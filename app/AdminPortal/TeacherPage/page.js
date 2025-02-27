@@ -1,10 +1,22 @@
+// uploaded mock up from the figma page and asked chatgpt to recreate it
+// then asked it how to implement state change for adding a teacher,  editing and deleting
+// The sidebar was included in the mock up picture as well
+// Asked chatgpt to make a sidebar for grade 11-12 and a college section that also lets you select the year
+
+
 "use client";
 
 import React, { useState } from "react";
+// React library and useState hook for state management
+// React is a JavaScript library for building interactive user interfaces.
+// `useState` is a React Hook that allows functional components to manage state.
+// State refers to data that can change over time and cause the UI to re-render when updated.
+// We use `useState` here to manage UI interactions, such as toggling edit mode, managing selected courses, and handling modal visibility.
 import styles from "./teacherPage.module.css";
 import AdminHeader from "../components/page";
 
 export default function TeacherPage() {
+  // useState to manage the list of teachers categorized by grade level and college year
   const [teachers, setTeachers] = useState({
     Grade11: ["Mr. Mike Lit", "Mr. Moe Lester", "Mrs. Liz Anya"],
     Grade12: [
@@ -20,9 +32,12 @@ export default function TeacherPage() {
     },
   });
 
+  // State variables for selected grade, selected college year, and the list of teachers to display
   const [selectedGrade, setSelectedGrade] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [teacherList, setTeacherList] = useState([]);
+
+  // State variables for modal visibility and input values
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -31,57 +46,57 @@ export default function TeacherPage() {
   const [editTeacherIndex, setEditTeacherIndex] = useState(null);
   const [deleteTeacherIndex, setDeleteTeacherIndex] = useState(null);
 
-  // Handles grade selection
+  // Handles grade selection and updates the teacher list accordingly
   const handleGradeClick = (grade) => {
     setSelectedGrade(grade);
-    setSelectedYear(null);
+    setSelectedYear(null); // Reset selected year if switching to non-college grades
     if (grade !== "College") {
-      setTeacherList(teachers[grade]);
+      setTeacherList(teachers[grade]); // Update teacher list for selected grade
     } else {
-      setTeacherList([]);
+      setTeacherList([]); // Reset teacher list if College is selected
     }
   };
 
-  // Handles college year selection
+  // Handles college year selection and updates the teacher list
   const handleYearClick = (year) => {
     setSelectedYear(year);
     setTeacherList(teachers.College[year]);
   };
 
-  // Open Add Teacher Modal
+  // Opens the Add Teacher Modal
   const handleAddTeacher = () => {
     setNewTeacherName("");
     setShowAddModal(true);
   };
 
-  // Add Teacher to List
+  // Adds a new teacher to the selected grade/year
   const submitAddTeacher = () => {
-    if (!newTeacherName.trim()) return;
+    if (!newTeacherName.trim()) return; // Prevent empty input
 
     setTeachers((prevTeachers) => {
-      const updatedTeachers = { ...prevTeachers };
+      const updatedTeachers = { ...prevTeachers }; // Copy previous state without modifying it directly
       if (selectedGrade === "College") {
-        updatedTeachers.College[selectedYear] = [...updatedTeachers.College[selectedYear], newTeacherName];
+        updatedTeachers.College[selectedYear] = [...updatedTeachers.College[selectedYear], newTeacherName]; // Copy the selected college year teachers and add a new teacher
       } else {
-        updatedTeachers[selectedGrade] = [...updatedTeachers[selectedGrade], newTeacherName];
+        updatedTeachers[selectedGrade] = [...updatedTeachers[selectedGrade], newTeacherName]; // Copy the selected grade teachers and add a new teacher
       }
-      return updatedTeachers;
+      return updatedTeachers; // Return new updated teachers list
     });
 
-    setTeacherList((prev) => [...prev, newTeacherName]);
-    setShowAddModal(false);
+    setTeacherList((prev) => [...prev, newTeacherName]); // Append the new teacher to the displayed list
+    setShowAddModal(false); // Close modal after adding teacher
   };
 
-  // Open Edit Teacher Modal
+  // Opens the Edit Teacher Modal with the selected teacher's name
   const handleEditTeacher = (teacher, index) => {
     setEditTeacherName(teacher);
     setEditTeacherIndex(index);
     setShowEditModal(true);
   };
 
-  // Update Edited Teacher Name
+  // Updates the teacher's name in the list
   const submitEditTeacher = () => {
-    if (!editTeacherName.trim()) return;
+    if (!editTeacherName.trim()) return; // Prevent empty input
 
     setTeachers((prevTeachers) => {
       const updatedTeachers = { ...prevTeachers };
@@ -93,8 +108,8 @@ export default function TeacherPage() {
       return updatedTeachers;
     });
 
-    setTeacherList((prev) => prev.map((t, i) => (i === editTeacherIndex ? editTeacherName : t)));
-    setShowEditModal(false);
+    setTeacherList((prev) => prev.map((t, i) => (i === editTeacherIndex ? editTeacherName : t))); // Update UI
+    setShowEditModal(false); // Close modal
   };
 
   // Open Delete Confirmation Modal
@@ -115,14 +130,15 @@ export default function TeacherPage() {
       return updatedTeachers;
     });
 
-    setTeacherList((prev) => prev.filter((_, i) => i !== deleteTeacherIndex));
-    setShowDeleteModal(false);
+    setTeacherList((prev) => prev.filter((_, i) => i !== deleteTeacherIndex)); // Update UI
+    setShowDeleteModal(false); // Close modal
   };
 
   return (
     <div className="text-black">
       <AdminHeader />
       <div className={styles.container}>
+        {/* sidebar */}
         <div className={styles.sidebar}>
           <h2>Grade Levels</h2>
           <ul>
