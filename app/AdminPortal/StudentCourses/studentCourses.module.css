@@ -5,6 +5,7 @@
   font-family: "Roboto", sans-serif; /* Modern font */
   background-color: #f7f7f7;
   flex-wrap: wrap;
+  color: black;
 }
 
 .pageContainer {
@@ -30,6 +31,7 @@
   overflow-y: auto;
   box-shadow: none;
   width: 100%;
+  color: black;
 }
 
 /* Content inside the main section */
