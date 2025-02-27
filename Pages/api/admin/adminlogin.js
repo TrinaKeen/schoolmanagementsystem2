@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken"; // Make sure to install jsonwebtoken
 
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       const user = userResult[0];
 
       // Check password
-      const isPasswordValid = password === user.password;
+      const isPasswordValid = password === user.password; // this is a placeholder, replace with bcrypt compare
       // const isPasswordValid = await bcrypt.compare(password, user.password);
 
       console.log("Received password:", password);
@@ -64,3 +64,6 @@ export default async function handler(req, res) {
     res.status(405).json({ error: "Method Not Allowed" });
   }
 }
+
+// OpenAI. (2025, February 26). Response to the prompt "why can't I log in after entering my details correctly after updating the code to match my database schema?"
+// ChatGPT (Version 4.0). Accessed and retrieved on Feb 24, 2025 from https://chat.openai.com

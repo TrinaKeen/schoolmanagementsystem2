@@ -17,8 +17,6 @@ export default async function handler(req, res) {
 }
 
 
-
-
 // Fetch data based on type
 const getResponseData = async (type) => {
   switch (type) {
