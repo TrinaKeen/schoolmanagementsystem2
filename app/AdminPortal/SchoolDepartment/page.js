@@ -10,6 +10,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 // Initialize fonts
 pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 
+//data array for course tables for export
 const courses = [
     { code: 'GAGAA01', description: 'Nemo enim ipsam voluptatem', instructor: 'John McDonald' },
     { code: 'YAWA22', description: 'Nemo enim ipsam voluptatem', instructor: 'Laura Vincent' },
@@ -24,6 +25,7 @@ const courses = [
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("grade11");
 
+    //export pdf file function and file styling when its downloaded
     const handleExportPDF = () => {
         const documentDefinition = {
             content: [
