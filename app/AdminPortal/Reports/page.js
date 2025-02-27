@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./Reports.module.css";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -73,6 +73,7 @@ const reportData = {
 
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("studentfees");
+    
     const handleExportPDF = () => {
         const { title, headers, rows } = reportData[activeTab];
         
@@ -427,3 +428,6 @@ export default function SchoolDepartment() {
         </div>
     );
 };
+
+// OpenAI. (2025, February 20). Response to the prompt "How to implement an export pdf function with pdf make?"
+// Deepseek (Deepseek-R1). Accessed and retrieved on Feb 20, 2025 from https://www.deepseek.com/
