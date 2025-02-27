@@ -5,27 +5,21 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../components/HomePage.module.css";
-import logo from "/src/school-logo.png";
 import teacherlogo from "/src/teachericon.png";
 import studentlogo from "/src/studentlogo.png";
 import courseslogo from "/src/courseslogo.png";
 import departmentslogo from "/src/departmentslogo.png";
 import studentfeeslogo from "/src/studentfeeslogo.png";
 import reportlogo from "/src/reportlogo.png";
-import { FaHome, FaEnvelope, FaBell, FaBars, FaDownload } from "react-icons/fa";
+import AdminHeader from "../components/header";
+
 
 export default function Home() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(null); // Tracks dropdown state
-
-  // Toggle specific dropdown
-  const toggleDropdown = (type) => {
-    setIsDropdownOpen(isDropdownOpen === type ? null : type);
-  };
-
+ 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
 
- 
+    <AdminHeader/>
     <div className={styles.container}>
       <Head>
         <title>School Management System</title>
