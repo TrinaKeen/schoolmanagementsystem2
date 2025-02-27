@@ -1,27 +1,10 @@
 import { neon } from '@neondatabase/serverless';
-import jwt from 'jsonwebtoken';
 
 const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({ error: 'Unauthorized: No token provided' });
-    }
-
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const studentNumber = req.query.studentNumber;
-
-      console.log('Decoded token:', decoded);
-      console.log('Received student number:', studentNumber);
-
-      if (!studentNumber) {
-        return res.status(400).json({ error: 'Student number is required' });
-      }
-
       const result = await sql`
         SELECT 
           s.student_number,
@@ -56,6 +39,7 @@ export default async function handler(req, res) {
           s.terms_and_conditions,
           s.data_privacy_consent,
           s.application_submitted_at,
+          a.approval_status,
           a.approval_date,
           a.rejection_reason,
           a.reviewer_name,
@@ -63,22 +47,15 @@ export default async function handler(req, res) {
         FROM 
           students s
         LEFT JOIN 
-          programs p ON s.program_id = p.id  -- Join with programs table to get program_name and major
+          programs p ON s.program_id = p.id
         LEFT JOIN 
           admin_approvals a ON s.student_number = a.student_number
-        WHERE 
-          s.student_number = ${studentNumber}
       `;
 
-      if (result.length === 0) {
-        return res.status(404).json({ error: 'Student not found' });
-      }
-
-      const studentData = result[0];
-      return res.status(200).json(studentData);
+      return res.status(200).json(result);
     } catch (error) {
-      console.error('Error fetching student details:', error.message || error);
-      return res.status(500).json({ error: 'An error occurred while fetching student details.' });
+      console.error('Error fetching student data:', error.message || error);
+      return res.status(500).json({ error: 'An error occurred while fetching student data.' });
     }
   } else {
     return res.status(405).json({ error: 'Method Not Allowed' });

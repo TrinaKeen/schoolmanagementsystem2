@@ -81,12 +81,30 @@ const StudentDetails = () => {
         fetchStudentNumber();
     }, []);
 
-    const getFieldValue = (field) => {
+    const getFieldValue = (field, fieldName) => {
         if (typeof field === 'boolean') {
             return field ? 'Yes' : 'No';
         }
+        // For attachment fields, return "No Attachment" if the field is empty or null
+        const attachmentFields = [
+            'diploma', 
+            'form137', 
+            'identification_card', 
+            'photo', 
+            'marriage_certificate', 
+            'birth_certificate', 
+            'good_moral', 
+            'honorable_dismissal',
+            'report_card'
+        ];
+        
+        if (attachmentFields.includes(fieldName)) {
+            return field ? field : 'No Attachment';
+        }
+        
         return field ? field : 'Pending';
     };
+    
 
     const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : 'N/A');
 
@@ -179,45 +197,51 @@ const StudentDetails = () => {
           <td>{getFieldValue(studentData.gpa)}</td>
         </tr>
         <tr>
-          <td><strong>Program ID:</strong></td>
-          <td>{getFieldValue(studentData.program_id)}</td>
-        </tr>
-        <tr>
-          <td><strong>Diploma:</strong></td>
-          <td>{getFieldValue(studentData.diploma)}</td>
-        </tr>
-        <tr>
-          <td><strong>Form 137:</strong></td>
-          <td>{getFieldValue(studentData.form137)}</td>
-        </tr>
-        <tr>
-          <td><strong>Identification Card:</strong></td>
-          <td>{getFieldValue(studentData.identification_card)}</td>
-        </tr>
-        <tr>
-          <td><strong>Photo:</strong></td>
-          <td>{getFieldValue(studentData.photo)}</td>
-        </tr>
-        <tr>
-          <td><strong>Marriage Certificate:</strong></td>
-          <td>{getFieldValue(studentData.marriage_certificate)}</td>
-        </tr>
-        <tr>
-          <td><strong>Birth Certificate:</strong></td>
-          <td>{getFieldValue(studentData.birth_certificate)}</td>
-        </tr>
-        <tr>
-          <td><strong>Good Moral:</strong></td>
-          <td>{getFieldValue(studentData.good_moral)}</td>
-        </tr>
-        <tr>
-          <td><strong>Honorable Dismissal:</strong></td>
-          <td>{getFieldValue(studentData.honorable_dismissal)}</td>
-        </tr>
-        <tr>
-          <td><strong>Report Card:</strong></td>
-          <td>{getFieldValue(studentData.report_card)}</td>
-        </tr>
+  <td><strong>Program Name:</strong></td>
+  <td>{getFieldValue(studentData.program_name)}</td>
+</tr>
+<tr>
+  <td><strong>Major:</strong></td>
+  <td>{getFieldValue(studentData.major)}</td>
+</tr>
+<tr>
+  <td><strong>Diploma:</strong></td>
+  <td>{getFieldValue(studentData.diploma, 'diploma')}</td>
+</tr>
+<tr>
+  <td><strong>Form 137:</strong></td>
+  <td>{getFieldValue(studentData.form137, 'form137')}</td>
+</tr>
+<tr>
+  <td><strong>Identification Card:</strong></td>
+  <td>{getFieldValue(studentData.identification_card, 'identification_card')}</td>
+</tr>
+<tr>
+  <td><strong>Photo:</strong></td>
+  <td>{getFieldValue(studentData.photo, 'photo')}</td>
+</tr>
+<tr>
+  <td><strong>Marriage Certificate:</strong></td>
+  <td>{getFieldValue(studentData.marriage_certificate, 'marriage_certificate')}</td>
+</tr>
+<tr>
+  <td><strong>Birth Certificate:</strong></td>
+  <td>{getFieldValue(studentData.birth_certificate, 'birth_certificate')}</td>
+</tr>
+<tr>
+  <td><strong>Good Moral:</strong></td>
+  <td>{getFieldValue(studentData.good_moral, 'good_moral')}</td>
+</tr>
+<tr>
+  <td><strong>Honorable Dismissal:</strong></td>
+  <td>{getFieldValue(studentData.honorable_dismissal, 'honorable_dismissal')}</td>
+</tr>
+<tr>
+  <td><strong>Report Card:</strong></td>
+  <td>{getFieldValue(studentData.report_card, 'report_card')}</td>
+</tr>
+
+    
         <tr>
           <td><strong>Terms and Conditions:</strong></td>
           <td>{getFieldValue(studentData.terms_and_conditions)}</td>
@@ -264,30 +288,7 @@ const StudentDetails = () => {
             <td><a href={studentData.identity_proof} target="_blank" rel="noopener noreferrer">View / Download</a></td>
           </tr>
         )}
-        {studentData.transcripts && (
-          <tr>
-            <td><strong>Transcript:</strong></td>
-            <td><a href={studentData.transcripts} target="_blank" rel="noopener noreferrer">View / Download</a></td>
-          </tr>
-        )}
-        {studentData.letter_of_recommendation && (
-          <tr>
-            <td><strong>Letter of Recommendation:</strong></td>
-            <td><a href={studentData.letter_of_recommendation} target="_blank" rel="noopener noreferrer">View / Download</a></td>
-          </tr>
-        )}
-        {studentData.resume && (
-          <tr>
-            <td><strong>Resume:</strong></td>
-            <td><a href={studentData.resume} target="_blank" rel="noopener noreferrer">View / Download</a></td>
-          </tr>
-        )}
-        {studentData.photo && (
-          <tr>
-            <td><strong>Photo:</strong></td>
-            <td><a href={studentData.photo} target="_blank" rel="noopener noreferrer">View / Download</a></td>
-          </tr>
-        )}
+        
       </tbody>
     </table>
   </div>
