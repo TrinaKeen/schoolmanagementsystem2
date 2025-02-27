@@ -4,42 +4,41 @@ const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
+    // Handle student registration
     const {
-      studentnumber,
-      firstname,
-      middlename,
-      lastname,
+      student_number,
+      first_name,
+      middle_name,
+      last_name,
       dob,
       gender,
       age,
       nationality,
-      placeofbirth,
+      place_of_birth,
       email,
-      phonenumber,
-      homeaddress,
-      emergencycontactname,
-      emergencycontactphonenumber,
-      emergencycontactrelationship,
-      previousschools,
-      yearofgraduation,
+      phone_number,
+      home_address,
+      emergency_contact_name,
+      emergency_contact_phone,
+      emergency_contact_relationship,
+      previous_schools,
+      year_of_graduation,
       gpa,
-      program_id, // Ensure this is passed from the frontend
-      schoolterm, // Ensure this is passed from the frontend
-      schoolcampus, // Ensure this is passed from the frontend
-      identityproof,
-      transcripts,
-      letterofrecommendation,
-      birthcertificate,
+      program_id,
+      diploma,
+      form137,
+      identification_card,
       photo,
-      form138, // Adjusted to match your frontend input
-      certificateofgoodmoral,
-      certificateoflowincome,
-      termsandconditions,
-      dataprivacyconsent,
+      marriage_certificate,
+      birth_certificate,
+      good_moral,
+      honorable_dismissal,
+      report_card,
+      terms_and_conditions,
+      data_privacy_consent,
     } = req.body;
 
     try {
-      // Insert the student data into the database
       await sql`
         INSERT INTO students (
           student_number,
@@ -61,57 +60,63 @@ export default async function handler(req, res) {
           year_of_graduation,
           gpa,
           program_id,
-          school_term,
-          school_campus,
-          identity_proof,
-          transcripts,
-          letter_of_recommendation,
-          birth_certificate,
+          diploma,
+          form137,
+          identification_card,
           photo,
-          form_138,
-          certificate_of_good_moral,
-          certificate_of_low_income,
+          marriage_certificate,
+          birth_certificate,
+          good_moral,
+          honorable_dismissal,
+          report_card,
           terms_and_conditions,
           data_privacy_consent
         ) VALUES (
-          ${studentnumber},
-          ${firstname},
-          ${middlename},
-          ${lastname},
+          ${student_number},
+          ${first_name},
+          ${middle_name},
+          ${last_name},
           ${dob},
           ${gender},
           ${age},
           ${nationality},
-          ${placeofbirth},
+          ${place_of_birth},
           ${email},
-          ${phonenumber},
-          ${homeaddress},
-          ${emergencycontactname},
-          ${emergencycontactphonenumber},
-          ${emergencycontactrelationship},
-          ${previousschools},
-          ${yearofgraduation},
+          ${phone_number},
+          ${home_address},
+          ${emergency_contact_name},
+          ${emergency_contact_phone},
+          ${emergency_contact_relationship},
+          ${previous_schools},
+          ${year_of_graduation},
           ${gpa},
           ${program_id},
-          ${schoolterm},
-          ${schoolcampus},
-          ${identityproof},
-          ${transcripts},
-          ${letterofrecommendation},
-          ${birthcertificate},
+          ${diploma},
+          ${form137},
+          ${identification_card},
           ${photo},
-          ${form138},
-          ${certificateofgoodmoral},
-          ${certificateoflowincome},
-          ${termsandconditions},
-          ${dataprivacyconsent}
+          ${marriage_certificate},
+          ${birth_certificate},
+          ${good_moral},
+          ${honorable_dismissal},
+          ${report_card},
+          ${terms_and_conditions},
+          ${data_privacy_consent}
         )
       `;
-
       res.status(201).json({ message: 'Application submitted successfully' });
     } catch (error) {
-      console.error('Error submitting application:', error);
-      res.status(500).json({ error: 'An error occurred while submitting the application.' });
+      console.error('Error registering student:', error);
+      res.status(500).json({ error: 'Error registering student' });
+    }
+  } else if (req.method === 'GET') {
+    // Handle fetching programs
+    try {
+      const programs = await sql`SELECT id, program_name, major FROM programs;`;
+      res.status(200).json(programs);
+    } catch (error) {
+      console.error('Error fetching programs:', error);
+      res.status(500).json({ error: 'Error fetching programs' });
     }
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });

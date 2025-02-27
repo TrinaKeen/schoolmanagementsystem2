@@ -1,109 +1,203 @@
-import { neon } from '@neondatabase/serverless';
-import jwt from 'jsonwebtoken';
+"use client";
+import React, { useState, useEffect } from "react";
+import styles from "./studentCourses.module.css";
+import Sidebar from "./components/Sidebar";
+import AdminHeader from "../components/page";
 
-const sql = neon(process.env.DATABASE_URL);
+const StudentCourses = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [programs, setPrograms] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedView, setSelectedView] = useState("programs");
 
-export default async function handler(req, res) {
-  try {
-    const decoded = verifyToken(req); // Validate the token
-    // Add your existing logic here (GET, POST, DELETE, etc.)
-  } catch (error) {
-    console.error('Error:', error);
-    if (error.message.includes('Unauthorized')) {
-      return res.status(401).json({ error: error.message });
+  useEffect(() => {
+    fetchPrograms();
+    fetchCourses();
+  }, []);
+
+  // Fetch programs
+  const fetchPrograms = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Retrieve token from storage
+      const res = await fetch("/api/admin/studentCourses?type=programs", {
+        headers: { Authorization: `Bearer ${token}` }, // Send token
+      });
+      const data = await res.json();
+      setPrograms(data);
+    } catch (error) {
+      console.error("Error fetching programs: ", error);
     }
-    res.status(500).json({ error: 'An error occurred while processing your request.' });
-  }
-}
+  };
 
-
-
-
-// Fetch data based on type
-const getResponseData = async (type) => {
-  switch (type) {
-    case 'programs':
-      return await sql`SELECT * FROM programs;`;
-    case 'courses':
-      return await sql`SELECT * FROM courses;`;
-    case 'fees':
-      return await sql`SELECT * FROM fees;`;
-    default:
-      throw new Error('Invalid type parameter');
-  }
-};
-
-// Post data based on type
-const postData = async (type, body) => {
-  switch (type) {
-    case 'programs':
-      return await sql`
-        INSERT INTO programs (program_type, program_name, major, program_code)
-        VALUES (${body.program_type}, ${body.program_name}, ${body.major}, ${body.program_code})
-        RETURNING *;
-      `;
-    case 'courses':
-      return await sql`
-        INSERT INTO courses (course_name, course_code, program_id)
-        VALUES (${body.course_name}, ${body.course_code}, ${body.program_id})
-        RETURNING *;
-      `;
-    case 'fees':
-      return await sql`
-        INSERT INTO fees (course_id, base_fee, additional_fees)
-        VALUES (${body.course_id}, ${body.base_fee}, ${body.additional_fees})
-        RETURNING *;
-      `;
-    default:
-      throw new Error('Invalid type parameter');
-  }
-};
-
-// Delete data based on type
-const deleteDataFunc = async (type, id) => {
-  switch (type) {
-    case 'programs':
-      await sql`DELETE FROM programs WHERE id = ${id};`;
-      break;
-    case 'courses':
-      await sql`DELETE FROM courses WHERE id = ${id};`;
-      break;
-    case 'fees':
-      await sql`DELETE FROM fees WHERE id = ${id};`;
-      break;
-    default:
-      throw new Error('Invalid type parameter');
-  }
-};
-
-// API handler
-export default async function handler(req, res) {
-  try {
-    verifyToken(req); // Validate the token
-    const { type } = req.query;
-    let result;
-
-    switch (req.method) {
-      case 'GET':
-        result = await getResponseData(type);
-        return res.status(200).json(result);
-      case 'POST':
-        result = await postData(type, req.body);
-        return res.status(201).json(result[0]);
-      case 'DELETE':
-        const { id } = req.query;
-        await deleteDataFunc(type, id);
-        return res.sendStatus(204);
-      default:
-        return res.status(405).json({ error: 'Method Not Allowed' });
+  // Fetch courses
+  const fetchCourses = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Retrieve token from storage
+      const res = await fetch("/api/admin/studentCourses?type=courses", {
+        headers: { Authorization: `Bearer ${token}` }, // Send token
+      });
+      const data = await res.json();
+      setCourses(data);
+    } catch (error) {
+      console.error("Error fetching courses: ", error);
     }
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: error.message });
-  }
-}
+  };
 
-// Export utility functions for reuse
-export const fetchData = getResponseData;
-export const createData = postData;
-export const deleteData = deleteDataFunc; // Rename the function here
+  // handle adding new courses
+  const handleAddCourse = async () => {
+    if (!newCourse.course_name || !newCourse.course_code || !selectedProgram) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token"); // Retrieve token from storage
+      const res = await fetch("/api/admin/studentCourses?type=courses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          course_name: newCourse.course_name,
+          course_code: newCourse.course_code,
+          program_id: selectedProgram,
+          instructor_id: newCourse.instructor_id || null,
+          year: 1,
+        }),
+      });
+
+      if (res.ok) {
+        fetchCourses(); // re-fetch courses
+        setNewCourse({
+          course_name: "",
+          course_code: "",
+          program_id: "",
+        });
+      } else {
+        console.error("Failed to add course");
+      }
+    } catch (error) {
+      console.error("Error adding course: ", error);
+    }
+  };
+
+  // handle deleting courses
+  const handleDeleteCourse = async (id) => {
+    try {
+      const token = localStorage.getItem("token"); // Retrieve token from storage
+      const res = await fetch(
+        `/api/admin/studentCourses?type=courses&id=${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` }, // Send token
+        }
+      );
+
+      if (res.ok) {
+        fetchCourses(); // re-fetch courses
+      } else {
+        console.error("Failed to delete course");
+      }
+    } catch (error) {
+      console.error("Error deleting course: ", error);
+    }
+  };
+
+  const handleSidebarClick = (view) => {
+    setSelectedView(view);
+  };
+
+  return (
+    <div className={styles.pageContainer}>
+      <AdminHeader />
+      <div className={styles.contentArea}>
+        {/* ✅ Sidebar Click Handlers */}
+        <Sidebar onClick={handleSidebarClick} />
+        <div className={styles.mainContent}>
+          <main className={styles.courseContent}>
+            <div className={styles.mainHeader}>
+              <h2>Student Courses</h2>
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className={styles.editButton}
+              >
+                {isEditing ? "Cancel" : "Edit Courses"}
+              </button>
+            </div>
+
+            {/* ✅ Display Different Tables Based on Sidebar Selection */}
+            {selectedView === "programs" && (
+              <div>
+                <h3>Programs</h3>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Program Name</th>
+                      <th>Type</th>
+                      <th>Major</th>
+                      <th>Code</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {programs.map((program) => (
+                      <tr key={program.id}>
+                        <td>{program.id}</td>
+                        <td>{program.program_name}</td>
+                        <td>{program.program_type}</td>
+                        <td>{program.major || "N/A"}</td>
+                        <td>{program.program_code}</td>
+                        <td>{program.duration} months</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedView === "courses" && (
+              <div>
+                <h3>Courses</h3>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Course Name</th>
+                      <th>Course Code</th>
+                      <th>Program ID</th>
+                      <th>Instructor ID</th>
+                      <th>Year</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {courses.map((course) => (
+                      <tr key={course.id}>
+                        <td>{course.id}</td>
+                        <td>{course.course_name}</td>
+                        <td>{course.course_code}</td>
+                        <td>{course.program_id}</td>
+                        <td>{course.instructor_id || "N/A"}</td>
+                        <td>{course.year}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedView === "subjects" && (
+              <div>
+                <h3>Subjects (Placeholder)</h3>
+                <p>Subjects are not yet implemented in the schema.</p>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default StudentCourses;

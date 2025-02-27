@@ -4,7 +4,7 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "../HomePage.module.css";
+import styles from "../components/HomePage.module.css";
 import logo from "/src/school-logo.png";
 import teacherlogo from "/src/teachericon.png";
 import studentlogo from "/src/studentlogo.png";
@@ -22,26 +22,10 @@ export default function Home() {
     setIsDropdownOpen(isDropdownOpen === type ? null : type);
   };
 
-  // Function to handle downloading registration logs
-const handleDownloadLogs = async () => {
-  try {
-    const response = await fetch("/api/admin/logs"); // Fetch logs from the API endpoint
-    if (!response.ok) throw new Error("Failed to fetch logs"); // Check if the response is successful
-
-    const blob = await response.blob(); // Convert the response into a blob format (binary large object)
-    const url = window.URL.createObjectURL(blob); // Create a temporary URL for downloading the file
-    const a = document.createElement("a"); // Create a new anchor tag element
-    a.href = url; // Set the download URL as the anchor tag's href
-    a.download = "registration_logs.csv"; // Set the filename for the downloaded file
-    document.body.appendChild(a); // Append the anchor tag to the body to make it clickable
-    a.click(); // Programmatically click the anchor tag to trigger the download
-    document.body.removeChild(a); // Remove the anchor tag from the body after download starts
-  } catch (error) {
-    console.error("Download error:", error); // Log any errors that occur during the process
-  }
-};
-
   return (
+    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
+
+ 
     <div className={styles.container}>
       <Head>
         <title>School Management System</title>
@@ -102,12 +86,12 @@ const handleDownloadLogs = async () => {
             {/* Button to toggle dropdown */}
             <button
               className={styles.dropdownButton}
-              onClick={() => toggleDropdown("account")}
+              onClick={() => toggleDropdown("account")} // Toggle dropdown on button click
             >
               <FaBars size={35} />
             </button>
 
-            {/* Dropdown menu */}
+            {/* Conditionally render the dropdown based on state */}
             {isDropdownOpen === "account" && (
               <div className={styles.dropdownContent}>
                 <Link href="/">Log Out</Link>
@@ -127,17 +111,6 @@ const handleDownloadLogs = async () => {
           Manage your school's daily activities, student records, teacher
           assignments, and more.
         </p>
-
-        {/* Download Logs Button */}
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleDownloadLogs} // Call function to download logs when button is clicked
-            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
-          >
-            <FaDownload className="mr-2" />
-            Download Registration Logs {/* Button label indicating action */}
-          </button>
-        </div>
 
         <div className={styles.grid}>
           <div className={styles.card}>
@@ -225,6 +198,7 @@ const handleDownloadLogs = async () => {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }
