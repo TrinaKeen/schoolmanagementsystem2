@@ -6,7 +6,7 @@ import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./StudentDepartment.module.css";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-//Referenced from Deepseek
+
 // Initialize fonts
 pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 
@@ -377,3 +377,6 @@ export default function SchoolDepartment() {
         </div>
     );
 };
+
+// OpenAI. (2025, February 20). Response to the prompt "How to implement an export pdf function with pdf make?"
+// Deepseek (Deepseek-R1). Accessed and retrieved on Feb 20, 2025 from https://www.deepseek.com/
