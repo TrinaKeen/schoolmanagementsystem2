@@ -4,7 +4,7 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "../HomePage.module.css";
+import styles from "../components/HomePage.module.css";
 import logo from "/src/school-logo.png";
 import teacherlogo from "/src/teachericon.png";
 import studentlogo from "/src/studentlogo.png";
@@ -23,6 +23,9 @@ export default function Home() {
   };
 
   return (
+    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
+
+ 
     <div className={styles.container}>
       <Head>
         <title>School Management System</title>
@@ -33,74 +36,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className={styles.header}>
-        <Link href={"/"}>
-          <div className={styles.logo}>
-            <Image src={logo} alt="School Logo" width={100} height={100} />
-            <h1>EEFCI Management System</h1>
-          </div>
-        </Link>
-
-        <nav className={styles.navbar}>
-          <Link href="../AdminPortal/admin-dashboard">
-            <FaHome size={35} />
-          </Link>
-
-          <div className={styles.loginDropdown}>
-            <button
-              className={styles.dropdownButton}
-              onClick={() => toggleDropdown("notifications")}
-            >
-              <FaBell size={35} />
-            </button>
-
-            {isDropdownOpen === "notifications" && (
-              <div className={styles.dropdownContent}>
-                <p className="text-black flex justify-center">
-                  No new notifications
-                </p>
-              </div>
-            )}
-          </div>
-          <div className={styles.loginDropdown}>
-            <button
-              className={styles.dropdownButton}
-              onClick={() => toggleDropdown("messages")}
-            >
-              <FaEnvelope size={35} />
-            </button>
-
-            {isDropdownOpen === "messages" && (
-              <div className={styles.dropdownContent}>
-                <p className="text-black flex justify-center">
-                  No new messages
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.loginDropdown}>
-            {/* Button to toggle dropdown */}
-            <button
-              className={styles.dropdownButton}
-              onClick={() => toggleDropdown("account")} // Toggle dropdown on button click
-            >
-              <FaBars size={35} />
-            </button>
-
-            {/* Conditionally render the dropdown based on state */}
-            {isDropdownOpen === "account" && (
-              <div className={styles.dropdownContent}>
-                <Link href="/">Log Out</Link>
-                <Link href="../AdminPortal/admin-settings">
-                  Account Settings
-                </Link>
-                <Link href="#">Help Centre</Link>
-              </div>
-            )}
-          </div>
-        </nav>
-      </header>
+      
 
       <main className={styles.main}>
         <h2>Welcome to the Super Admin Account</h2>
@@ -191,6 +127,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }
