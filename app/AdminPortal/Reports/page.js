@@ -7,6 +7,7 @@ import styles from "./Reports.module.css";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
+//Referenced from Deepseek
 // Initialize fonts
 pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 
@@ -73,6 +74,7 @@ const reportData = {
 
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("studentfees");
+    
     const handleExportPDF = () => {
         const { title, headers, rows } = reportData[activeTab];
         
