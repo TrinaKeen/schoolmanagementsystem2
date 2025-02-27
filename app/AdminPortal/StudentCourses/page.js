@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./studentCourses.module.css";
 import Sidebar from "./components/Sidebar";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 
 const StudentCourses = () => {
   const [isEditing, setIsEditing] = useState(false);

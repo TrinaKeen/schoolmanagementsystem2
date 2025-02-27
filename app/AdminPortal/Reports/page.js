@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./Reports.module.css";
 import pdfMake from "pdfmake/build/pdfmake";
