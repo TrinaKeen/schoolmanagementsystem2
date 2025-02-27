@@ -6,7 +6,7 @@ import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 import styles from "./StudentDepartment.module.css";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
+//Referenced from Deepseek
 // Initialize fonts
 pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 
@@ -23,7 +23,7 @@ const courses = [
 
 export default function SchoolDepartment() {
     const [activeTab, setActiveTab] = useState("grade11");
-
+    
     const handleExportPDF = () => {
         const documentDefinition = {
             content: [
