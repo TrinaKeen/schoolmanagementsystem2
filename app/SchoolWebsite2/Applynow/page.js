@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
-import WebsiteHeader from '../components/WebsiteHeader';
-import styles from '../components/ApplyNow.module.css';
+import WebsiteHeader from '../components/WebsiteHeader'; // Importing the WebsiteHeader component for the page header
+import styles from '../components/ApplyNow.module.css'; // CSS module for styling the Apply Now page
 
 export default function ApplyNow() {
+  // State to store the form data from the user input fields
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -12,53 +13,65 @@ export default function ApplyNow() {
     username: '',
     password: '',
   });
-  const [message, setMessage] = useState(''); // State for success/error messages
 
+  // State to store any success or error messages for user feedback
+  const [message, setMessage] = useState('');
+
+  // Function to handle changes in form input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value }); // Update the formData state with the new value of the field
   };
 
+  // Function to validate the form inputs before submission
   const validateForm = () => {
     const { fullName, email, password } = formData;
 
+    // Check if fullName is provided
     if (!fullName.trim()) {
-      return 'Full name is required.';
+      return 'Full name is required.'; // Return error message if full name is empty
     }
 
+    // Check if email format is valid
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      return 'Please enter a valid email address.';
+      return 'Please enter a valid email address.'; // Return error if email format is invalid
     }
 
+    // Check if password length is less than 6 characters
     if (password.length < 6) {
-      return 'Password must be at least 6 characters long.';
+      return 'Password must be at least 6 characters long.'; // Return error message if password is too short
     }
 
-    return null; // Validation passed
+    return null; // Return null if all validations pass
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior (page reload)
 
+    // First, validate the form data
     const validationError = validateForm();
     if (validationError) {
-      setMessage(validationError);
-      return;
+      setMessage(validationError); // If there's a validation error, set the error message
+      return; // Exit the function early if validation fails
     }
 
     try {
+      // Send a POST request to register the student
       const res = await fetch('/api/students/studentloginregister', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // Set the request header to JSON
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Send the formData as the request body
       });
 
-      const data = await res.json();
+      const data = await res.json(); // Parse the JSON response
 
+      // If the request was successful, show success message
       if (res.ok) {
         setMessage('Student successfully registered!');
+        // Clear the form data after successful registration
         setFormData({
           fullName: '',
           email: '',
@@ -67,9 +80,11 @@ export default function ApplyNow() {
           password: '',
         });
       } else {
+        // If the registration failed, show the error message from the response
         setMessage(data.error || 'Registration failed. Please try again.');
       }
     } catch (error) {
+      // Handle any unexpected errors during the API call
       setMessage('An unexpected error occurred. Please try again later.');
     }
   };

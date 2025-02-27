@@ -1,3 +1,6 @@
+// Credits for google.com and ChatGPT for guiding me step by step on how I can connect this API to my frontend
+// These comments offer insights into best practices for querying databases, handling errors, and structuring an API.
+
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
@@ -5,6 +8,8 @@ const sql = neon(process.env.DATABASE_URL);
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
+      // Fetch student data, including their personal information and program details
+      // ChatGPT Command: "How do I query multiple tables using LEFT JOIN in SQL with Node.js?"
       const result = await sql`
         SELECT 
           s.student_number,
@@ -52,12 +57,16 @@ export default async function handler(req, res) {
           admin_approvals a ON s.student_number = a.student_number
       `;
 
-      return res.status(200).json(result);
+      // Return the fetched student data
+      res.status(200).json(result);
     } catch (error) {
+      // Log and handle errors during data fetching
+      // ChatGPT Command: "How should I handle and log errors in a Node.js API when querying a database?"
       console.error('Error fetching student data:', error.message || error);
-      return res.status(500).json({ error: 'An error occurred while fetching student data.' });
+      res.status(500).json({ error: 'An error occurred while fetching student data.' });
     }
   } else {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    // Handle unsupported HTTP methods
+    res.status(405).json({ error: 'Method Not Allowed' });
   }
 }

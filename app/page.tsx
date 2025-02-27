@@ -4,6 +4,7 @@ import React from 'react';
 import styles from './Home.module.css'; 
 import WebsiteHeader from './SchoolWebsite2/components/WebsiteHeader';
 
+
 export default function Home() {
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
@@ -15,7 +16,7 @@ export default function Home() {
           <h1>Welcome to Our School</h1>
           <p>Your journey towards excellence begins here.</p>
           <br></br>
-          <a href="/admissions" className={styles.ctaButton}>Apply Now</a>
+          <a href="/SchoolWebsite2/Applynow" className={styles.ctaButton}>Apply Now</a>
         </section>
 
         {/* Announcements Section */}
@@ -74,6 +75,7 @@ export default function Home() {
           <a href="/clubs" className={styles.ctaButton}>Learn More</a>
         </section>
       </main> 
+     
     </div>  
   );
 }
