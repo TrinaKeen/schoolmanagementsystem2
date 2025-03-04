@@ -1,118 +1,73 @@
-"use client";
+import sql from '../../../db';
 
-import { useState } from "react";
-import AdminHeader from "../components/header";
-import styles from "./StudentFees.module.css";
+async function fetchTuitionFees() {
+    try {
+        const fees = await sql`
+            SELECT 
+                id, 
+                student_number, 
+                program_id, 
+                base_fee, 
+                currency, 
+                due_date, 
+                additional_fees, 
+                total_fee, 
+                payment_status
+            FROM tuition_fees
+        `;
 
-export default function SchoolDepartment() {
-    const [activeTab, setActiveTab] = useState("grade11");
+        return fees.map((fee) => ({
+            ...fee,
+            due_date: fee.due_date ? new Date(fee.due_date).toLocaleDateString() : 'N/A',
+        }));
+    } catch (error) {
+        console.error('Error fetching tuition fees:', error);
+        return [];
+    }
+}
 
-    const feeData = [
-        { id: "GAGA01", description: "Nemo enim ipsam voluptatem", charge: "₱1,500.00" },
-        { id: "YAWA22", description: "Nemo enim ipsam voluptatem", charge: "₱540.00" },
-        { id: "HELP00", description: "Nemo enim ipsam voluptatem", charge: "₱3,399.00" },
-        { id: "HALO13", description: "Nemo enim ipsam voluptatem", charge: "₱290.00" },
-        { id: "GAGO10", description: "Nemo enim ipsam voluptatem", charge: "₱129.00" },
-        { id: "FFAI01", description: "Nemo enim ipsam voluptatem", charge: "₱7,100.00" },
-        { id: "HSHS17", description: "Nemo enim ipsam voluptatem", charge: "₱1,580.00" },
-        { id: "WEEH08", description: "Nemo enim ipsam voluptatem", charge: "₱1,400.00" },
-    ];
-
-    const renderFeesTable = () => (
-        <>
-            <div className={styles.dropdownContainer}>
-                <select className={styles.dropdown}>
-                    <option value="">Track/Strand</option>
-                    <option value="academic">Academic</option>
-                    <option value="technical">Technical-Vocational</option>
-                    <option value="sports">Sports</option>
-                    <option value="arts">Arts & Design</option>
-                </select>
-                <button className={styles.editButton}>Edit Fee</button>
-            </div>
-
-            {[1, 2, 3].map((semester) => (
-                <div key={semester} className={styles.semester}>
-                    <h2>{semester}st Semester</h2>
-                    <table className={styles.feesTable}>
-                        <thead>
-                            <tr>
-                                <th>Detail Code</th>
-                                <th>Description</th>
-                                <th>Charge</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {feeData.map((fee) => (
-                                <tr key={fee.id}>
-                                    <td>{fee.id}</td>
-                                    <td>{fee.description}</td>
-                                    <td>{fee.charge}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <p className={styles.totalCharges}><strong>Total Charges:</strong> ₱17,338.00</p>
-                </div>
-            ))}
-        </>
-    );
-
-    const renderTab = () => {
-        switch (activeTab) {
-            case "grade11":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>SHS Grade 11 Tuition Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "grade12":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>SHS Grade 12 Tuition Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "science-bachelor":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>Bachelor of Science in Midwifery Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "tech-bachelor":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>Bachelor of Technical-Vocational Teacher Education Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-        }
-    };
+export default async function StudentFeesPage() {
+    const fees = await fetchTuitionFees();
 
     return (
-        <div>
-            <AdminHeader />
-            <div className={styles.container}>
-                <div className={styles.sidebar}>
-                    <h2>Student Fees</h2>
-                    <ul>
-                        <li className={activeTab === "grade11" ? styles.active : ""}
-                            onClick={() => setActiveTab("grade11")}>Senior High School Grade 11</li>
-
-                        <li className={activeTab === "grade12" ? styles.active : ""}
-                            onClick={() => setActiveTab("grade12")}>Senior High School Grade 12</li>
-
-                        <li className={activeTab === "science-bachelor" ? styles.active : ""}
-                            onClick={() => setActiveTab("science-bachelor")}>Bachelor of Science in Midwifery</li>
-
-                        <li className={activeTab === "tech-bachelor" ? styles.active : ""}
-                            onClick={() => setActiveTab("tech-bachelor")}>Bachelor of Technical-Vocational Teacher Education</li>
-                    </ul>
-                </div>
-                <div className={styles.content}>{renderTab()}</div>
-            </div>
+        <div className="p-6">
+            <h1 className="text-2xl font-bold mb-4">Tuition Fees</h1>
+            <table className="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr className="">
+                        <th className="border border-gray-300 px-4 py-2">ID</th>
+                        <th className="border border-gray-300 px-4 py-2">Student Number</th>
+                        <th className="border border-gray-300 px-4 py-2">Program ID</th>
+                        <th className="border border-gray-300 px-4 py-2">Base Fee</th>
+                        <th className="border border-gray-300 px-4 py-2">Currency</th>
+                        <th className="border border-gray-300 px-4 py-2">Due Date</th>
+                        <th className="border border-gray-300 px-4 py-2">Additional Fees</th>
+                        <th className="border border-gray-300 px-4 py-2">Total Fee</th>
+                        <th className="border border-gray-300 px-4 py-2">Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {fees.length > 0 ? (
+                        fees.map((fee) => (
+                            <tr key={fee.id}>
+                                <td className="border border-gray-300 px-4 py-2">{fee.id}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.student_number}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.program_id}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.currency} {fee.base_fee}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.currency}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.due_date}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.currency} {fee.additional_fees}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.currency} {fee.total_fee}</td>
+                                <td className="border border-gray-300 px-4 py-2">{fee.payment_status}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="9" className="text-center py-4">No tuition fees found.</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
         </div>
     );
 }
