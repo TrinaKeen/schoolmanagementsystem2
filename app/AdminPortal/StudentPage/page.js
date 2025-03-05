@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../components/studentpage.modules.css';
 import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
+import { HiChevronDown } from 'react-icons/hi';
 
 const AdminStudentList = () => {
   const [students, setStudents] = useState([]);
@@ -10,8 +11,10 @@ const AdminStudentList = () => {
   const [error, setError] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const adminId = 1; // Replace this with the actual admin ID from your context or state
-
+  const dropdownRef = useRef(null); // For actions dropdown menu
+  
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -88,6 +91,25 @@ const AdminStudentList = () => {
     setSelectedStudent(null);
   };
 
+  // Download logs function
+  const handleDownloadLogs = () => {
+    window.location.href = '/api/admin/downloadRegistrationLogs';
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   if (loading) {
     return <p className="loading-message">Loading students...</p>;
   }
@@ -103,6 +125,22 @@ const AdminStudentList = () => {
   return (
     <div style={{ backgroundColor: 'white', height: '100vh', color: 'black' }}>
       <Sidebar />
+
+          {/* Actions Dropdown for downloading logs */}
+      <div className="actions-container" ref={dropdownRef}> {/* Allows user to click out of menu */}
+        <button className="actions-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          Actions
+          <HiChevronDown size={20} />
+        </button>
+        {isDropdownOpen && (
+          <ul className="actions-dropdown">
+            <li onClick={handleDownloadLogs}>Download Registration Logs</li>
+            <li>Export to Excel</li>
+            <li>Bulk Update Status</li>
+          </ul>
+        )}
+      </div>
+
       <table>
         <thead>
           <tr>
