@@ -71,7 +71,10 @@ export default function StudentCourses() {
         throw new Error("Failed to fetch courses");
       }
 
-      const data = await res.json();
+      let data = await res.json();
+      data.sort((a, b) => a.id - b.id);
+
+      // const data = await res.json();
       setCourses(data);
     } catch (error) {
       setError(error.message);
@@ -190,15 +193,16 @@ export default function StudentCourses() {
 
       const updatedCourseData = await res.json();
 
-      setCourses((prevCourses) =>
-        prevCourses.map((course) =>
+      setCourses((prevCourses) => {
+        return prevCourses.map((course) =>
           course.id === updatedCourseData.id
             ? { ...course, ...updatedCourseData }
             : course
-        )
-      );
+        );
+      });
 
-      // fetchCourses();
+      await fetchCourses();
+
       setEditCourse(null);
       setFormVisible(false); // Hide form after saving
       setNewCourse({
