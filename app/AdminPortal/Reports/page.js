@@ -27,14 +27,14 @@ const reportData = {
     title: "Semester Course Details",
     headers: ["Detail Code", "Description", "Instructor"],
     rows: [
-      ["GAGAA01", "Nemo enim ipsam voluptatem", "John McDonald"],
-      ["YAWA22", "Nemo enim ipsam voluptatem", "Laura Vincent"],
-      ["HELP00", "Nemo enim ipsam voluptatem", "Laura Vincent"],
-      ["HALO13", "Nemo enim ipsam voluptatem", "Laura Vincent"],
-      ["GAGO10", "Nemo enim ipsam voluptatem", "John McDonald"],
-      ["FFAII01", "Nemo enim ipsam voluptatem", "Laura Vincent"],
-      ["HSHS17", "Nemo enim ipsam voluptatem", "John McDonald"],
-      ["WEEH08", "Nemo enim ipsam voluptatem", "Laura Vincent"]
+      ["PHC 1", "Primary HealthCare 1", "John McDonald"],
+      ["GE 114", "Science, Technology and Society", "Laura Vincent"],
+      ["AT 213", "Automotive Body Repair and Subtrate Preparation", "Laura Vincent"],
+      ["PCK. 211", "Technology for Teaching and Learning 1", "Laura Vincent"],
+      ["FSM 111", "Occupational Health and Safety Practices", "John McDonald"],
+      ["FSM 112", "Food Selection and Preservation", "Laura Vincent"],
+      ["GFD 112", "Fabric and Garment Designing Techniques", "John McDonald"],
+      ["GFD 211", "Pattern Drafting and Designing", "Laura Vincent"]
     ]
   },
   semesterfees: {
