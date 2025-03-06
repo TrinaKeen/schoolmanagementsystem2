@@ -1,117 +1,102 @@
-"use client";
+'use client';  // Makes it a Client Component to allow filtering (useState and useEffect)
 
-import { useState } from "react";
-import AdminHeader from "../components/header";
-import styles from "./StudentFees.module.css";
+import { useEffect, useState } from 'react';
+import Header from '../components/header';
+import styles from './StudentFees.module.css';
 
-export default function SchoolDepartment() {
-    const [activeTab, setActiveTab] = useState("grade11");
+export default function StudentFeesPage() {
+    const [fees, setFees] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const feeData = [
-        { id: "GAGA01", description: "Nemo enim ipsam voluptatem", charge: "₱1,500.00" },
-        { id: "YAWA22", description: "Nemo enim ipsam voluptatem", charge: "₱540.00" },
-        { id: "HELP00", description: "Nemo enim ipsam voluptatem", charge: "₱3,399.00" },
-        { id: "HALO13", description: "Nemo enim ipsam voluptatem", charge: "₱290.00" },
-        { id: "GAGO10", description: "Nemo enim ipsam voluptatem", charge: "₱129.00" },
-        { id: "FFAI01", description: "Nemo enim ipsam voluptatem", charge: "₱7,100.00" },
-        { id: "HSHS17", description: "Nemo enim ipsam voluptatem", charge: "₱1,580.00" },
-        { id: "WEEH08", description: "Nemo enim ipsam voluptatem", charge: "₱1,400.00" },
-    ];
+    useEffect(() => {
+        async function fetchFees() {
+            const res = await fetch('/api/admin/fetchStudentFees', { cache: 'no-store' });
 
-    const renderFeesTable = () => (
-        <>
-            <div className={styles.dropdownContainer}>
-                <select className={styles.dropdown}>
-                    <option value="">Track/Strand</option>
-                    <option value="academic">Academic</option>
-                    <option value="technical">Technical-Vocational</option>
-                    <option value="sports">Sports</option>
-                    <option value="arts">Arts & Design</option>
-                </select>
-                <button className={styles.editButton}>Edit Fee</button>
-            </div>
+            if (!res.ok) {
+                if (res.status === 401) {
+                    // 🚀 Redirect to login page if token is missing or invalid
+                    window.location.href = '/LogIn';  // Adjust this if your login page is in a different path
+                    return;
+                } else {
+                    console.error('Failed to fetch student fees', res.status, res.statusText);
+                    return;
+                }
+            }
 
-            {[1, 2, 3].map((semester) => (
-                <div key={semester} className={styles.semester}>
-                    <h2>{semester}st Semester</h2>
-                    <table className={styles.feesTable}>
+            const data = await res.json();
+            setFees(data);
+        }
+
+        fetchFees();
+    }, []);
+
+    // Filter fees based on search query
+    const filteredFees = fees.filter((fee) => {
+        const query = searchQuery.toLowerCase();
+        return (
+            fee.id.toString().includes(query) ||
+            fee.student_number.toLowerCase().includes(query) ||
+            fee.payment_status.toLowerCase().includes(query) ||
+            (fee.program_id && fee.program_id.toString().includes(query))
+        );
+    });
+
+    return (
+        <div className={styles.pageContainer}>
+            <Header />
+            <div className={styles.contentContainer}>
+                <h1 className={styles.title}>Student Fees</h1>
+
+                {/* Search bar */}
+                <div className={styles.searchContainer}>
+                    <input
+                        type="text"
+                        placeholder="Search by ID, Student Number, Program ID, or Payment Status"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className={styles.searchInput}
+                    />
+                </div>
+
+                {/* Fees Table */}
+                <div className={styles.tableWrapper}>
+                    <table className={styles.table}>
                         <thead>
                             <tr>
-                                <th>Detail Code</th>
-                                <th>Description</th>
-                                <th>Charge</th>
+                                <th className={styles.th}>ID</th>
+                                <th className={styles.th}>Student Number</th>
+                                <th className={styles.th}>Program ID</th>
+                                <th className={styles.th}>Base Fee</th>
+                                <th className={styles.th}>Additional Fees</th>
+                                <th className={styles.th}>Total Fee</th>
+                                <th className={styles.th}>Currency</th>
+                                <th className={styles.th}>Due Date</th>
+                                <th className={styles.th}>Payment Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {feeData.map((fee) => (
-                                <tr key={fee.id}>
-                                    <td>{fee.id}</td>
-                                    <td>{fee.description}</td>
-                                    <td>{fee.charge}</td>
+                            {filteredFees.length > 0 ? (
+                                filteredFees.map((fee) => (
+                                    <tr key={fee.id}>
+                                        <td className={styles.td}>{fee.id}</td>
+                                        <td className={styles.td}>{fee.student_number}</td>
+                                        <td className={styles.td}>{fee.program_id}</td>
+                                        <td className={styles.td}>{fee.base_fee}</td>
+                                        <td className={styles.td}>{fee.additional_fees}</td>
+                                        <td className={styles.td}>{fee.total_fee}</td>
+                                        <td className={styles.td}>{fee.currency}</td>
+                                        <td className={styles.td}>{fee.due_date}</td>
+                                        <td className={styles.td}>{fee.payment_status}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="9" className={styles.noData}>No matching student fees found.</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
-                    <p className={styles.totalCharges}><strong>Total Charges:</strong> ₱17,338.00</p>
                 </div>
-            ))}
-        </>
-    );
-
-    const renderTab = () => {
-        switch (activeTab) {
-            case "grade11":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>SHS Grade 11 Tuition Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "grade12":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>SHS Grade 12 Tuition Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "science-bachelor":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>Bachelor of Science in Midwifery Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-            case "tech-bachelor":
-                return (
-                    <div className={styles.tabContent}>
-                        <h1>Bachelor of Technical-Vocational Teacher Education Fees</h1>
-                        {renderFeesTable()}
-                    </div>
-                );
-        }
-    };
-
-    return (
-        <div>
-            <AdminHeader />
-            <div className={styles.container}>
-                <div className={styles.sidebar}>
-                    <h2>Student Fees</h2>
-                    <ul>
-                        <li className={activeTab === "grade11" ? styles.active : ""}
-                            onClick={() => setActiveTab("grade11")}>Senior High School Grade 11</li>
-
-                        <li className={activeTab === "grade12" ? styles.active : ""}
-                            onClick={() => setActiveTab("grade12")}>Senior High School Grade 12</li>
-
-                        <li className={activeTab === "science-bachelor" ? styles.active : ""}
-                            onClick={() => setActiveTab("science-bachelor")}>Bachelor of Science in Midwifery</li>
-
-                        <li className={activeTab === "tech-bachelor" ? styles.active : ""}
-                            onClick={() => setActiveTab("tech-bachelor")}>Bachelor of Technical-Vocational Teacher Education</li>
-                    </ul>
-                </div>
-                <div className={styles.content}>{renderTab()}</div>
             </div>
         </div>
     );

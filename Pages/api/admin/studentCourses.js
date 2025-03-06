@@ -1,84 +1,164 @@
 import { neon } from "@neondatabase/serverless";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken"; Not used here currently
+import { jwtVerify } from "jose"; // npm insall jose
+import { parse } from "cookie"; // npm install cookie
 
 const sql = neon(process.env.DATABASE_URL);
 
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET); // Added by Martin
+
 // middleware to verify token
 const verifyToken = async (req) => {
-  if (!req.headers.authorization) {
-    throw new Error("Unauthorized: no token provided.");
-  }
+  // if (!req.headers.authorization) {
+  //   throw new Error("Unauthorized: no token provided.");
+  // }
 
-  const token = req.headers.authorization.split(" ")[1]; // extract token from Authorization header
+  // const token = req.headers.authorization.split(" ")[1]; // extract token from Authorization header
+  // Added by Martin
+  const cookies = parse(req.headers.cookie || "");
+  const token = cookies.token;
 
   if (!token) {
     throw new Error("Unauthorized: no token provided.");
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded;
+  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // Added by Martin
+  const { payload } = await jwtVerify(token, JWT_SECRET);
+  return payload;
 };
 
 // get data based on type
 const getResponseData = async (type) => {
-  switch (type) {
-    case "programs":
-      return await sql`SELECT * FROM programs`;
-    case "courses":
-      return await sql`SELECT * FROM courses`;
-    case "subjects":
-      return await sql`SELECT * FROM subjects`;
-    default:
-      throw new Error("Invalid type");
+  try {
+    switch (type) {
+      case "programs":
+        return await sql`SELECT * FROM programs`;
+      case "courses":
+        console.log("Fetching courses..."); // Debug log
+        const result = await sql`SELECT * FROM courses`;
+        console.log("Fetched courses:", result); // Debug log
+        return result;
+      case "subjects":
+        return await sql`SELECT * FROM subjects`;
+      case "instructors":
+        return await sql`SELECT id, first_name, last_name FROM instructors`;
+      default:
+        throw new Error("Invalid type");
+    }
+  } catch (error) {
+    console.error("Database Fetch Error:", error.message); // Log full error
+    throw new Error(`Database Fetch Error: ${error.message}`);
   }
 };
 
 // insert data based on type
 const postData = async (type, body) => {
+  console.log("Received data for insertion:", body);
+
+  if (!body) throw new Error("Invalid request body");
+
   try {
     switch (type) {
       case "programs":
-        return await sql`INSERT INTO programs (program_type, program_name, major, program_code, duration)
-                VALUES (${body.program_type}, ${body.program_name}, ${body.major}, ${body.program_code}, ${body.duration})
-                RETURNING *;`;
+        return await sql`
+          INSERT INTO programs (program_type, program_name, major, program_code, duration)
+          VALUES (${body.program_type}, ${body.program_name}, ${body.major}, ${body.program_code}, ${body.duration})
+          RETURNING *;
+        `;
+
       case "courses":
-        return await sql`INSERT INTO courses (course_name, course_code, program_id, instructor_id, year)
-                VALUES (${body.course_name}, ${body.course_code}, ${body.program_id}, ${body.instructor_id}, ${body.year})
-                RETURNING *;`;
+        if (
+          !body.course_name ||
+          !body.course_code ||
+          !body.program_id ||
+          !body.instructor_id ||
+          !body.year
+        ) {
+          throw new Error("Missing required fields");
+        }
+        return await sql`
+          INSERT INTO courses (course_name, course_code, program_id, instructor_id, year)
+          VALUES (${body.course_name}, ${body.course_code}, ${body.program_id}, ${body.instructor_id}, ${body.year})
+          RETURNING *;
+        `;
+
       case "subjects":
-        return await sql`INSERT INTO fees (course_id, base_fee, additional_fees)
-                VALUES (${body.course_id}, ${body.base_fee}, ${body.additional_fees})
-                RETURNING *;`;
+        return await sql`
+          INSERT INTO subjects (id, subject_name, credit_hours)
+          VALUES (${body.id}, ${body.subject_name}, ${body.credit_hours})
+          RETURNING *;
+        `;
+
       default:
         throw new Error("Invalid type");
     }
   } catch (error) {
-    throw new Error("Invalid data");
+    console.error("Database Insertion Error:", error.message);
+    throw new Error(`Database Error: ${error.message}`);
   }
 };
 
 const deleteDataFunc = async (type, id) => {
+  console.log("Deleting record of type:", type, "with ID:", id);
+
   const numericId = parseInt(id, 10);
   if (isNaN(numericId)) {
+    console.error("Invalid ID received:", id);
     throw new Error("Invalid ID");
   }
 
-  switch (type) {
-    case "programs":
-      return await sql`DELETE FROM programs WHERE program_id = ${numericId}`;
-    case "courses":
-      return await sql`DELETE FROM courses WHERE course_id = ${numericId}`;
-    case "subjects":
-      return await sql`DELETE FROM subjects WHERE subject_id = ${numericId}`;
-    default:
-      throw new Error("Invalid type");
+  try {
+    switch (type) {
+      case "courses":
+        return await sql`DELETE FROM courses WHERE id = ${numericId}`;
+      default:
+        throw new Error("Invalid type");
+    }
+  } catch (error) {
+    throw new Error("Error deleting data: " + error.message);
+  }
+};
+
+const updateData = async (type, body) => {
+  if (!body.id) {
+    console.error("Error: Missing course ID for update"); // Debugging log
+    throw new Error("Missing course ID for update");
+  }
+
+  console.log("Updating course:", body); // Debugging log
+
+  try {
+    switch (type) {
+      case "courses":
+        const result = await sql`
+          UPDATE courses
+          SET course_name = ${body.course_name},
+              course_code = ${body.course_code},
+              program_id = ${body.program_id},
+              instructor_id = ${body.instructor_id},
+              year = ${body.year}
+          WHERE id = ${body.id}
+          RETURNING *;
+        `;
+
+        console.log("Update successful:", result); // Debugging log
+        return result;
+
+      default:
+        throw new Error("Invalid type for update");
+    }
+  } catch (error) {
+    console.error("Database Update Error:", error.message); // Log full error
+    throw new Error(`Database Update Error: ${error.message}`);
   }
 };
 
 // API handler :>
 export default async function handler(req, res) {
   try {
-    verifyToken(req); // verify token before proceeding
+    await verifyToken(req); // Ensure token verification
+
     const { type } = req.query;
     let result;
 
@@ -86,13 +166,21 @@ export default async function handler(req, res) {
       case "GET":
         result = await getResponseData(type);
         return res.status(200).json(result);
+
       case "POST":
+        const body = req.body; // Extract body
         result = await postData(type, body);
         return res.status(201).json(result[0]);
+
+      case "PUT":
+        result = await updateData(type, req.body);
+        return res.status(200).json(result[0]);
+
       case "DELETE":
         const { id } = req.query;
         await deleteDataFunc(type, id);
         return res.status(204).end();
+
       default:
         return res.status(405).json({ message: "Method Not Allowed" });
     }
