@@ -15,7 +15,7 @@ const verifyToken = async (req) => {
 
   // const token = req.headers.authorization.split(" ")[1]; // extract token from Authorization header
   // Added by Martin
-  const cookies = parse(req.headers.cookie || '');
+  const cookies = parse(req.headers.cookie || "");
   const token = cookies.token;
 
   if (!token) {
@@ -41,6 +41,8 @@ const getResponseData = async (type) => {
         return result;
       case "subjects":
         return await sql`SELECT * FROM subjects`;
+      case "instructors":
+        return await sql`SELECT id, first_name, last_name FROM instructors`;
       default:
         throw new Error("Invalid type");
     }
