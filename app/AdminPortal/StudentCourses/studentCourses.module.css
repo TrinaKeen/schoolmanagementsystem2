@@ -93,3 +93,85 @@
   border: 1px solid #ddd;
   text-align: left;
 }
+
+/* teacherPage.module.css */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f4f8;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.contentContainer {
+  margin: 80px auto 0; /* Push down to clear header */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  color: #333;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 300px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.th,
+.td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.th {
+  background: #0a9396;
+  color: white;
+  font-weight: bold;
+}
+
+.td {
+  color: #333;
+}
+
+.tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
