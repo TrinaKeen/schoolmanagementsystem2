@@ -141,19 +141,21 @@ const StudentCourses = () => {
   return (
     <div className={styles.pageContainer}>
       <AdminHeader />
+
       <div className={styles.contentArea}>
         <Sidebar onSelectView={handleSidebarClick} />
+
         <div className={styles.mainContent}>
-          <main className={styles.courseContent}>
-            <div className={styles.mainHeader}>
-              <h2>
-                {selectedProgram
-                  ? `Courses for ${
-                      programs.find((p) => p.id === selectedProgram)
-                        ?.program_name
-                    }`
-                  : "Select a Program"}
-              </h2>
+          <div className={styles.headerContainer}>
+            <h2 className={styles.pageTitle}>
+              {selectedProgram
+                ? `Courses for ${
+                    programs.find((p) => p.id === selectedProgram)?.program_name
+                  }`
+                : "Select a Program"}
+            </h2>
+
+            <div className={styles.buttonContainer}>
               <button
                 onClick={() => setIsEditing(!isEditing)}
                 className={styles.editButton}
@@ -161,120 +163,77 @@ const StudentCourses = () => {
                 {isEditing ? "Cancel" : "Edit Courses"}
               </button>
             </div>
+          </div>
 
-            {isEditing ? (
-              <div>
-                {/* Dropdown to Select Program */}
-                <div className={styles.editActions}>
-                  <select
-                    className={styles.dropdown}
-                    onChange={(e) => setSelectedProgram(e.target.value)}
-                    value={selectedProgram}
-                  >
-                    <option value="">Select Program</option>
-                    {programs.map((program) => (
-                      <option key={program.id} value={program.id}>
-                        {program.program_name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Add Course */}
-                  <input
-                    type="text"
-                    placeholder="Course Name"
-                    className={styles.inputField}
-                    value={newCourse.course_name}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        course_name: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Course Code"
-                    className={styles.inputField}
-                    value={newCourse.course_code}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        course_code: e.target.value,
-                      })
-                    }
-                  />
-                  <button
-                    className={styles.actionButton}
-                    onClick={handleAddCourse}
-                  >
-                    Add Course
-                  </button>
-                </div>
-
-                {/* Course List with Delete Options */}
-                <div className={styles.courseList}>
-                  {courses
-                    .filter(
-                      (course) =>
-                        course.program_id === parseInt(selectedProgram)
-                    )
-                    .map((course) => (
-                      <div key={course.id} className={styles.courseItem}>
-                        <h3>{course.course_name}</h3>
-                        <p>Code: {course.course_code}</p>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() => handleDeleteCourse(course.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ) : (
-              <div className={styles.courseList}>
-                {courses.map((course) => (
-                  <div key={course.id} className={styles.courseItem}>
-                    <h1>{course.course_name}</h1>
-                    <p>Code: {course.course_code}</p>
-                  </div>
+          {isEditing && (
+            <div className={styles.editSection}>
+              <select
+                className={styles.dropdown}
+                onChange={(e) => setSelectedProgram(e.target.value)}
+                value={selectedProgram}
+              >
+                <option value="">Select Program</option>
+                {programs.map((program) => (
+                  <option key={program.id} value={program.id}>
+                    {program.program_name}
+                  </option>
                 ))}
-              </div>
-            )}
+              </select>
 
-            {/* Show Courses of Selected Program */}
-            {selectedProgram && (
-              <div>
-                <h3>Courses</h3>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Course Name</th>
-                      <th>Course Code</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course) => (
-                      <tr key={course.id}>
-                        <td>{course.id}</td>
-                        <td>{course.course_name}</td>
-                        <td>{course.course_code}</td>
-                        <td>
-                          <button onClick={() => handleDeleteCourse(course.id)}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </main>
+              <input
+                type="text"
+                placeholder="Course Name"
+                value={newCourse.course_name}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, course_name: e.target.value })
+                }
+                className={styles.inputField}
+              />
+              <input
+                type="text"
+                placeholder="Course Code"
+                value={newCourse.course_code}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, course_code: e.target.value })
+                }
+                className={styles.inputField}
+              />
+              <button className={styles.addButton} onClick={handleAddCourse}>
+                Add Course
+              </button>
+            </div>
+          )}
+
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>ID</th>
+                  <th className={styles.th}>Course Name</th>
+                  <th className={styles.th}>Course Code</th>
+                  <th className={styles.th}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {courses.map((course) => (
+                  <tr key={course.id}>
+                    <td className={styles.td}>{course.id}</td>
+                    <td className={styles.td}>{course.course_name}</td>
+                    <td className={styles.td}>{course.course_code}</td>
+                    <td className={styles.td}>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDeleteCourse(course.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
     </div>
