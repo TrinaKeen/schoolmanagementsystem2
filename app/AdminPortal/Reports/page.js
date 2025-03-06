@@ -117,281 +117,59 @@ export default function SchoolDepartment() {
 
     /*renderTab reference in admin-settings*/
     const renderTab = () => {
-        switch (activeTab) {
-            case "studentfees":
-                return(
-                    <div className={styles.tabContent}>
-                        <h1>Student Fees Details</h1>
-                        <div className={styles.buttonGroup}>
-                        {renderExportButton()}
-                        </div>
-                        <table className={styles.Table1}>
-                            <thead>
-                                <tr>
-                                    <th>Detail Code</th>
-                                    <th>Description</th>
-                                    <th>Charges</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                    <td>GAGAA01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,500.00</td>
-                                </tr>
-                                <tr>
-                                    <td>YAWA22</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$540.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HELP00</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$3,399.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HALO13</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$290.00</td>
-                                </tr>
-                                <tr>
-                                    <td>GAGO10</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$129.00</td>
-                                </tr>
-                                <tr>
-                                    <td>FFAII01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$7,100.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HSHS17</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,580.00</td>
-                                </tr>
-                                <tr>
-                                    <td>WEEH08</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,400.00</td>
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                );
-            
-            case "courses":
-                return(
-                    <div className={styles.tabContent}>
-                        <h1>Semester Course Details</h1>
-                        <div className={styles.buttonGroup}>
-                        {renderExportButton()}
-                        </div>
-                        <div className={styles.dropdownContainer}>
-                            <select className={styles.dropdown}>
-                                <option value="0"> Select Course:</option>
-                                <option value="1"> Senior Highschool Grade 11</option>
-                                <option value="2"> Senior Highschool Grade 12</option>
-                                <option value="3"> Bachelor of Science in Midwifery</option>
-                                <option value="4"> Bachelor of Technical-Vocational Teacher Education</option>
-                            </select>
-                        </div>
-                        <table className={styles.Table1}>
-                            <thead>
-                                <tr>
-                                    <th>Detail Code</th>
-                                    <th>Description</th>
-                                    <th>Instructor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                    <td>GAGAA01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>John McDonald</td>
-                                </tr>
-                                <tr>
-                                    <td>YAWA22</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>Laura Vincent</td>
-                                </tr>
-                                <tr>
-                                    <td>HELP00</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>Laura Vincent</td>
-                                </tr>
-                                <tr>
-                                    <td>HALO13</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>Laura Vincent</td>
-                                </tr>
-                                <tr>
-                                    <td>GAGO10</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>John McDonald</td>
-                                </tr>
-                                <tr>
-                                    <td>FFAII01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>Laura Vincent</td>
-                                </tr>
-                                <tr>
-                                    <td>HSHS17</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>John McDonald</td>
-                                </tr>
-                                <tr>
-                                    <td>WEEH08</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>Laura Vincent</td>
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-
-                    </div>
-                );
-            case "semesterfees":
-                return(
-                    <div className={styles.tabContent}>
-                        <h1>Semester Fees Details</h1>
-                        <div className={styles.buttonGroup}>
-                        {renderExportButton()}
-                        </div>
-                        <div className={styles.dropdownContainer}>
-                            <select className={styles.dropdown}>
-                                <option value="0"> Select Course:</option>
-                                <option value="1"> Senior Highschool Grade 11</option>
-                                <option value="2"> Senior Highschool Grade 12</option>
-                                <option value="3"> Bachelor of Science in Midwifery</option>
-                                <option value="4"> Bachelor of Technical-Vocational Teacher Education</option>
-                            </select>
-                        </div>
-                        <table className={styles.Table1}>
-                            <thead>
-                                <tr>
-                                    <th>Detail Code</th>
-                                    <th>Description</th>
-                                    <th>Charges</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                    <td>GAGAA01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,500.00</td>
-                                </tr>
-                                <tr>
-                                    <td>YAWA22</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$540.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HELP00</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$3,399.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HALO13</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$290.00</td>
-                                </tr>
-                                <tr>
-                                    <td>GAGO10</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$129.00</td>
-                                </tr>
-                                <tr>
-                                    <td>FFAII01</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$7,100.00</td>
-                                </tr>
-                                <tr>
-                                    <td>HSHS17</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,580.00</td>
-                                </tr>
-                                <tr>
-                                    <td>WEEH08</td>
-                                    <td>Nemo enim ipsam voluptatem</td>
-                                    <td>$1,400.00</td>
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                    );
-            case "enrolled":
-                return(
-                    <div className={styles.tabContent}>
-                        <h1>Student Enrollment Details</h1>
-                        <div className={styles.buttonGroup}>
-                        {renderExportButton()}
-                        </div>
-                        <div className={styles.dropdownContainer}>
-                            <select className={styles.dropdown}>
-                                <option value="0"> Select Status:</option>
-                                <option value="1"> Active</option>
-                                <option value="2"> Inactive</option>
-                            </select>
-                        </div>
-                        <table className={styles.Table1}>
-                            <thead>
-                                <tr>
-                                    <th>Student ID</th>
-                                    <th>Student Name</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                    <td>0000</td>
-                                    <td>Melissa</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>1111</td>
-                                    <td>Finn</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>2222</td>
-                                    <td>Lana</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>3333</td>
-                                    <td>Derrick</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>4444</td>
-                                    <td>Eric</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>5555</td>
-                                    <td>Martha</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>6666</td>
-                                    <td>Vincent</td>
-                                    <td>Active</td>
-                                </tr>
-                                <tr>
-                                    <td>7777</td>
-                                    <td>Jake</td>
-                                    <td>Active</td>
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                    );
-        }
-    };
-
+        const { headers, rows, title } = reportData[activeTab];
+      
+        return (
+          <div className={styles.tabContent}>
+            <h1>{title}</h1>
+            <div className={styles.buttonGroup}>
+              {renderExportButton()}
+            </div>
+      
+            {/* Conditional Dropdowns */}
+            {(activeTab === "courses" || activeTab === "semesterfees") && (
+              <div className={styles.dropdownContainer}>
+                <select className={styles.dropdown} onChange={(e) => console.log("Filter:", e.target.value)}>
+                  <option value="0">Select Course:</option>
+                  <option value="Senior Highschool">Senior Highschool</option>
+                  <option value="Midwifery">Midwifery</option>
+                  <option value="Automotive Technology">Automotive Technology</option>
+                </select>
+              </div>
+            )}
+      
+            {activeTab === "enrolled" && (
+              <div className={styles.dropdownContainer}>
+                <select className={styles.dropdown} onChange={(e) => console.log("Filter status:", e.target.value)}>
+                  <option value="all">All Statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+            )}
+      
+            {/* Dynamic Table */}
+            <table className={styles.Table1}>
+              <thead>
+                <tr>
+                  {headers.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={`${rowIndex}-${cellIndex}`}>{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      };
 
     return (
         <div>
