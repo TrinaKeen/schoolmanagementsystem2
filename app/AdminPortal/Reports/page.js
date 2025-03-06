@@ -15,16 +15,13 @@ pdfMake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 const reportData = {
   studentfees: {
     title: "Student Fees Details",
-    headers: ["Detail Code", "Description", "Charges"],
+    headers: ["Student Number", "Program", "Major", "Payment Status"],
     rows: [
-      ["GAGAA01", "Nemo enim ipsam voluptatem", "$1,500.00"],
-      ["YAWA22", "Nemo enim ipsam voluptatem", "$540.00"],
-      ["HELP00", "Nemo enim ipsam voluptatem", "$3,399.00"],
-      ["HALO13", "Nemo enim ipsam voluptatem", "$290.00"],
-      ["GAGO10", "Nemo enim ipsam voluptatem", "$129.00"],
-      ["FFAII01", "Nemo enim ipsam voluptatem", "$7,100.00"],
-      ["HSHS17", "Nemo enim ipsam voluptatem", "$1,580.00"],
-      ["WEEH08", "Nemo enim ipsam voluptatem", "$1,400.00"]
+      ["SN-0010000001", "Senior HighSchool", "Accounting & Bookkeeping", "Pending"],
+      ["SN-0010000002", "Bachelor of Science", "Midwifery","Pending"],
+      ["SN-0010000003", "Bachelor of Technical-Vocational Teacher Education", "Automotive Technology","Pending"],
+      ["SN-0010000004", "Bachelor of Technical-Vocational Teacher Education", "Food and Services Management","Pending"],
+      ["SN-0010000005", "Senior HighSchool", "Biology, Chemistry, Physics, Filipino & Physical Education","Pending"],
     ]
   },
   courses: {
@@ -45,28 +42,25 @@ const reportData = {
     title: "Semester Fees Details",
     headers: ["Detail Code", "Description", "Charges"],
     rows: [
-      ["GAGAA01", "Nemo enim ipsam voluptatem", "$1,500.00"],
-      ["YAWA22", "Nemo enim ipsam voluptatem", "$540.00"],
-      ["HELP00", "Nemo enim ipsam voluptatem", "$3,399.00"],
-      ["HALO13", "Nemo enim ipsam voluptatem", "$290.00"],
-      ["GAGO10", "Nemo enim ipsam voluptatem", "$129.00"],
-      ["FFAII01", "Nemo enim ipsam voluptatem", "$7,100.00"],
-      ["HSHS17", "Nemo enim ipsam voluptatem", "$1,580.00"],
-      ["WEEH08", "Nemo enim ipsam voluptatem", "$1,400.00"]
+      ["PHC 1", "Primary HealthCare 1", "$1,500.00"],
+      ["GE 114", "Science, Technology and Society", "$540.00"],
+      ["AT 213", "Automotive Body Repair and Subtrate Preparation", "$3,399.00"],
+      ["PCK. 211", "Technology for Teaching and Learning 1", "$290.00"],
+      ["FSM 111", "Occupational Health and Safety Practices", "$129.00"],
+      ["FSM 112", "Food Selection and Preservation", "$7,100.00"],
+      ["GFD 112", "Fabric and Garment Designing Techniques", "$1,580.00"],
+      ["GFD 211", "Pattern Drafting and Designing", "$1,400.00"]
     ]
   },
   enrolled: {
     title: "Student Enrollment Details",
-    headers: ["Student ID", "Student Name", "Status"],
+    headers: ["Student Number", "Student Name", "Program", "Major", "Status"],
     rows: [
-      ["0000", "Melissa", "Active"],
-      ["1111", "Finn", "Active"],
-      ["2222", "Lana", "Active"],
-      ["3333", "Derrick", "Active"],
-      ["4444", "Eric", "Active"],
-      ["5555", "Martha", "Active"],
-      ["6666", "Vincent", "Active"],
-      ["7777", "Jake", "Active"]
+      ["SN-0010000001", "Melissa","Senior HighSchool","Accounting & Bookkeeping","Active"],
+      ["SN-0010000002", "Finn", "Bachelor of Science", "Midwifery","Active"],
+      ["SN-0010000003", "Lana", "Bachelor of Technical-Vocational Teacher Education","Automotive Technology","Active"],
+      ["SN-0010000004", "Derrick", "Bachelor of Technical-Vocational Teacher Education", "Food and Services Management","Active"],
+      ["SN-0010000005", "Eric", "Senior HighSchool", "Biology, Chemistry, Physics, Filipino & Physical Education","Active"],
     ]
   }
 };
@@ -129,7 +123,6 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Student Fees Details</h1>
                         <div className={styles.buttonGroup}>
-                        <button className={styles.editButton}>Edit Fees</button>
                         {renderExportButton()}
                         </div>
                         <table className={styles.Table1}>
@@ -192,7 +185,6 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Semester Course Details</h1>
                         <div className={styles.buttonGroup}>
-                        <button className={styles.editButton}>Edit Fees</button>
                         {renderExportButton()}
                         </div>
                         <div className={styles.dropdownContainer}>
@@ -264,7 +256,6 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Semester Fees Details</h1>
                         <div className={styles.buttonGroup}>
-                        <button className={styles.editButton}>Edit Fees</button>
                         {renderExportButton()}
                         </div>
                         <div className={styles.dropdownContainer}>
@@ -335,7 +326,6 @@ export default function SchoolDepartment() {
                     <div className={styles.tabContent}>
                         <h1>Student Enrollment Details</h1>
                         <div className={styles.buttonGroup}>
-                        <button className={styles.editButton}>Edit Fees</button>
                         {renderExportButton()}
                         </div>
                         <div className={styles.dropdownContainer}>
