@@ -335,20 +335,22 @@ export default function StudentCourses() {
                     </td>
                     <td className={styles.yearColumn}>{course.year}</td>
                     <td className={styles.actions}>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => handleEdit(course)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() =>
-                          handleDelete(course.id, course.course_name)
-                        }
-                      >
-                        Delete
-                      </button>
+                      <div className={styles.buttonContainer}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => handleEdit(course)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() =>
+                            handleDelete(course.id, course.course_name)
+                          }
+                        >
+                          Delete
+                        </button>{" "}
+                      </div>
                     </td>
                   </tr>
                 ))

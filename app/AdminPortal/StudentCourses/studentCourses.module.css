@@ -50,6 +50,14 @@
   background-color: #09757c;
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Space between buttons */
+  height: 100%; /* Ensures buttons match row height */
+}
+
 .cancelButton {
   background-color: #ccc;
   color: #333;
@@ -171,13 +179,13 @@
 }
 
 .idColumn {
-  min-width: 80px; /* Adjust as needed */
-  max-width: 100px;
+  min-width: 100px; /* Adjust as needed */
+  max-width: 120px;
 }
 
 .yearColumn {
-  min-width: 100px; /* Adjust as needed */
-  max-width: 120px;
+  min-width: 80px; /* Adjust as needed */
+  max-width: 100px;
 }
 
 .noData {
