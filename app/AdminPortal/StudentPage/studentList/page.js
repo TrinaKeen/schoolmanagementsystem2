@@ -7,6 +7,7 @@ import styles from '../../components/Sidebar.module.css';
 import logo from '/src/school-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
+import { HiChevronDown } from 'react-icons/hi';
 
 const AdminStudentList = () => {
   const [students, setStudents] = useState([]);
@@ -156,6 +157,20 @@ const AdminStudentList = () => {
   List of Students for Admission Application
   </h1>
       <table>
+        {/* Actions Dropdown for downloading logs */}
+  <div className="actions-container" ref={dropdownRef}> {/* Allows user to click out of menu */}
+  <button className="actions-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+    Actions
+    <HiChevronDown size={20} />
+  </button>
+  {isDropdownOpen && (
+    <ul className="actions-dropdown">
+      <li onClick={handleDownloadLogs}>Download Registration Logs</li>
+      <li>Export to Excel</li>
+      <li>Bulk Update Status</li>
+    </ul>
+  )}
+  </div>
       
         <thead >
           <tr >

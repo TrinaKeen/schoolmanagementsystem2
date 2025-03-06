@@ -158,6 +158,7 @@ const AdminStudentList = () => {
   List of Students for Admission Application
   </h1>
       <table>
+        
       
         <thead >
           <tr >
