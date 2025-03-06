@@ -19,16 +19,18 @@ export default function Sidebar({ studentNumber }) {
     <div className={styles.sidebar}>
       {/* Logo Section */}
       <div className={styles.logo}>
-        <Image src={logo} alt="School Logo" width={100} height={100} priority />
-        <h1>Student Portal</h1>
+        <Image src={logo} alt="School Logo" width={150} height={150} priority />
+        
       </div>
 
       {/* Student Info Section */}
       <div className={styles.studentInfo}>
+      <h1 className="text-center font-bold text-xl">Student Portal</h1>
+      <br></br>
         <p>Logged in as:</p>
         {studentNumber ? (
           <p>
-            <strong>Student Number:</strong> {studentNumber}
+            <strong>Student Number:</strong> <br></br>{studentNumber}
           </p>
         ) : (
           <p>

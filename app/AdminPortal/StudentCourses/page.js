@@ -6,9 +6,13 @@ import Header from "../components/header";
 import styles from "./studentCourses.module.css";
 
 export default function StudentCourses() {
+  const [programs, setPrograms] = useState([]);
   const [courses, setCourses] = useState([]);
   const [editCourse, setEditCourse] = useState(null);
-  const [formVisible, setFormVisible] = useState(false);  // Added by Martin
+  const [instructors, setInstructors] = useState([]);
+  const [formVisible, setFormVisible] = useState(false); // Added by Martin
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [newCourse, setNewCourse] = useState({
     course_name: "",
     course_code: "",
@@ -16,12 +20,38 @@ export default function StudentCourses() {
     instructor_id: "",
     year: "",
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
+    fetchPrograms();
     fetchCourses();
+    fetchInstructors();
   }, []);
+
+  const fetchInstructors = async () => {
+    try {
+      const res = await fetch("/api/admin/studentCourses?type=instructors");
+      if (!res.ok) {
+        throw new Error("Failed to fetch instructors");
+      }
+      const data = await res.json();
+      setInstructors(data);
+    } catch (error) {
+      setError("Error fetching instructors: " + error);
+    }
+  };
+
+  const fetchPrograms = async () => {
+    try {
+      const res = await fetch("/api/admin/studentCourses?type=programs");
+      if (!res.ok) {
+        throw new Error("Failed to fetch programs");
+      }
+      const data = await res.json();
+      setPrograms(data);
+    } catch (error) {
+      setError("Error fetching programs: " + error);
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -50,10 +80,24 @@ export default function StudentCourses() {
     }
   };
 
+  const getProgramName = (programId) => {
+    const program = programs.find((p) => p.id === programId);
+    return program
+      ? `${program.program_name} ${program.major}`
+      : "Unknown Program";
+  };
+
+  const getInstructorName = (instructorId) => {
+    const instructor = instructors.find((i) => i.id === instructorId);
+    return instructor
+      ? `${instructor.first_name} ${instructor.last_name}`
+      : "Unknown Instructor";
+  };
+
   const handleEdit = (course) => {
     // console.log("Editing course:", course);
     setEditCourse(course);
-    setFormVisible(true);  // Show form when editing - Added by Martin
+    setFormVisible(true); // Show form when editing - Added by Martin
     setNewCourse({
       course_name: course.course_name,
       course_code: course.course_code,
@@ -63,12 +107,12 @@ export default function StudentCourses() {
     });
   };
 
-  const handleDelete = async (id) => {
-    console.log("Attempting to delete course with ID:", id);
-    if (!id) {
-      console.error("Error: Invalid ID (undefined or null)");
-      return;
-    }
+  const handleDelete = async (id, courseName) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the course ${courseName}?`
+    );
+
+    if (!confirmDelete) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -89,6 +133,18 @@ export default function StudentCourses() {
     } catch (error) {
       console.error("Error deleting course:", error);
     }
+  };
+
+  const handCancel = () => {
+    setEditCourse(null);
+    setFormVisible(false); // Hide form when cancelling - Added by Martin
+    setNewCourse({
+      course_name: "",
+      course_code: "",
+      program_id: "",
+      instructor_id: "",
+      year: "",
+    });
   };
 
   const handleSave = async () => {
@@ -134,7 +190,7 @@ export default function StudentCourses() {
 
       fetchCourses();
       setEditCourse(null);
-      setFormVisible(false);  // Hide form after saving
+      setFormVisible(false); // Hide form after saving
       setNewCourse({
         course_name: "",
         course_code: "",
@@ -150,8 +206,8 @@ export default function StudentCourses() {
 
   // Handle Add New Course - resets form and opens the form
   const handleAddNewCourse = () => {
-    setEditCourse(null);  // Clear edit state
-    setFormVisible(true);  // Show form for new course
+    setEditCourse(null); // Clear edit state
+    setFormVisible(true); // Show form for new course
     setNewCourse({
       course_name: "",
       course_code: "",
@@ -166,124 +222,149 @@ export default function StudentCourses() {
 
   console.log("Course data:", courses);
 
-return (
-  <div className={styles.pageContainer}>
-    <Header />
-    <div className={styles.contentContainer}>
-      {/* Title and Add New Course Button */}
-      <div className={styles.headerRow}>
-        <h1 className={styles.title}>Course List</h1>
-        <button className={styles.addButton} onClick={handleAddNewCourse}>
-          Add New Course
-        </button>
-      </div>
-
-      {/* Add/Edit Course Form (shows if adding or editing) */}
-      {formVisible && (
-        <div className={styles.formContainer}>
-          <h2>{editCourse ? "Edit Course" : "Add New Course"}</h2>
-          <div className={styles.formGrid}>
-            <input
-              type="text"
-              placeholder="Course Name"
-              value={newCourse.course_name}
-              onChange={(e) =>
-                setNewCourse({ ...newCourse, course_name: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Course Code"
-              value={newCourse.course_code}
-              onChange={(e) =>
-                setNewCourse({ ...newCourse, course_code: e.target.value })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Program ID"
-              value={newCourse.program_id}
-              onChange={(e) =>
-                setNewCourse({ ...newCourse, program_id: e.target.value })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Instructor ID"
-              value={newCourse.instructor_id}
-              onChange={(e) =>
-                setNewCourse({
-                  ...newCourse,
-                  instructor_id: e.target.value,
-                })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Year"
-              value={newCourse.year}
-              onChange={(e) =>
-                setNewCourse({ ...newCourse, year: e.target.value })
-              }
-            />
-          </div>
-          <button className={styles.saveButton} onClick={handleSave}>
-            {editCourse ? "Save Changes" : "Add Course"}
+  return (
+    <div className={styles.pageContainer}>
+      <Header />
+      <div className={styles.contentContainer}>
+        {/* Title and Add New Course Button */}
+        <div className={styles.headerRow}>
+          <h1 className={styles.title}>Course List</h1>
+          <button className={styles.addButton} onClick={handleAddNewCourse}>
+            Add New Course
           </button>
         </div>
-      )}
 
-      {/* Table of Courses */}
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Course Name</th>
-              <th>Course Code</th>
-              <th>Program ID</th>
-              <th>Instructor ID</th>
-              <th>Year</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.length > 0 ? (
-              courses.map((course) => (
-                <tr key={course.id}>
-                  <td>{course.id}</td>
-                  <td>{course.course_name}</td>
-                  <td>{course.course_code}</td>
-                  <td>{course.program_id}</td>
-                  <td>{course.instructor_id}</td>
-                  <td>{course.year}</td>
-                  <td>
-                    <button
-                      className={styles.editButton}
-                      onClick={() => handleEdit(course)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleDelete(course.id)}
-                    >
-                      Delete
-                    </button>
+        {/* Add/Edit Course Form (shows if adding or editing) */}
+        {formVisible && (
+          <div className={styles.formContainer}>
+            <h2>{editCourse ? "Edit Course" : "Add New Course"}</h2>
+            <div className={styles.formGrid}>
+              <input
+                type="text"
+                placeholder="Course Name"
+                value={newCourse.course_name}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, course_name: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Course Code"
+                value={newCourse.course_code}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, course_code: e.target.value })
+                }
+              />
+              {/* Dropdown for Program ID */}
+              <select
+                name="program_id"
+                className={styles.selectDropdown}
+                value={newCourse.program_id}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, program_id: e.target.value })
+                }
+              >
+                <option value="">Select Program</option>
+                {programs.map((program) => (
+                  <option key={program.id} value={program.id}>
+                    {`${program.program_name} ${program.major}`}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="instructor_id"
+                className={styles.selectDropdown}
+                value={newCourse.instructor_id}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, instructor_id: e.target.value })
+                }
+              >
+                <option value="">Select Instructor</option>
+                {instructors.map((instructor) => (
+                  <option key={instructor.id} value={instructor.id}>
+                    {`${instructor.first_name} ${instructor.last_name}`}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                placeholder="Year"
+                value={newCourse.year}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, year: e.target.value })
+                }
+              />
+            </div>
+            <div className={styles.buttonGroup}>
+              <button className={styles.saveButton} onClick={handleSave}>
+                {editCourse ? "Save Changes" : "Add Course"}
+              </button>
+              <button className={styles.cancelButton} onClick={handCancel}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Table of Courses */}
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.idColumn}>ID</th>
+                <th>Course Name</th>
+                <th>Course Code</th>
+                <th className={styles.wideColumn}>Program Name</th>
+                <th className={styles.wideColumn}>Instructor Name</th>
+                <th className={styles.yearColumn}>Year</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.length > 0 ? (
+                courses.map((course) => (
+                  <tr key={course.id}>
+                    <td className={styles.idColumn}>{course.id}</td>
+                    <td>{course.course_name}</td>
+                    <td>{course.course_code}</td>
+                    <td className={styles.wideColumn}>
+                      {getProgramName(course.program_id)}
+                    </td>
+                    <td className={styles.wideColumn}>
+                      {getInstructorName(course.instructor_id)}
+                    </td>
+                    <td className={styles.yearColumn}>{course.year}</td>
+                    <td className={styles.actions}>
+                      <div className={styles.buttonContainer}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => handleEdit(course)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() =>
+                            handleDelete(course.id, course.course_name)
+                          }
+                        >
+                          Delete
+                        </button>{" "}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className={styles.noData}>
+                    No courses found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className={styles.noData}>
-                  No courses found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
