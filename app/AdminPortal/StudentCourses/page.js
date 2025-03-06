@@ -188,7 +188,17 @@ export default function StudentCourses() {
         throw new Error("Failed to save course");
       }
 
-      fetchCourses();
+      const updatedCourseData = await res.json();
+
+      setCourses((prevCourses) =>
+        prevCourses.map((course) =>
+          course.id === updatedCourseData.id
+            ? { ...course, ...updatedCourseData }
+            : course
+        )
+      );
+
+      // fetchCourses();
       setEditCourse(null);
       setFormVisible(false); // Hide form after saving
       setNewCourse({
@@ -334,8 +344,8 @@ export default function StudentCourses() {
                       {getInstructorName(course.instructor_id)}
                     </td>
                     <td className={styles.yearColumn}>{course.year}</td>
-                    <td className={styles.actions}>
-                      <div className={styles.buttonContainer}>
+                    <td>
+                      <div className={styles.actions}>
                         <button
                           className={styles.editButton}
                           onClick={() => handleEdit(course)}
@@ -349,7 +359,7 @@ export default function StudentCourses() {
                           }
                         >
                           Delete
-                        </button>{" "}
+                        </button>
                       </div>
                     </td>
                   </tr>

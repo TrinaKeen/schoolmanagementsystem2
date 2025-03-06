@@ -104,6 +104,11 @@
   background-color: #c9302c;
 }
 
+.actions {
+  display: flex;
+  gap: 8px; /* Space between buttons */
+}
+
 /* -------------------- Form Styling -------------------- */
 .formContainer {
   background-color: #f0f0f0;
@@ -193,13 +198,4 @@
   padding: 20px;
   font-style: italic;
   color: #666;
-}
-
-/* -------------------- Table Actions -------------------- */
-.actions {
-  display: inline-flex;
-  justify-content: center;
-  gap: 8px; /* Space between buttons */
-  padding: 0;
-  border: none;
 }

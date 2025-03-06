@@ -35,9 +35,7 @@ const getResponseData = async (type) => {
       case "programs":
         return await sql`SELECT * FROM programs`;
       case "courses":
-        console.log("Fetching courses..."); // Debug log
         const result = await sql`SELECT * FROM courses`;
-        console.log("Fetched courses:", result); // Debug log
         return result;
       case "subjects":
         return await sql`SELECT * FROM subjects`;
@@ -139,7 +137,7 @@ const updateData = async (type, body) => {
               instructor_id = ${body.instructor_id},
               year = ${body.year}
           WHERE id = ${body.id}
-          RETURNING *;
+          RETURNING *; 
         `;
 
         console.log("Update successful:", result); // Debugging log
