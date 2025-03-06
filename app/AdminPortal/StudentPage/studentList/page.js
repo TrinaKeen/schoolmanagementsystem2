@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
-import '../components/studentpage.modules.css';
-import Modal from '../components/Modal';
-import AdminHeader from "../components/header";
-import styles from '../components/Sidebar.module.css';
+import '../../components/studentpage.modules.css';
+import Modal from '../../components/Modal';
+import AdminHeader from "../../components/header";
+import styles from '../../components/Sidebar.module.css';
 import logo from '/src/school-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -107,9 +107,7 @@ const AdminStudentList = () => {
     };
   }, []);
 
-  if (loading) {
-    return <p className="loading-message">Loading students...</p>;
-  }
+ 
 
   if (error) {
     return <p className="error-message">{error}</p>;
@@ -169,10 +167,7 @@ const AdminStudentList = () => {
             <th>Email</th>
             <th>Phone Number</th>
             <th>Program</th>
-            <th>Approval Status</th>
-            <th>Approval Date</th>
-            <th>Rejection Reason</th>
-            <th>Comments</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -186,10 +181,7 @@ const AdminStudentList = () => {
               <td>{student.email}</td>
               <td>{student.phone_number}</td>
               <td>{student.program_name || 'N/A'}</td>
-              <td>{student.approval_status || 'Pending'}</td>
-              <td>{student.approval_date ? new Date(student.approval_date).toLocaleDateString() : 'N/A'}</td>
-              <td>{student.rejection_reason || 'N/A'}</td>
-              <td>{student.approval_comments || 'N/A'}</td>
+              <td>{student.approval_status || 'Approved'}</td>
               <td>
   <button 
     onClick={() => handleView(student)} 
@@ -280,65 +272,43 @@ const AdminStudentList = () => {
         <h3><strong>Approval Details</strong></h3>
         <div>
   <label>Approval Status:</label>
-  <select 
-      name="approval_status" 
-      defaultValue={selectedStudent.approval_status} 
-      onChange={(e) => {
-        // Update the approval date when status changes
-        const approvalDateInput = document.querySelector('input[name="approval_date"]');
-        approvalDateInput.value = new Date().toISOString().split('T')[0]; // Set current date
-
-        // Show/hide rejection fields based on approval status
-        const rejectionReasonInput = document.querySelector('input[name="rejection_reason"]');
-        const approvalCommentsInput = document.querySelector('input[name="approval_comments"]');
-
-        if (e.target.value === 'Rejected' || e.target.value === 'Waitlist') {
-          rejectionReasonInput.required = true;
-          approvalCommentsInput.required = true;
-        } else {
-          rejectionReasonInput.required = false;
-          approvalCommentsInput.required = false;
-        }
-      }} 
-      required
-    >
-    <option value="Approved">Choose Option</option>
+  <div>
+  <label>Approval Status:</label>
+  <select name="approval_status" defaultValue="Approved" disabled>
     <option value="Approved">Approved</option>
-    <option value="Pending">Pending</option>
-    <option value="Rejected">Rejected</option>
-    <option value="Waitlist">Waitlist</option>
   </select>
 </div>
 <div>
-    <label>Approval Date:</label>
-    <input 
-      type="date" 
-      name="approval_date" 
-      defaultValue={selectedStudent.approval_date} 
-      readOnly // Make this read-only so it can't be manually changed
-    />
-  </div>
-  <div>
-    <label>Rejection Reason:</label>
-    <input 
-      type="text" 
-      name="rejection_reason" 
-      defaultValue={selectedStudent.rejection_reason}
-      required={selectedStudent.approval_status === 'Rejected' || selectedStudent.approval_status === 'Waitlist'} // Required based on status
-    />
-  </div>
-  <div>
-    <label>Reviewer Comments:</label>
-    <input 
-      type="text" 
-      name="approval_comments" 
-      defaultValue={selectedStudent.approval_comments}
-      required={selectedStudent.approval_status === 'Rejected' || selectedStudent.approval_status === 'Waitlist'} // Required based on status
-    />
-  </div>
+  <label>Approval Date:</label>
+  <input 
+    type="date" 
+    name="approval_date" 
+    defaultValue={new Date().toISOString().split('T')[0]} 
+    readOnly 
+  />
+</div>
+<div>
+  <label>Rejection Reason:</label>
+  <input 
+    type="text" 
+    name="rejection_reason" 
+    defaultValue="N/A" 
+    disabled 
+  />
+</div>
+
+<div>
+  <label>Reviewer Comments:</label>
+  <input 
+    type="text" 
+    name="approval_comments" 
+    defaultValue="Approved successfully." 
+    disabled 
+  />
+</div>
+</div>
       </div>
-      <button type="submit">Save Changes</button>
-      <button type="button" onClick={closeModal}>Cancel</button>
+       <button type="button" onClick={closeModal}>Cancel</button>
     </form>
   )}
 </Modal>

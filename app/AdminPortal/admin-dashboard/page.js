@@ -14,9 +14,10 @@ import AdminHeader from "../components/header";
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
+    <div style={{ backgroundColor: 'white', height: 'auto', color: 'black'}}>
 
     <AdminHeader/>
+    
     <div className={styles.container}>
       
 
@@ -65,7 +66,7 @@ export default function Home() {
                 width={200}
                 height={200}
               />
-              <h3>School Departments</h3>
+              <h3>School Programs</h3>
               <p>Organize class schedules and attendance.</p>
               <Link href="../AdminPortal/SchoolDepartment">
                 Go to Departments Management{" "}
@@ -81,7 +82,7 @@ export default function Home() {
                 width={200}
                 height={200}
               />
-              <h3>Student Courses</h3>
+              <h3>Update Courses</h3>
               <p>Manage student records and progress.</p>
               <Link href="../AdminPortal/StudentCourses">
                 Go to Student Courses Management{" "}
