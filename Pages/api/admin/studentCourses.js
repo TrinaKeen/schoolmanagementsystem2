@@ -1,22 +1,31 @@
 import { neon } from "@neondatabase/serverless";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken"; Not used here currently
+import { jwtVerify } from "jose"; // npm insall jose
+import { parse } from "cookie"; // npm install cookie
 
 const sql = neon(process.env.DATABASE_URL);
 
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET); // Added by Martin
+
 // middleware to verify token
 const verifyToken = async (req) => {
-  if (!req.headers.authorization) {
-    throw new Error("Unauthorized: no token provided.");
-  }
+  // if (!req.headers.authorization) {
+  //   throw new Error("Unauthorized: no token provided.");
+  // }
 
-  const token = req.headers.authorization.split(" ")[1]; // extract token from Authorization header
+  // const token = req.headers.authorization.split(" ")[1]; // extract token from Authorization header
+  // Added by Martin
+  const cookies = parse(req.headers.cookie || '');
+  const token = cookies.token;
 
   if (!token) {
     throw new Error("Unauthorized: no token provided.");
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded;
+  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // Added by Martin
+  const { payload } = await jwtVerify(token, JWT_SECRET);
+  return payload;
 };
 
 // get data based on type

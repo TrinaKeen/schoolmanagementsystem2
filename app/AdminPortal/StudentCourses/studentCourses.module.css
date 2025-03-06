@@ -1,85 +1,77 @@
+/* studentCourses.module.css */
+
+/* Main Page Container */
 .pageContainer {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f0f4f8;
-  color: black;
+  background-color: #f0f4f8; /* Light background like TeacherPage */
+  color: #333;
   font-family: Arial, sans-serif;
 }
 
-.contentArea {
-  display: flex;
-  margin-top: 20px;
-}
-
-.mainContent {
-  flex: 1;
+/* Centered Content Box */
+.contentContainer {
+  margin: 80px auto 0; /* Space under header */
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 1200px;
-  margin: 20px auto;
   width: 100%;
 }
 
-.headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-.pageTitle {
+/* Title */
+.title {
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
   color: #333;
 }
 
-.buttonContainer {
+/* Header Row (for Title + Add New Course Button) */
+.headerRow {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
 }
 
-.editButton {
-  background-color: #0a9396;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.editButton:hover {
-  background-color: #007f7f;
-}
-
-.editSection {
-  margin: 15px 0;
-  display: flex;
-  gap: 10px;
-}
-
-.inputField, .dropdown {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+/* Add New Course Button */
 .addButton {
   background-color: #0a9396;
   color: white;
+  padding: 10px 15px;
   border: none;
-  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
 
+.addButton:hover {
+  background-color: #09757c;
+}
+
+/* Table Wrapper (scrollable if needed) */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+/* Main Table */
 .table {
   width: 100%;
   border-collapse: collapse;
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+/* Table Headers (Teal background like TeacherPage) */
+.th, .td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
 }
 
 .th {
@@ -88,14 +80,111 @@
   font-weight: bold;
 }
 
-.th, .td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
+/* Table Cells */
+.td {
+  color: #333;
 }
 
-/* teacherPage.module.css */
+/* Alternating Rows */
+.tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
 
+/* No Data Message */
+.noData {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+/* Edit/Delete Button Row */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Edit Button */
+.editButton {
+  background-color: #f0ad4e;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.editButton:hover {
+  background-color: #ec971f;
+}
+
+/* Delete Button */
+.deleteButton {
+  background-color: #d9534f;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.deleteButton:hover {
+  background-color: #c9302c;
+}
+
+/* Form Container (Add/Edit Course Form) */
+.formContainer {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.formContainer h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Grid Inputs in the Form */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.formGrid input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Save Button */
+.saveButton {
+  background-color: #0a9396;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.saveButton:hover {
+  background-color: #09757c;
+}
+
+
+/* studentCourses.module.css */
+
+/* Page Layout */
 .pageContainer {
   display: flex;
   flex-direction: column;
@@ -106,7 +195,7 @@
 }
 
 .contentContainer {
-  margin: 80px auto 0; /* Push down to clear header */
+  margin: 80px auto 0;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -115,63 +204,126 @@
   width: 100%;
 }
 
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.searchContainer {
+/* Header Row */
+.headerRow {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 15px;
 }
 
-.searchInput {
-  padding: 8px 12px;
+/* Title */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input and Button Layout */
+.inputRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.inputRow select, 
+.inputRow input {
+  padding: 8px 10px;
   border: 1px solid #ccc;
-  color: #333;
   border-radius: 4px;
   font-size: 14px;
-  width: 300px;
 }
 
+/* Add Course Button */
+.addButton {
+  background-color: #0a9396;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.addButton:hover {
+  background-color: #09757c;
+}
+
+/* Cancel Button (if you want a cancel button like in the screenshot) */
+.cancelButton {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancelButton:hover {
+  background-color: #d6d6d6;
+}
+
+/* Table Container */
 .tableWrapper {
   overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   background-color: white;
 }
 
-.th,
-.td {
-  padding: 12px;
+/* Table Styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, 
+.table td {
+  padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
   font-size: 14px;
 }
 
-.th {
-  background: #0a9396;
+/* Teal Header */
+.table th {
+  background-color: #0a9396;
   color: white;
   font-weight: bold;
 }
 
-.td {
-  color: #333;
-}
-
-.tr:nth-child(even) {
+/* Alternate Row Colors */
+.table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+.table td {
+  color: #333;
+}
+
+/* No Data Message */
 .noData {
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   font-style: italic;
-  color: #666;
+  color: #777;
+}
+
+/* Actions Column (Delete Button Only, Like Screenshot) */
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
 }

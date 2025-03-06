@@ -8,6 +8,7 @@ import styles from "./studentCourses.module.css";
 export default function StudentCourses() {
   const [courses, setCourses] = useState([]);
   const [editCourse, setEditCourse] = useState(null);
+  const [formVisible, setFormVisible] = useState(false);  // Added by Martin
   const [newCourse, setNewCourse] = useState({
     course_name: "",
     course_code: "",
@@ -25,15 +26,13 @@ export default function StudentCourses() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token"); Not necessary anymore - Martin
 
-      const res = await fetch("/api/admin/studentCourses?type=courses", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch("/api/admin/studentCourses?type=courses");
 
       if (res.status === 401) {
         alert("Session expired. Please log in again.");
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
         window.location.href = "/login";
         return;
       }
@@ -52,8 +51,9 @@ export default function StudentCourses() {
   };
 
   const handleEdit = (course) => {
-    console.log("Editing course:", course);
+    // console.log("Editing course:", course);
     setEditCourse(course);
+    setFormVisible(true);  // Show form when editing - Added by Martin
     setNewCourse({
       course_name: course.course_name,
       course_code: course.course_code,
@@ -134,6 +134,7 @@ export default function StudentCourses() {
 
       fetchCourses();
       setEditCourse(null);
+      setFormVisible(false);  // Hide form after saving
       setNewCourse({
         course_name: "",
         course_code: "",
@@ -147,70 +148,40 @@ export default function StudentCourses() {
     }
   };
 
+  // Handle Add New Course - resets form and opens the form
+  const handleAddNewCourse = () => {
+    setEditCourse(null);  // Clear edit state
+    setFormVisible(true);  // Show form for new course
+    setNewCourse({
+      course_name: "",
+      course_code: "",
+      program_id: "",
+      instructor_id: "",
+      year: "",
+    });
+  };
+
   if (loading) return <p>Loading courses...</p>;
   if (error) return <p>Error: {error}</p>;
 
   console.log("Course data:", courses);
 
-  return (
-    <div className={styles.pageContainer}>
-      <Header />
-      <div className={styles.contentContainer}>
+return (
+  <div className={styles.pageContainer}>
+    <Header />
+    <div className={styles.contentContainer}>
+      {/* Title and Add New Course Button */}
+      <div className={styles.headerRow}>
         <h1 className={styles.title}>Course List</h1>
+        <button className={styles.addButton} onClick={handleAddNewCourse}>
+          Add New Course
+        </button>
+      </div>
 
-        {/* Table */}
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Course Name</th>
-                <th>Course Code</th>
-                <th>Program ID</th>
-                <th>Instructor ID</th>
-                <th>Year</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.length > 0 ? (
-                courses.map((course, index) => (
-                  <tr key={course?.id || `temp-key-${index}`}>
-                    <td>{course.id}</td>
-                    <td>{course.course_name}</td>
-                    <td>{course.course_code}</td>
-                    <td>{course.program_id}</td>
-                    <td>{course.instructor_id}</td>
-                    <td>{course.year}</td>
-                    <td className={styles.actions}>
-                      <button
-                        className={styles.editBtn}
-                        onClick={() => handleEdit(course)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className={styles.deleteBtn}
-                        onClick={() => handleDelete(course.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className={styles.noData}>
-                    No courses found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Add/Edit Course Form */}
+      {/* Add/Edit Course Form (shows if adding or editing) */}
+      {formVisible && (
         <div className={styles.formContainer}>
-          <h1>{editCourse ? "Edit Course" : "Add New Course"}</h1>
+          <h2>{editCourse ? "Edit Course" : "Add New Course"}</h2>
           <div className={styles.formGrid}>
             <input
               type="text"
@@ -233,10 +204,7 @@ export default function StudentCourses() {
               placeholder="Program ID"
               value={newCourse.program_id}
               onChange={(e) =>
-                setNewCourse({
-                  ...newCourse,
-                  program_id: parseInt(e.target.value, 10) || "",
-                })
+                setNewCourse({ ...newCourse, program_id: e.target.value })
               }
             />
             <input
@@ -246,7 +214,7 @@ export default function StudentCourses() {
               onChange={(e) =>
                 setNewCourse({
                   ...newCourse,
-                  instructor_id: parseInt(e.target.value, 10) || "",
+                  instructor_id: e.target.value,
                 })
               }
             />
@@ -255,18 +223,67 @@ export default function StudentCourses() {
               placeholder="Year"
               value={newCourse.year}
               onChange={(e) =>
-                setNewCourse({
-                  ...newCourse,
-                  year: parseInt(e.target.value, 10) || "",
-                })
+                setNewCourse({ ...newCourse, year: e.target.value })
               }
             />
           </div>
-          <button className={styles.saveBtn} onClick={handleSave}>
-            {editCourse ? "Save" : "Add"}
+          <button className={styles.saveButton} onClick={handleSave}>
+            {editCourse ? "Save Changes" : "Add Course"}
           </button>
         </div>
+      )}
+
+      {/* Table of Courses */}
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Course Name</th>
+              <th>Course Code</th>
+              <th>Program ID</th>
+              <th>Instructor ID</th>
+              <th>Year</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.length > 0 ? (
+              courses.map((course) => (
+                <tr key={course.id}>
+                  <td>{course.id}</td>
+                  <td>{course.course_name}</td>
+                  <td>{course.course_code}</td>
+                  <td>{course.program_id}</td>
+                  <td>{course.instructor_id}</td>
+                  <td>{course.year}</td>
+                  <td>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => handleEdit(course)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => handleDelete(course.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className={styles.noData}>
+                  No courses found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
-  );
+  </div>
+);
 }

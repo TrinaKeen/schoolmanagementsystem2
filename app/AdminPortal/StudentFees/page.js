@@ -13,8 +13,14 @@ export default function StudentFeesPage() {
             const res = await fetch('/api/admin/fetchStudentFees', { cache: 'no-store' });
 
             if (!res.ok) {
-                console.error('Failed to fetch student fees');
-                return;
+                if (res.status === 401) {
+                    // 🚀 Redirect to login page if token is missing or invalid
+                    window.location.href = '/LogIn';  // Adjust this if your login page is in a different path
+                    return;
+                } else {
+                    console.error('Failed to fetch student fees', res.status, res.statusText);
+                    return;
+                }
             }
 
             const data = await res.json();
