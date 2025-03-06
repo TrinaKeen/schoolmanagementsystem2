@@ -310,7 +310,7 @@ const AdminStudentList = () => {
   )}
 </Modal>
     </div>
-    </div>
+   
   );
 };
 
