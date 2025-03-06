@@ -13,7 +13,7 @@ export default function TeacherPage() {
             const res = await fetch('/api/admin/fetchInstructors', { cache: 'no-store' });
 
             if (!res.ok) {
-                console.error('Failed to fetch instructors');
+                console.error('Failed to fetch instructors', res.status, res.statusText);
                 return;
             }
 
