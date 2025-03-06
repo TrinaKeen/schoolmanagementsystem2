@@ -14,15 +14,20 @@ import AdminHeader from "../components/header";
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: "white", height: "100vh", color: "black" }}>
-      <AdminHeader />
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <h2>Welcome to the Super Admin Account</h2>
-          <p>
-            Manage your school's daily activities, student records, teacher
-            assignments, and more.
-          </p>
+    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
+
+    <AdminHeader/>
+    <div className={styles.container}>
+      
+
+      
+
+      <main className={styles.main}>
+        <h2>Welcome to the Super Admin Account</h2>
+        <p>
+          Manage your school's daily activities, student records, teacher
+          assignments, and more.
+        </p>
 
           <div className={styles.grid}>
             <div className={styles.card}>
@@ -97,21 +102,21 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className={styles.card}>
-              <Image
-                src={reportlogo}
-                alt="Report Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Reports</h3>
-              <p>Organize class schedules and attendance.</p>
-              <Link href="../AdminPortal/Reports">
-                Go to Reports Management{" "}
-              </Link>
-            </div>
+          <div className={styles.card}>
+            <Image
+              src={reportlogo}
+              alt="Report Logo"
+              width={200}
+              height={200}
+            />
+            <h3>Reports</h3>
+            <p>Organize class schedules and attendance.</p>
+            <Link href="../AdminPortal/Reports">
+              Go to Reports Management{" "}
+            </Link>
           </div>
-        </main>
+        </div>
+      </main>
       </div>
     </div>
   );
