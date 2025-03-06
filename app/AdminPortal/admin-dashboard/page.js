@@ -17,9 +17,10 @@ import AdminHeader from "../components/header";
 export default function Home() {
  
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh', color: 'black'}}>
+    <div style={{ backgroundColor: 'white', height: 'auto', color: 'black'}}>
 
     <AdminHeader/>
+    <div  className="body">
     <div className={styles.container}>
       
 
@@ -119,6 +120,7 @@ export default function Home() {
         </div>
       </main>
       </div>
+    </div>
     </div>
   );
 }

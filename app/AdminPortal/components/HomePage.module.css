@@ -1,9 +1,22 @@
 .body {
   font-family: 'Roboto', sans-serif;
-  background-color: #f4f7fa; /* Light background color for the whole page */
-  line-height: 1.6;
+  background-color: #ffffff; /* Set to pure white */
+  min-height: 200vh;
+  min-width: 100vw; /* Ensures it covers the full viewport width */
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the content */
+}
+
+/* Wrapper to constrain the width of content */
+.wrapper {
+  width: 100%;
+  max-width: 1400px; /* Adjust as needed */
+  background-color: #ffffff; /* Ensures content area remains white */
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better contrast */
 }
 
 /* Styles for desktop screens */
@@ -82,6 +95,7 @@
 .main {
   padding: 40px;
   text-align: center;
+  background-color: white;
   
 }
 
