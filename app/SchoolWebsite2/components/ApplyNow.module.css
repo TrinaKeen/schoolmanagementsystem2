@@ -8,7 +8,7 @@
   }
   
   .container {
-    max-width: 600px;
+    max-width: 680px;
     margin: 40px auto;
     padding: 30px;
     background-color: white;
@@ -46,8 +46,17 @@
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #4a5568;
+    justify-content: space-between;
+    align-items: center;
   }
   
+  .label::after {
+    content: '*';
+    color: #e74c3c;
+    margin-left: 0.25rem;
+    opacity: 0.6;
+  }
   .input {
     width: 100%;
     padding: 12px;
@@ -57,13 +66,17 @@
   }
   
   .input:focus {
-    border-color: #007bff;
+    border-color: #3498db;
     outline: none;
+    box-shadow: 0 3px 10px rgba(52, 152, 219, 0.1);
   }
   
   .submitButton {
     width: 100%;
     padding: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 1rem;
     background-color: #007bff;
     color: white;
     border: none;
@@ -74,19 +87,48 @@
   
   .submitButton:hover {
     background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
   }
   
   .terms {
     text-align: center;
     margin-top: 20px;
+    color: #718096;
+    margin-top: 2rem;
+    line-height: 1.6;
   }
   
   .link {
     color: #007bff;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
   }
   
   .link:hover {
     text-decoration: underline;
+  }
+
+  .message {
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Add to your JSX conditional message rendering */
+  .message.success {
+    background: #e8f6ef;
+    color: #28a745;
+    border: 1px solid #28a745;
+  }
+  
+  .message.error {
+    background: #fdeded;
+    color: #dc3545;
+    border: 1px solid #dc3545;
   }
   

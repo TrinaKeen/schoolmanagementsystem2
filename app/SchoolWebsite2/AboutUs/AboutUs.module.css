@@ -15,7 +15,7 @@
   font-size: 18px;
   font-weight: bold;
   color: #2A06AE;
-  background-color: wheat; /* Consistent color for branding */
+  background-color: #f0f4ff; /* Consistent color for branding */
   padding: 15px;
   width: 100%;
   margin-bottom: 30px;
@@ -27,26 +27,37 @@
   text-align: left;
   color: #333;
   line-height: 1.6; /* Better readability */
+  font-family: 'Georgia', serif;
+  font-size: 2.2rem;
+  letter-spacing: -0.5px;
 }
 
 .contentArea h2 {
   margin-top: 40px;
   font-size: 2rem;
   font-weight: 700;
-  color: #2A06AE;
-  border-bottom: 2px solid #2A06AE; /* Underline for section headers */
+  color: #1a1a1a;
+  border-bottom: 3px solid #2A06AE; /* Underline for section headers */
   padding-bottom: 10px;
+  margin: 50px 0 25px;
 }
 
 .contentArea p {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 1.1rem;
   color: #555;
   text-align: justify; /* Improved readability */
+  font-size: 1.1rem;
+  line-height: 1.8; /* Better for readability */
+  position: relative;
+  padding-left: 20px;
 }
+
 
 .headerSection {
   margin-bottom: 40px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 30px;
 }
 
 .missionVision {
@@ -57,6 +68,7 @@
   margin-bottom: 60px;
 }
 
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .hours {
@@ -66,9 +78,15 @@
 
   .contentArea h2 {
     font-size: 1.5rem;
+    padding: 0 15px;
   }
 
   .contentArea p {
     font-size: 1rem;
+  }
+
+  .missionVision, .almaMater {
+    padding: 20px;
+    margin: 20px -15px;
   }
 }
