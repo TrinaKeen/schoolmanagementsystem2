@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import { jwtVerify } from "jose"; // npm insall jose
+import { jwtVerify } from "jose"; // npm install jose
 import { parse } from "cookie"; // npm install cookie
 
 const sql = neon(process.env.DATABASE_URL);
