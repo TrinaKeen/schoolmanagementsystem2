@@ -14,7 +14,6 @@ const verifyToken = async (req) => {
   if (!token) {
     throw new Error("Unauthorized: no token provided.");
   }
-
   const { payload } = await jwtVerify(token, JWT_SECRET);
   return payload;
 };

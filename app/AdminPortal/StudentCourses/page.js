@@ -56,7 +56,6 @@ export default function StudentCourses() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      // const token = localStorage.getItem("token"); Not necessary anymore - Martin
 
       const res = await fetch("/api/admin/studentCourses?type=courses");
 
