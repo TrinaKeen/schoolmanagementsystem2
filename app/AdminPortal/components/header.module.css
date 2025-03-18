@@ -4,7 +4,7 @@
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(135deg, #005f73, #0a9396); /* Adjusted gradient */
-    padding: 20px 40px;
+   
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
   
@@ -14,15 +14,15 @@
   }
   
   .logo img {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   .logo h1 {
     margin-left: 20px;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     color: #ffffff;
     font-weight: bold;
     font-family: 'Roboto', sans-serif; /* Example font */
@@ -56,7 +56,7 @@
   .dropdownButton {
     background-color: #94d2bd; /* Button color */
     color: none;
-    padding: 10px 20px;
+    padding: 5px 10px;
     border: none;
     border-radius: 5px;
     font-weight: bold;
