@@ -47,3 +47,7 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Failed to fetch schoolDept" });
   }
 }
+
+// I copied the same format as the fetchInstructors.js API since it has the same function by calling the verifyToken function to check if the user is authorized to access the data. The SQL query is different since it fetches the school department data from the programs table.
+// The formattedSchoolDept variable is used to store the formatted data before sending it as a response. The error handling is also included to handle any errors that may occur during the database query. The response status is set to 200 if the data is successfully fetched, and the formatted data is sent as a JSON response.
+// If an error occurs, the response status is set to 500, and an error message is sent as a JSON response. This API endpoint can be accessed by authorized users to fetch the school department data from the database.
