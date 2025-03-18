@@ -27,20 +27,22 @@ export default function AdminHeader() {
       <header className={styles.header}>
         <Link href={"/"} passHref>
           <div className={styles.logo}>
-            <Image src={logo} alt="School Logo" width={50} height={50} />
+            <Image src={logo} alt="School Logo" width={100} height={100} />
             <h1>EEFCI Management System</h1>
           </div>
         </Link>
 
         <nav className={styles.navbar}>
-         
+          <Link href="../AdminPortal/admin-dashboard" passHref>
+            <FaHome size={35} className={styles.icon} />
+          </Link>
 
           <div className={styles.loginDropdown}>
             <button
               className={styles.dropdownButton}
               onClick={() => toggleDropdown("notifications")}
             >
-              <FaBell size={30} className={styles.iconWhite} />
+              <FaBell size={35} className={styles.iconWhite} />
             </button>
 
             {isDropdownOpen === "notifications" && (
@@ -55,7 +57,7 @@ export default function AdminHeader() {
               className={styles.dropdownButton}
               onClick={() => toggleDropdown("messages")}
             >
-              <FaEnvelope size={30} className={styles.iconWhite} />
+              <FaEnvelope size={35} className={styles.iconWhite} />
             </button>
 
             {isDropdownOpen === "messages" && (
@@ -70,14 +72,14 @@ export default function AdminHeader() {
               className={styles.dropdownButton}
               onClick={() => toggleDropdown("account")}
             >
-              <FaBars size={30} className={styles.iconWhite} />
+              <FaBars size={35} className={styles.iconWhite} />
             </button>
 
             {isDropdownOpen === "account" && (
               <div className={styles.dropdownContent}>
                 <Link href="/" passHref>Log Out</Link>
                 <Link href="../AdminPortal/admin-settings" passHref>Account Settings</Link>
-                
+                <Link href="#" passHref>Help Centre</Link>
               </div>
             )}
           </div>
