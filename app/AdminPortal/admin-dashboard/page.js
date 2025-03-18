@@ -22,7 +22,7 @@ import studentfeeslogo from "/src/studentfeeslogo.png";
 import reportlogo from "/src/reportlogo.png";
 import styles from '../components/AdminDashboard.module.css';
 
-export default function SidebarWithToggle() {
+export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeMenu, setActiveMenu] = useState(null);
   const [hoveredMenu, setHoveredMenu] = useState(null);
