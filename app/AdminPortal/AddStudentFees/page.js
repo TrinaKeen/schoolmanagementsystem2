@@ -1,29 +1,41 @@
+// Generated using ChatGPT
+// Can you generate a Next.js page (/AdminPortal/AddStudentFees) where admins can add student fees?
+// Include a form with fields for name, ID number, expense type, amount, phone, email, status, and date.
+// Use useState to manage form data and update state on input change.
+// Include validation, ensuring that required fields (name, ID number, amount) cannot be empty.
+// Have a reset button to clear all form fields.
+
 'use client';
 
-import { useState } from 'react';
+import { useState } from 'react'; // Importing React's state management hook
 import Header from '../components/header';
 import styles from './AddStudentFees.module.css';
 
+// Functional Component for Adding Student Fees
 export default function AddStudentFeesPage() {
     const [formData, setFormData] = useState({
-        name: '',
-        idNumber: '',
-        expenseType: '',
-        amount: '',
-        phone: '',
-        email: '',
-        status: '',
-        date: ''
+        name: '', // Stores student's name
+        idNumber: '', // Stores student ID number
+        expenseType: '', // Stores the type of expense
+        amount: '', // Stores the amount of the fee
+        phone: '', // Stores the student's phone number
+        email: '', // Stores the student's email address
+        status: '', // Stores payment status (Paid/Unpaid)
+        date: '' // Stores the due date of the fee
     });
 
+    // Function to handle input changes.
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Updates the corresponding field in the form data object
     };
 
+    // Function to handle form submission.
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevents default form submission behavior
         console.log('Submitting form data:', formData);
         // API Call to store fees in the database
+        
     };
 
     return (
