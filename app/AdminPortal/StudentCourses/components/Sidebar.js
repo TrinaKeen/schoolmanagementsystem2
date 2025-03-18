@@ -1,54 +1,32 @@
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import styles from './components.module.css';
+import styles from "./components.module.css";
 
-const Sidebar = () => {
-  const [activePath, setActivePath] = useState('');
-
-  // Get the current path from the browser
-  useEffect(() => {
-    setActivePath(window.location.pathname);
-  }, []);
+const Sidebar = ({ onSelectView }) => {
+  const programs = [
+    { id: "shs", name: "Senior High School" },
+    { id: "bachelorWifery", name: "Bachelor of Science in Midwifery" },
+    {
+      id: "bachelorEducation",
+      name: "Bachelor of Technical-Vocational Teacher Education",
+    },
+  ];
 
   return (
     <div className={styles.sidebar}>
-      <h2>Student Courses</h2>
+      <h2>Programs</h2>
       <ul>
-        <li>
-          <Link
-            href="/AdminPortal/StudentCourses/grade11"
-            className={activePath === '/AdminPortal/StudentCourses/grade11' ? styles.active : ''}
-          >
-            Senior High School Grade 11
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/AdminPortal/StudentCourses/grade12"
-            className={activePath === '/AdminPortal/StudentCourses/grade12' ? styles.active : ''}
-          >
-            Senior High School Grade 12
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/AdminPortal/StudentCourses/BachelorWifery"
-            className={activePath === '/AdminPortal/StudentCourses/BachelorWifery' ? styles.active : ''}
-          >
-            Bachelor of Science in Midwifery
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/AdminPortal/StudentCourses/BachelorEducation"
-            className={activePath === '/AdminPortal/StudentCourses/BachelorEducation' ? styles.active : ''}
-          >
-            Bachelor of Technical-Vocational Teacher Education
-          </Link>
-        </li>
+        {programs.map((program) => (
+          <li key={program.id}>
+            <button onClick={() => onSelectView(program.id)}>
+              {program.name}
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
 
 export default Sidebar;
+
+// OpenAI. (2025, February 26). Response to the prompt "Can you fix this code so that it matches my schema: I want to create an API endpoint that allows me to fetch, create, and delete data for programs, courses, and subjects."
+// ChatGPT (Version 4.0). Accessed and retrieved on Feb 24, 2025 from https://chat.openai.com

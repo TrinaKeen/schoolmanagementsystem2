@@ -1,125 +1,146 @@
 'use client';
-
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from '../components/accountsettings.module.css'; // Create a CSS module for styling
+import '../components/studentfees.css';
 import Sidebar from '../components/Sidebar'; 
-import styles1 from '../components/Sidebar.module.css';
 
-const studentFees = () => {
-    const [studentData, setStudentData] = useState(null);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [studentnumber, setStudentnumber] = useState('');
-    const [fullname, setFullname] = useState('');
-    const [email, setEmail] = useState('');
-    const [country, setCountry] = useState('');
-    const [username, setUsername] = useState('');
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const router = useRouter();
-    
-    
-    
-    useEffect(() => {
-      const fetchStudentData = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Authorization token is missing');
+
+const StudentFees = () => {
+  const [studentNumber, setStudentNumber] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fees, setFees] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStudentNumber = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('Authorization token is missing');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/students/student-data', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          setError(errorResponse.error || 'Failed to fetch student number');
           setLoading(false);
           return;
         }
-  
-        try {
-          const res = await fetch('/api/auth/student-accountsettings', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-  
-          if (res.ok) {
-            const data = await res.json();
-            console.log('Fetched student data:', data);
-            setStudentData(data);
-            setStudentnumber(data.studentNumber); // Set student number
-            setFullname(data.fullname);
-            setEmail(data.email);
-            setCountry(data.country);
-            setUsername(data.username);
-          } else {
-            setError('Failed to fetch student data');
-          }
-        } catch (err) {
-          setError('Failed to fetch student data');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchStudentData();
-    }, []);
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Authorization token is missing');
-        return;
-      }
-  
-      const updatedData = {
-        studentnumber,
-        fullname,
-        email,
-        country,
-        username,
-        currentPassword,
-        newPassword,
-      };
-  
-      try {
-        const res = await fetch('/api/auth/student-accountsettings', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedData),
-        });
-  
+
         const data = await res.json();
-  
-        if (res.ok) {
-          alert('Account settings updated successfully');
-          router.push('/StudentPortal/student-dashboard'); // Redirect after success
-        } else {
-          setError(data.error || 'Failed to update account settings');
-        }
-      } catch (err) {
-        setError('Failed to update account settings');
+        setStudentNumber(data.studentNumber); // Save the student number
+      } catch (error) {
+        console.error('Error fetching student number:', error);
+        setError('Failed to fetch student number');
+      } finally {
+        setLoading(false);
       }
     };
-  
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
-    
+    fetchStudentNumber();
+  }, []);
+
+  // Static fees data for testing (simulating database response)
+  const staticFeesData = [
+    {
+      id: 1,
+      feeType: 'Tuition Fee',
+      amount: 5000,
+      status: 'Unpaid',
+      dueDate: '2025-04-30',
+    },
+    {
+      id: 2,
+      feeType: 'Laboratory Fee',
+      amount: 200,
+      status: 'Paid',
+      dueDate: '2025-03-10',
+    },
+    {
+      id: 3,
+      feeType: 'Activity Fee',
+      amount: 100,
+      status: 'Unpaid',
+      dueDate: '2025-05-15',
+    },
+  ];
+
+  useEffect(() => {
+    // Simulate a delay for fetching data (like calling an API)
+    setTimeout(() => {
+      try {
+        setFees(staticFeesData); // Set the static fees data
+      } catch (err) {
+        setError('An error occurred while fetching fees');
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
+  }, []);
+
   return (
     <div>
-         {/* Sidebar */}
-         <Sidebar
-        className={styles1.container}
-        studentNumber={studentData.studentnumber || ''}
-      />
-      <div className={styles.formContainer}>
-      
-        <form >
-         <h1>NO RECORD FOUND</h1>
-        </form>
+      {/* Sidebar */}
+      <Sidebar studentNumber={studentNumber} />
+
+      <div className="form-container">
+      <h1 style={{ textAlign: 'left', fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '20px' }}>
+  Outstanding Fees and Payment Status
+</h1>
+
+
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>{error}</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Fee Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Payment Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fees.length > 0 ? (
+                fees.map((fee) => (
+                  <tr key={fee.id}>
+                    <td>{fee.feeType}</td>
+                    <td>Php {fee.amount.toFixed(2).toLocaleString()}</td>
+                    <td>{fee.status}</td>
+                    <td>{fee.dueDate}</td>
+                    <td>
+                      <button
+                        onClick={() => alert(`Proceeding to pay fee: ${fee.feeType}`)}
+                        disabled={fee.status === 'Paid'}
+                      >
+                        {fee.status === 'Paid' ? 'Paid' : 'Pay Now'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">No fees found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
 };
 
-export default studentFees;
+export default StudentFees;

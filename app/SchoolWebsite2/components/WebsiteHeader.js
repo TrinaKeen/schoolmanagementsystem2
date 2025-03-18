@@ -25,8 +25,8 @@ export default function WebsiteHeader() {
         <nav className={styles.navbar}>
           <Link href="/">HOME</Link>
           <Link href="/SchoolWebsite2/AdminandPrograms">ADMISSION & PROGRAMS</Link>
-          <Link href="/">ABOUT EEFCI</Link>
-          <Link href="/SchoolWebsite/StudentRegistration">CONTACT US</Link>
+          <Link href="/SchoolWebsite2/AboutUs">ABOUT EEFCI</Link>
+          <Link href="/SchoolWebsite2/AdminandPrograms">CONTACT US</Link>
           <div className={styles.loginDropdown}>
             <button className={styles.dropdownButton}>LOG IN</button>
             <div className={styles.dropdownContent}>

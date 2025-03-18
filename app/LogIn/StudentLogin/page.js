@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image"; // For displaying the logo
 import styles from "../LoginPage.module.css"; // Assuming you use a CSS module for styling
 import logo from "../school-logo.png"; // Ensure this path is correct
 
 export default function StudentLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -23,10 +23,10 @@ export default function StudentLogin() {
     const loginTimestamp = new Date().toISOString(); // Get the current timestamp
 
     try {
-      const res = await fetch('/api/students/studentlogin', {
-        method: 'POST',
+      const res = await fetch("/api/students/studentlogin", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: normalizedUsername,
@@ -39,17 +39,17 @@ export default function StudentLogin() {
 
       if (res.ok) {
         // Store student number and token
-        localStorage.setItem('studentNumber', data.studentNumber);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('loginTimestamp', loginTimestamp); // Save timestamp locally if needed
+        localStorage.setItem("studentNumber", data.studentNumber);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loginTimestamp", loginTimestamp); // Save timestamp locally if needed
 
         // Redirect to dashboard
-        router.push('/StudentPortal/student-dashboard');
+        router.push("/StudentPortal/student-dashboard");
       } else {
-        setError(data.error || 'An unexpected error occurred');
+        setError(data.error || "An unexpected error occurred");
       }
     } catch (error) {
-      setError('Network error, please try again later');
+      setError("Network error, please try again later");
     } finally {
       setLoading(false);
     }

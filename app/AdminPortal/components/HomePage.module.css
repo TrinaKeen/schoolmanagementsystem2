@@ -1,196 +1,164 @@
-/* Header styling */
-.header {
-  display: flex;                  /* Flex container to align children horizontally */
-  justify-content: space-between; /* Ensure there's space between the logo and navbar */
-  align-items: center;            /* Vertically center the items in the header */
-  padding: 10px;
-  background-color: #2A06AE;
-  color: f4faff;
+.body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff; /* Set to pure white */
+  min-height: 200vh;
+  min-width: 100vw; /* Ensures it covers the full viewport width */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the content */
+}
+
+/* Wrapper to constrain the width of content */
+.wrapper {
   width: 100%;
-  
+  max-width: 1400px; /* Adjust as needed */
+  background-color: #ffffff; /* Ensures content area remains white */
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better contrast */
 }
 
-  /* Logo styling */
-.logo {
-  display: flex;                 /* Flex container to align logo and h1 */
-  align-items: center;           /* Vertically align the logo and title */
+/* Styles for desktop screens */
+@media (min-width: 1024px) {
+  .body {
+    background-color: #f0f0f0;
+    font-size: 18px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    height: auto;
+  }
+
+  .header {
+    text-align: center;
+    padding: 20px;
+    height: 100px;
+  }
+
+  .mainpage h1 {
+    font-size: 50px;
+  }
 }
 
+/* Styles for tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .body {
+    font-size: 16px;
+  }
 
+  .container {
+    padding: 15px;
+    height: auto;
+  }
 
-.logo h1 {
-  margin-left: 20px;             /* Add some space between the logo and the title */
-  font-size: 2rem;               /* Adjust font size */
-  color: white;                  /* Set the text color to white */
+  .mainpage h1 {
+    font-size: 40px;
+  }
 }
 
-/* Cover Photo styling */
- .coverphoto img {
-  display: flex;                 /* Flex container to align logo and h1 */
-  align-items: center;  
-  width: 100%;
-  height: 800px;         /* Vertically align the logo and title */
+/* Styles for mobile screens */
+@media (max-width: 767px) {
+  .body {
+    font-size: 14px;
+    background-color: #ffffff;
+  }
+
+  .header {
+    text-align: left;
+    padding: 10px;
+    height: 80px;
+  }
+
+  .container {
+    padding: 10px;
+    height: auto;
+  }
+
+  .mainpage h1 {
+    font-size: 30px;
+    padding-top: 30px;
+  }
 }
 
-.mainpage h1{
-  display: absolute; 
-  padding-top: 50px;
+.mainpage h1 {
   text-align: center;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 50px;
-  }
+  margin: 0;
+}
 
+/* Main section styling */
+.main {
+  padding: 40px;
+  text-align: center;
+  background-color: white;
+  
+}
 
-/* Navbar styling */
-.navbar {
+/* Grid styling */
+.grid {
+  
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-items: center; /* Ensures all grid items (cards) are centered */
+  align-items: start;    /* Ensures the content of cards aligns at the top */
+  width: 100%;
+  margin-top: 100px;        /* Centers the grid container */
+  padding: 0 20px;
+}
+
+/* Card styling */
+.card {
+  
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 10px;
-  background-color: #2A06AE;
-  color: white;
+  flex-direction: column; /* Ensures content inside the card is aligned vertically */
+  justify-content: space-between; /* Space between elements inside the card */
+  max-width: 300px; /* Restrict the card width to prevent stretching */
+  margin: 0 auto;   /* Center the card inside each grid item */
 }
 
-
-
-
-/* Navbar Heading (e.g., site name) */
-.navbar1 {
-  position: absolute;
-  padding-left: 30px;
-  font-weight: bold;
-  text-align: left;
-  font-size: 24px;
+.card:hover {
+  transform: scale(1.05);
 }
 
-/* Navbar Links */
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  padding: 10px 15px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.navbar a:hover {
+.card h3 {
+  margin-bottom: 10px;
   text-decoration: underline;
-  background-color: #ddd; /* Add hover effect */
-  color: #333;
 }
 
-
-
-/* Dropdown Menu Container */
-.loginDropdown {
-  position: relative;
-}
-
-/* Button that triggers dropdown */
-.dropdownButton {
-
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.dropdownButton:hover {
-  text-decoration: underline;
-  background-color: #ddd; /* Add hover effect */
-  color: #333;
-}
-
-/* Initially, hide dropdown content by default */
-.dropdownContent {
-  display: none; /* Hidden by default */
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 200px; /* Increased the minimum width to allow more space for text */
-  z-index: 1;
-  border-radius: 5px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  right: 0; /* Align the dropdown to the right edge of the button */
-  top: 100%; /* Position the dropdown just below the button */
-  padding: 5px 0; /* Padding to prevent text from touching edges */
-  transform: translateX(0); /* Ensure it's fully visible by adjusting it if necessary */
-}
-
-/* Show the dropdown content when it is toggled on */
-.loginDropdown .dropdownContent {
-  display: block;
-}
-
-/* Style for dropdown links */
-.dropdownContent a {
-  color: black;
-  padding: 12px 20px; /* Increase padding for better text visibility */
+.card a {
+  color: #0044cc;
   text-decoration: none;
-  display: block;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
 }
 
-/* Hover effect for dropdown links */
-.dropdownContent a:hover {
-  background-color: #ddd;
+.card a:hover {
+  text-decoration: underline;
 }
 
+.card img {
+  margin: 0;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px; /* Adds a rounded effect to images */
+}
 
-  
-  .main {
-    padding: 40px;
-    text-align: center;
-  }
-  
+/* Additional responsive adjustments for smaller screens */
+@media (max-width: 767px) {
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    width: 100%;
-    margin-top: 20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    
+    grid-template-columns: 1fr; /* Single column for mobile */
   }
-  
+
   .card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
- 
+    max-width: 100%; /* Cards will take full width in mobile view */
   }
-  
-  .card:hover {
-    transform: scale(1.05);
-  }
-  
-  .card h3 {
-    margin-bottom: 10px;
-    text-decoration:underline;
-    
-  }
-  
-  .card a {
-    color: #0044cc;
-    text-decoration: none;
-  }
-  
-  .card a:hover {
-    text-decoration: underline;
-  }
-  .card img{
-    margin-left: 30px;
-    margin-right: 30px;
- }
-  
-
-  
-  
-
- 
+}

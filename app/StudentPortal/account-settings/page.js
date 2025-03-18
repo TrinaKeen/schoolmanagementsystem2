@@ -1,177 +1,180 @@
-'use client';
-
+"use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from '../components/accountsettings.module.css'; // Create a CSS module for styling
-import Sidebar from '../components/Sidebar'; 
-import styles1 from '../components/Sidebar.module.css';
+import styles from '../components/accountsettings.module.css';
+import Sidebar from '../components/Sidebar';
 
 const AccountSettings = () => {
-    const [studentData, setStudentData] = useState(null);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [studentnumber, setStudentnumber] = useState('');
-    const [fullname, setFullname] = useState('');
-    const [email, setEmail] = useState('');
-    const [country, setCountry] = useState('');
-    const [username, setUsername] = useState('');
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const router = useRouter();
-    
-    
-    
-    useEffect(() => {
-      const fetchStudentData = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Authorization token is missing');
-          setLoading(false);
-          return;
-        }
-  
-        try {
-          const res = await fetch('/api/auth/student-accountsettings', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-  
-          if (res.ok) {
-            const data = await res.json();
-            console.log('Fetched student data:', data);
-            setStudentData(data);
-            setStudentnumber(data.studentNumber); // Set student number
-            setFullname(data.fullname);
-            setEmail(data.email);
-            setCountry(data.country);
-            setUsername(data.username);
-          } else {
-            setError('Failed to fetch student data');
-          }
-        } catch (err) {
-          setError('Failed to fetch student data');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchStudentData();
-    }, []);
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+  const [studentNumber, setStudentNumber] = useState(null);
+  const [studentData, setStudentData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchStudentNumber = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
         setError('Authorization token is missing');
+        setLoading(false);
         return;
       }
-  
-      const updatedData = {
-        studentnumber,
-        fullname,
-        email,
-        country,
-        username,
-        currentPassword,
-        newPassword,
-      };
-  
+
       try {
-        const res = await fetch('/api/auth/student-accountsettings', {
-          method: 'PUT',
+        const res = await fetch('/api/students/student-data', {
+          method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify(updatedData),
         });
-  
-        const data = await res.json();
-  
-        if (res.ok) {
-          alert('Account settings updated successfully');
-          router.push('/StudentPortal/student-dashboard'); // Redirect after success
-        } else {
-          setError(data.error || 'Failed to update account settings');
+
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          setError(errorResponse.error || 'Failed to fetch student number');
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        setError('Failed to update account settings');
+
+        
+        const data = await res.json();
+        const studentNumber = data.studentNumber;
+        setStudentNumber(data.studentNumber); // Save the student number
+        fetchStudentDetails(studentNumber);
+
+       
+
+      } catch (error) {
+        console.error('Error fetching student number:', error);
+        setError('Failed to fetch student number');
+        setLoading(false);
       }
     };
-  
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
+    const fetchStudentDetails = async (studentNumber) => {
+      try {
+        const res = await fetch(`/api/students/studentlogindetails?studentNumber=${studentNumber}`, {
+          method: 'GET',
+        });
     
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          setError(errorResponse.error || 'Failed to fetch student details');
+          setLoading(false);
+          return;
+        }
+    
+        const data = await res.json();
+        console.log('Fetched student data:', data); // Log the fetched data
+    
+        setStudentData(data);
+        setLoading(false);
+      } catch (error) {
+        
+        setError('Failed to fetch student details');
+        setLoading(false);
+      }
+    };
+    
+    
+    
+
+    fetchStudentNumber();
+  }, []);
+
+  // Change Password
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+  
+    // Validate new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords don't match");
+      return;
+    }
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setPasswordError('Authorization token is missing');
+      return;
+    }
+  
+    const studentNumber = studentData?.student_number; // Get the student number from studentData
+  
+    if (!studentNumber) {
+      setPasswordError('Student number is missing');
+      return;
+    }
+  
+    const res = await fetch('/api/students/studentupdateaccount', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ studentNumber, currentPassword, newPassword }),
+    });
+  
+    const data = await res.json();
+  
+    if (res.ok) {
+      alert('Password updated successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } else {
+      setPasswordError(data.error || 'Failed to change password');
+    }
+  };
+
   return (
-    <div>
-         {/* Sidebar */}
-         <Sidebar
-        className={styles1.container}
-        studentNumber={studentData.studentnumber || ''}
-      />
-      <div className={styles.formContainer}>
-        <h1>Account Settings</h1>
-        <form onSubmit={handleSubmit}>
-          {/* Display student number */}
-          <div>
-            <label>Student Number</label>
-            <input
-              type="text"
-              value={studentData.studentnumber}
-              readOnly
-            />
-          </div>
+    <div style={{ backgroundColor: 'white', height: '100vh' , paddingLeft: '300px', paddingTop: '50px', color: 'black'}}>
+       <Sidebar studentNumber={studentNumber} />
+  <div className={styles.formContainer}>
+    <h1>Account Settings</h1>
 
-          {/* Full Name */}
-          <div>
-            <label>Full Name</label>
-            <input
-              type="text"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              required
-            />
-          </div>
+    {/* Error message */}
+    {error && <div className={styles.error}>{error}</div>}
 
-          {/* Email */}
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+    {studentData && (
+      <div>
+        {/* Display student information */}
+        <div className={styles.formItem}>
+          <label>Student Number: </label>
+          <span>{studentData.student_number}</span> {/* Ensure this matches the API response */}
+        </div>
 
-          {/* Country */}
-          <div>
-            <label>Country</label>
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-            />
-          </div>
+        <div className={styles.formItem}>
+          <label>Full Name: </label>
+          <span>{studentData.full_name}</span>
+        </div>
 
-          {/* Username */}
-          <div>
-            <label>Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
+        <div className={styles.formItem}>
+          <label>Email: </label>
+          <span>{studentData.email}</span>
+        </div>
 
+        <div className={styles.formItem}>
+          <label>Country: </label>
+          <span>{studentData.country}</span>
+        </div>
+
+        <div className={styles.formItem}>
+          <label>Username: </label>
+          <span>{studentData.username}</span>
+        </div>
+        <br></br>
+        <hr />
+
+        {/* Change Password Section */}
+        <h2>Change Password</h2>
+
+        <form onSubmit={handleChangePassword}>
           {/* Current Password */}
-          <div>
-            <label>Current Password</label>
+          <div className={styles.formItem}>
+            <label>Current Password: </label>
             <input
               type="password"
               value={currentPassword}
@@ -181,19 +184,38 @@ const AccountSettings = () => {
           </div>
 
           {/* New Password */}
-          <div>
-            <label>New Password (optional)</label>
+          <div className={styles.formItem}>
+            <label>New Password: </label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              required
             />
           </div>
 
-          <button type="submit">Update Settings</button>
+          {/* Confirm New Password */}
+          <div className={styles.formItem}>
+            <label>Confirm New Password: </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Password Error */}
+          {passwordError && <div className={styles.error}>{passwordError}</div>}
+
+          {/* Change Password Button */}
+          <button type="submit">Change Password</button>
         </form>
       </div>
-    </div>
+    )}
+  </div>
+</div>
+
   );
 };
 

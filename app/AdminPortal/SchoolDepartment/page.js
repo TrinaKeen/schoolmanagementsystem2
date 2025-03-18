@@ -82,3 +82,4 @@ export default function SchoolDept() {
     </div>
   );
 }
+

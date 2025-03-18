@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "./AccountInformation.module.css"; // Ensure this path is correct
-import AdminHeader from "../components/page";
+import AdminHeader from "../components/header";
 import { FaLock, FaUser, FaUserPlus, FaQuestionCircle } from "react-icons/fa";
 
 export default function AccountInformation() {

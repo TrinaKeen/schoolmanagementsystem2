@@ -1,182 +1,110 @@
-/* Page Layout */
-.container {
+.pageContainer {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f7f7f7;
-    flex-wrap: wrap;
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    width: 280px;
-    background: white;
-    color: black;
-    padding: 30px;
-    border-radius: 8px;
-    border-right: 2px solid #ccc;
-    flex-shrink: 0;
-}
-
-.sidebar h2 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar li {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-size: 1.1rem;
-}
-
-.sidebar li:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
-}
-
-.sidebar li.active {
-    background-color: #4c8eaf;
-    transform: scale(1.05);
-}
-
-/* Tab Area Styling */
-.tabContent {
+.contentContainer {
+    margin: 80px auto 0;
     background-color: white;
-    color: black;
-    padding: 30px;
+    padding: 20px;
     border-radius: 8px;
-    animation: fadeIn 0.5s ease-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    width: 100%;
 }
 
-.tabContent h1 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
+.title {
+    font-size: 24px;
     font-weight: bold;
-    text-align: center;
-}
-
-/* Content Area Styling */
-.content {
-    flex-grow: 1;
-    padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    margin-left: 30px;
-    transition: all 0.3s ease;
-    min-width: 300px;
-}
-
-/* Dropdown and Button Container */
-.dropdownContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.dropdown {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-}
-
-.editButton {
-    padding: 10px 15px;
-    background-color: #4c8eaf;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.editButton:hover {
-    background-color: #357aab;
-    transform: scale(1.05);
-}
-
-/* Student Fees Table */
-.semester {
-    margin-top: 20px;
-}
-
-.semester h2 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
     color: #333;
+    margin-bottom: 20px;
     text-align: center;
 }
 
-.feesTable {
+/* Search Bar Styling */
+.searchContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.searchInput {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    width: 250px;
+}
+
+.searchButton {
+    padding: 8px 12px;
+    border: none;
+    background-color: #fbbc05;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+/* FIX: Scoped Table Styling */
+.table {
     width: 100%;
     border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
+    background-color: white;
 }
 
-.feesTable th {
-    background-color: #4c8eaf;
+.table th, .table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Sortable Headers */
+.sortableHeader {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    background-color: #0a9396;
     color: white;
+    font-weight: bold;
     padding: 12px;
     text-align: left;
 }
 
-.feesTable td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
+.sortIcon {
+    margin-left: 5px;
+    font-size: 12px;
+    color: white;
 }
 
-.feesTable tr:hover {
-    background-color: #f1f1f1;
+.tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
-.totalCharges {
-    margin-top: 10px;
-    font-size: 1.2em;
+/* Styling for Status */
+.paid {
+    color: #0a9396;
     font-weight: bold;
-    text-align: right;
-    color: #333;
 }
 
-/* Fade-in Animation */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.unpaid {
+    color: red;
+    font-weight: bold;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .sidebar {
-        width: 100%;
-        margin-bottom: 20px;
-        border-right: none;
-    }
-
-    .content {
-        margin-left: 0;
-        width: 100%;
-    }
+.noData {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #666;
 }

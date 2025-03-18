@@ -1,7 +1,7 @@
 /* components/Sidebar.module.css */
 .sidebar {
   width: 250px;
-  background-color: #333;
+  background: linear-gradient(135deg, #005f73, #0a9396);
   color: white;
   padding: 20px;
   position: fixed;
@@ -11,21 +11,18 @@
 }
   
 .sidebar .logo {
-  text-align: center;
-  margin-bottom: 20px;
-  margin-left: 20px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%); /* Moves the logo back by half its width and height */
+  
 }
 
-.sidebar h1 {
-  font-size: 20px;
-  margin-top: 10px;
-  color: white;
-  margin-right: 50px;
-}
+
 
 .navbar {
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
 }
 
 .navbar a {
@@ -42,11 +39,13 @@
 }
 
 .navbar a:hover {
-  background-color: #575757;
+  background-color: rgba(255, 255, 255, 0.2); /* Soft white hover */
+  transform: translateY(-3px);
 }
   
   .studentInfo {
     margin-bottom: 20px;
+    margin-top: 150px;
   }
   
   .logoutButton {
