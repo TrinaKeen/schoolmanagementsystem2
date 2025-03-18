@@ -1,6 +1,11 @@
 import bcrypt from "bcryptjs";
 import { neon } from "@neondatabase/serverless";
+<<<<<<< Updated upstream
 import jwt from "jsonwebtoken"; // Make sure to install jsonwebtoken
+=======
+import jwt from "jsonwebtoken";
+import { serialize } from "cookie"; // To set the token cookie. Install cookie and cookie jsonwebtoken - Martin
+>>>>>>> Stashed changes
 
 const sql = neon(process.env.DATABASE_URL);
 
@@ -42,6 +47,21 @@ export default async function handler(req, res) {
         }
       );
 
+<<<<<<< Updated upstream
+=======
+      // Added by Martin
+      res.setHeader(
+        "Set-Cookie",
+        serialize("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production", // Use secure flag in production
+          sameSite: "strict",
+          path: "/",
+          maxAge: 3600, // 1 hour
+        })
+      );
+
+>>>>>>> Stashed changes
       // Successful login
       res.status(200).json({
         message: "Login successful",
