@@ -71,7 +71,10 @@ export default function StudentCourses() {
         throw new Error("Failed to fetch courses");
       }
 
-      const data = await res.json();
+      let data = await res.json();
+      data.sort((a, b) => a.id - b.id);
+
+      // const data = await res.json();
       setCourses(data);
     } catch (error) {
       setError(error.message);
@@ -188,7 +191,18 @@ export default function StudentCourses() {
         throw new Error("Failed to save course");
       }
 
-      fetchCourses();
+      const updatedCourseData = await res.json();
+
+      setCourses((prevCourses) => {
+        return prevCourses.map((course) =>
+          course.id === updatedCourseData.id
+            ? { ...course, ...updatedCourseData }
+            : course
+        );
+      });
+
+      await fetchCourses();
+
       setEditCourse(null);
       setFormVisible(false); // Hide form after saving
       setNewCourse({
@@ -334,8 +348,8 @@ export default function StudentCourses() {
                       {getInstructorName(course.instructor_id)}
                     </td>
                     <td className={styles.yearColumn}>{course.year}</td>
-                    <td className={styles.actions}>
-                      <div className={styles.buttonContainer}>
+                    <td>
+                      <div className={styles.actions}>
                         <button
                           className={styles.editButton}
                           onClick={() => handleEdit(course)}
@@ -349,7 +363,7 @@ export default function StudentCourses() {
                           }
                         >
                           Delete
-                        </button>{" "}
+                        </button>
                       </div>
                     </td>
                   </tr>

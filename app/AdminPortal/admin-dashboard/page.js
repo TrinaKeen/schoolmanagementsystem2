@@ -98,6 +98,7 @@ export default function SidebarWithToggle() {
                 )}
               </div>
 
+
               {/* Submenu Links */}
               {item.submenu && (activeMenu === item.title || (!isOpen && hoveredMenu === item.title)) && (
                 <div className={`pl-8 space-y-1 ${isOpen ? "" : "absolute left-full top-0 bg-gray-800 p-2 rounded shadow-lg"}`}>
@@ -146,6 +147,7 @@ export default function SidebarWithToggle() {
             <Link href="../AdminPortal/SchoolDepartment">Go to Departments Management</Link>
           </div>
         </div>
+
 
         <div className={styles['grid-container']}>
           <div className={styles.card}>
