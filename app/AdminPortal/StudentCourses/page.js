@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 // import Sidebar from "../components/sidebar";
+import Sidebar from "../components/Sidebar";
 import styles from "./studentCourses.module.css";
 
 export default function StudentCourses() {
@@ -238,7 +239,7 @@ export default function StudentCourses() {
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
+      <Sidebar className={styles.sidebar} />
       <div className={styles.contentContainer}>
         {/* Title and Add New Course Button */}
         <div className={styles.headerRow}>
