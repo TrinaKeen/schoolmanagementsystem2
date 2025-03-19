@@ -10,7 +10,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px; /* Increased padding for a more spacious feel */
+  padding: 2rem 1.5rem; /* Increased padding for a more spacious feel */
 }
 
 /* Scoped Header Styles */
@@ -41,7 +41,55 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Deeper shadow for more depth */
   margin-bottom: 30px; /* Space between sections */
   padding: 20px; /* Padding within sections */
+  
 }
+
+.section:hover {
+  transform: translateY(-2px);
+}
+
+.section h2 {
+  color: #2c3e50;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* List Styling */
+.curriculum ul, .admissionRequirements ul, .careerOpportunities ul {
+  columns: 2;
+  column-gap: 2rem;
+  padding-left: 1.5rem;
+}
+
+.curriculum li, .admissionRequirements li, .careerOpportunities li {
+  margin-bottom: 0.75rem;
+  padding-left: 1rem;
+  position: relative;
+  break-inside: avoid;
+}
+
+.curriculum li::before, .admissionRequirements li::before, .careerOpportunities li::before{
+  content: "▹";
+  position: absolute;
+  left: -1rem;
+  color: #2980b9;
+}
+
+/* Contact Section */
+.contact {
+  background: #f0f4f8;
+  border-left-color: #e74c3c;
+  padding: 10px;
+}
+
+.contact p {
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
 
 .ul {
   margin: 10px 0; /* Spacing above and below lists */
@@ -69,6 +117,8 @@
   justify-content: left; /* Center the buttons horizontally */
   margin-bottom: 20px; /* Space below buttons */
   margin-top: 20px;
+  gap: 1rem;
+  margin: 2rem 0;
 }
 
 .applyButton, .backButton {
@@ -84,6 +134,9 @@
 .applyButton {
   background-color: #2980b9; /* Apply Now button color */
   color: white; /* Text color */
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .applyButton:hover {
@@ -91,10 +144,68 @@
 }
 
 .backButton {
-  background-color: #e74c3c; /* Back button color */
+  background-color: #64748b; /* Back button color */
   color: white; /* Text color */
+  padding: 0.75rem 2rem;
+  font-weight: 600;
 }
 
 .backButton:hover {
   background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Header Styles */
+.courseHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #2c3e50 0%, #2980b9 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.courseHeader h1 {
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+  color: #e2e8f0;
+}
+
+.courseHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+  color: #e2e8f0;
+}
+
+.courseHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #cbd5e0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .courseHeader h1 {
+    font-size: 2rem;
+  }
+  
+  .section {
+    padding: 1.5rem;
+  }
+  
+  .curriculum ul, .admissionRequirements ul {
+    columns: 1;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+  }
+  
+  .applyButton, .backButton {
+    width: 100%;
+    text-align: center;
+  }
 }
