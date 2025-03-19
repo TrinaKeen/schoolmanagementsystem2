@@ -1,36 +1,38 @@
-.pageContainer {
+/* Dashboard Container */
+.dashboardContainer {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    background-color: #f0f4f8;
-    font-family: Arial, sans-serif;
+    height: 100vh;
 }
 
-.contentContainer {
-    margin: 80px auto 0;
-    background-color: white;
+/* Wrapper to keep Sidebar and Content aligned */
+.contentWrapper {
+    display: flex;
+    flex: 1;
+}
+
+/* Main Content should be placed beside the Sidebar */
+.mainContent {
+    flex-grow: 1;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
+    background-color: #f4f6f9;
+}
+
+/* Table and Search Styling */
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
     width: 100%;
+    border-collapse: collapse;
+    background-color: white;
 }
 
-.title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Search Bar Styling */
 .searchContainer {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
     margin-bottom: 15px;
-    gap: 10px;
 }
 
 .searchInput {
@@ -39,67 +41,32 @@
     border-radius: 4px;
     font-size: 14px;
     color: #333;
-    width: 250px;
+    width: 300px;
 }
 
 .searchButton {
-    padding: 8px 12px;
+    background-color: #ffca28;
+    color: #333;
     border: none;
-    background-color: #fbbc05;
-    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
     border-radius: 4px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
-.tableWrapper {
-    overflow-x: auto;
-}
-
-/* FIX: Scoped Table Styling */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-}
-
-.table th, .table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-size: 14px;
-}
-
-/* Sortable Headers */
 .sortableHeader {
     cursor: pointer;
-    user-select: none;
-    position: relative;
-    background-color: #0a9396;
-    color: white;
     font-weight: bold;
-    padding: 12px;
     text-align: left;
-}
-
-.sortIcon {
-    margin-left: 5px;
-    font-size: 12px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    background-color: #008080;
     color: white;
 }
 
-.tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* Styling for Status */
-.paid {
-    color: #0a9396;
-    font-weight: bold;
-}
-
-.unpaid {
-    color: red;
-    font-weight: bold;
+.sortableHeader:hover {
+    background-color: #007070;
 }
 
 .noData {
