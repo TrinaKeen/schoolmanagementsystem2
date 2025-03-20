@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import '../../components/studentpage.modules.css';
 import Modal from '../../components/Modal';
 import AdminHeader from "../../components/header";
-import styles from '../../components/Sidebar.module.css';
+import Sidebar from "../../components/Sidebar";
 import logo from '/src/school-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -125,28 +125,14 @@ const AdminStudentList = () => {
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh', color: 'black' }}>
-      <AdminHeader />
-
-
-      <div className={styles.sidebar}>
       
+      
+
+
+      <div >
+      <Sidebar/>
   
-      {/* Navigation Menu */}
-      <nav className={styles.navbar} aria-label="Sidebar navigation">
-        <Link href="/AdminPortal/StudentPage">
-        Student Approvals 
-        </Link>
-        <Link href="/AdminPortal/StudentPage/studentList">
-        List of Students 
-        </Link>
-        
-        <Link href="/AdminPortal/StudentPage">
-        Update Student Info
-        </Link>
-        <button onClick={handleBack} className={styles.logoutButton}>
-          Back to Dashboard
-        </button>
-      </nav>
+      
     </div>
 
 
@@ -156,8 +142,8 @@ const AdminStudentList = () => {
       <h1 style={{ paddingLeft: '300px', paddingTop: '50px', fontSize: '2rem' }}>
   List of Students for Admission Application
   </h1>
-      <table>
-        {/* Actions Dropdown for downloading logs */}
+
+     {/* Actions Dropdown for downloading logs */}
   <div className="actions-container" ref={dropdownRef}> {/* Allows user to click out of menu */}
   <button className="actions-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
     Actions
@@ -171,6 +157,9 @@ const AdminStudentList = () => {
     </ul>
   )}
   </div>
+
+      <table>
+       
       
         <thead >
           <tr >

@@ -35,6 +35,10 @@ export default function Sidebar() {
     router.push("/AdminPortal/admin-dashboard");
   };
 
+  const handleAccountSettings = () => {
+    router.push("/AdminPortal/admin-settings");
+  };
+
   const menuItems = [
     {
       title: "Dashboard",
@@ -45,9 +49,9 @@ export default function Sidebar() {
       title: "Students",
       icon: <FaUser />,
       submenu: [
-        { title: "All Students", link: "/students" },
+        { title: "All Students", link: "/AdminPortal/StudentPage/studentList" },
         { title: "Student Details", link: "/students/details" },
-        { title: "Admission Request", link: "students/admission" },
+        { title: "Admission Request", link: "/AdminPortal/StudentPage" },
         { title: "Admission Form", link: "/students/admission-form" },
       ],
     },
@@ -81,7 +85,14 @@ export default function Sidebar() {
         { title: "Add Courses", link: "/AdminPortal/addStudentCourses" },
       ],
     },
-    { title: "Account Setting", icon: <FaCog />, link: "/account-settings" },
+  
+    {
+      title: "Account Setting",
+      icon: <FaCog />,
+      action: handleAccountSettings,
+    },
+
+
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,
@@ -90,7 +101,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex fixed h-full">
       <div className="bg-gray-800 text-white w-72 transition-all duration-300">
         {/* Sidebar Header */}
         <div className="p-4 bg-gray-900 border-b-2 border-gray-600">

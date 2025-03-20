@@ -1,0 +1,164 @@
+/* Updated CSS for the employee form alignment */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f4f8;
+  font-family: Arial, sans-serif;
+  
+}
+
+.contentContainer {
+  
+  margin: 80px auto 0;
+  background-color: white;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 350px;
+  width: 80%;
+}
+
+.employeeForm {
+  
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for first row */
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%; /* Ensure the form fills the width available but doesn't exceed max-width */
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 20px; /* Add padding inside the form */
+}
+
+.employeeForm input,
+.employeeForm select,
+.employeeForm textarea,
+.employeeForm button {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.employeeForm .half-width {
+  grid-column: span 2; /* Span across 2 columns for the second row (name fields) */
+}
+
+.employeeForm .full-width {
+  grid-column: span 4; /* Full-width form elements (like Address, etc.) */
+}
+
+.employeeForm input[type="date"] {
+  width: 100%;
+}
+
+/* Styling for the form container */
+.employeeForm {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.employeeForm input,
+.employeeForm select,
+.employeeForm textarea,
+.employeeForm button {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.employeeForm .half-width {
+  grid-column: span 2; /* Makes the fields span two columns */
+}
+
+.employeeForm .full-width {
+  grid-column: span 4; /* Makes the fields span all columns */
+}
+
+
+/* General Button Styling */
+.employeeForm button,
+.employeeCard button {
+  background-color: #0a9396;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.employeeForm button:hover,
+.employeeCard button:hover {
+  background-color: #0056b3; /* Darker blue when hovered */
+  transform: scale(1.05); /* Slightly enlarge the button */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+/* Focus Effect */
+.employeeForm button:focus,
+.employeeCard button:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 2px #0056b3; /* Add blue glow when focused */
+  background-color: #0a9396;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Style for the Delete Button */
+.delete {
+  background-color: #dc3545;
+  color: white;
+  font-weight: bold;
+}
+
+.delete:hover {
+  background-color: #c82333; /* Darker red when hovered */
+  transform: scale(1.05);
+}
+
+.delete:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #c82333;
+}
+
+/* Style for Add Button */
+.add-button {
+  background-color: #0a9396;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.add-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.add-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #218838;
+}
+
+/* Add some padding to the employee cards buttons */
+.employeeCard button {
+  padding: 8px 15px;
+  font-size: 13px;
+}
