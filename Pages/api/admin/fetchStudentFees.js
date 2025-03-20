@@ -1,8 +1,10 @@
 // Generated using ChatGPT
-// Can you generate a Next.js API route (/api/admin/fetchStudentFees) that
-// retrieves student fee records from a PostgreSQL database?
-// Be a GET endpoint that returns student fees data from the various student fees table (listing every fees table from the database).
+// Can you generate a Next.js API route (/api/admin/fetchStudentFees)
+// that retrieves student fee records from a neon PostgreSQL database?
+// Use a GET endpoint that returns student fees data from the student fees tables (listing every fees table from the database).
 // Use JWT authentication to protect access, verifying the token from cookies before fetching data.
+
+// OpenAI. (2025). ChatGPT GPT-4o. Accessed and retrieved on March 14, 2025, from https://chat.openai.com
 
 import sql from '../../../db';
 import { jwtVerify } from 'jose';

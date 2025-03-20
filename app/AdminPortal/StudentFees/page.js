@@ -1,22 +1,35 @@
-"use client";
+// Generated using ChatGPT
+// Can you generate a Next.js Student Fees page that fetches student fee records from a backend API?
+// The page should display student fees using their respective ID showing name, gender, class, section, expense, amount, payment status, phone and email.
+// Allow searching by ID, name, or phone.
+// Include sorting functionality when clicking column headers
+// Use an endpoint to fetch data.
+// Ensure the API is protected with JWT authentication and fetches student fee records from a PostgreSQL database containing tuition_fees and miscellaneous_fees tables.
 
-import { useEffect, useState } from "react";
+// OpenAI. (2025). ChatGPT GPT-4o. Accessed and retrieved on March 14, 2025, from https://chat.openai.com
+ 
+"use client"; // Required for using state, effects, and interactivity in Next.js
+
+import { useEffect, useState } from "react"; // React hooks for managing state and effects
 import Sidebar from "../components/Sidebar"; // Import Sidebar
 import Header from "../components/Header";
 import styles from "./StudentFees.module.css";
 
 export default function StudentFeesPage() {
-    const [fees, setFees] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    // State variables
+    const [fees, setFees] = useState([]); // Stores the list of student fees
+    const [searchQuery, setSearchQuery] = useState(""); // Stores the search input value
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); // Stores sorting configuration
 
+    // Fetch student fees when the component loads
     useEffect(() => {
         async function fetchFees() {
             const res = await fetch("/api/admin/fetchStudentFees", { cache: "no-store" });
 
+            // Handle errors in fetching
             if (!res.ok) {
                 if (res.status === 401) {
-                    window.location.href = "/LogIn";
+                    window.location.href = "/LogIn/AdminLogin";
                     return;
                 } else {
                     console.error("Failed to fetch student fees", res.status, res.statusText);
@@ -24,25 +37,25 @@ export default function StudentFeesPage() {
                 }
             }
 
-            const data = await res.json();
-            setFees(data);
+            const data = await res.json(); // Parse JSON response
+            setFees(data); // Store data in state
         }
 
-        fetchFees();
+        fetchFees(); // Empty dependency array ensures it runs only on the first render
     }, []);
 
     // Filter Fees Based on Search Query
     const filteredFees = fees.filter((fee) => {
         const query = searchQuery.toLowerCase();
         return (
-            fee.id.toString().includes(query) ||
-            fee.student_number.toLowerCase().includes(query) ||
-            fee.payment_status.toLowerCase().includes(query) ||
-            (fee.program_id && fee.program_id.toString().includes(query))
+            fee.id.toString().includes(query) || // Search by ID
+            fee.student_number.toLowerCase().includes(query) || // Search by student number
+            fee.payment_status.toLowerCase().includes(query) || // Search by payment status
+            (fee.program_id && fee.program_id.toString().includes(query)) // Search by program ID (if exists)
         );
     });
 
-    // Sorting Functionality
+    // Sorting Functionality Ascending/Descending
     const sortedFees = [...filteredFees].sort((a, b) => {
         if (!sortConfig.key) return 0;
 
@@ -58,9 +71,9 @@ export default function StudentFeesPage() {
     const handleSort = (key) => {
         let direction = "asc";
         if (sortConfig.key === key && sortConfig.direction === "asc") {
-            direction = "desc";
+            direction = "desc"; // Toggle sorting order if already sorted
         }
-        setSortConfig({ key, direction });
+        setSortConfig({ key, direction }); 
     };
 
     return (

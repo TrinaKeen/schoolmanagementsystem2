@@ -6,6 +6,8 @@
 // Allow optional fields such as additional_fees, currency, due_date, and payment_status (defaulting to Unpaid).
 // Allow error handling as well
 
+// OpenAI. (2025). ChatGPT GPT-4o. Accessed and retrieved on March 14, 2025, from https://chat.openai.com
+
 import sql from '../../../db'; // Importing database connection
 import { jwtVerify } from 'jose'; // Importing JWT verification library
 import { parse } from 'cookie';
