@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-// import Sidebar from "../components/sidebar";
 import Sidebar from "../components/Sidebar";
 import styles from "./studentCourses.module.css";
 
@@ -219,19 +217,6 @@ export default function StudentCourses() {
     }
   };
 
-  // Handle Add New Course - resets form and opens the form
-  const handleAddNewCourse = () => {
-    setEditCourse(null); // Clear edit state
-    setFormVisible(true); // Show form for new course
-    setNewCourse({
-      course_name: "",
-      course_code: "",
-      program_id: "",
-      instructor_id: "",
-      year: "",
-    });
-  };
-
   if (loading) return <p>Loading courses...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -244,9 +229,6 @@ export default function StudentCourses() {
         {/* Title and Add New Course Button */}
         <div className={styles.headerRow}>
           <h1 className={styles.title}>Course List</h1>
-          <button className={styles.addButton} onClick={handleAddNewCourse}>
-            Add New Course
-          </button>
         </div>
 
         {/* Add/Edit Course Form (shows if adding or editing) */}

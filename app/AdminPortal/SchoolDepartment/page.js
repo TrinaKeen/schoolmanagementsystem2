@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Header from "../components/header";
+import Sidebar from "../components/Sidebar";
 import styles from "./StudentDepartment.module.css"; // Ensure this CSS file exists
 
 export default function SchoolDept() {
@@ -42,7 +42,7 @@ export default function SchoolDept() {
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
+      <Sidebar />
       <div className={styles.contentContainer}>
         <h1 className={styles.title}>Programs List</h1>
 
