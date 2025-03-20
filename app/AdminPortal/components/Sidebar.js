@@ -31,7 +31,7 @@ export default function Sidebar() {
     router.push("/AdminPortal/SchoolDepartment");
   };
 
-  const handDashboard = () => {
+  const handleDashboard = () => {
     router.push("/AdminPortal/admin-dashboard");
   };
 
@@ -39,7 +39,7 @@ export default function Sidebar() {
     {
       title: "Dashboard",
       icon: <FaHome />,
-      action: handDashboard,
+      action: handleDashboard,
     },
     {
       title: "Students",
