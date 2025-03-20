@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { act, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   FaChevronDown,
@@ -16,7 +16,6 @@ import Link from "next/link";
 
 export default function Sidebar() {
   const [activeMenu, setActiveMenu] = useState(null);
-  const [hoveredMenu, setHoveredMenu] = useState(null);
   const router = useRouter();
 
   const toggleMenu = (menu) => {
@@ -28,11 +27,19 @@ export default function Sidebar() {
     router.push("/");
   };
 
+  const handleProgram = () => {
+    router.push("/AdminPortal/SchoolDepartment");
+  };
+
+  const handDashboard = () => {
+    router.push("/AdminPortal/admin-dashboard");
+  };
+
   const menuItems = [
     {
       title: "Dashboard",
       icon: <FaHome />,
-      link: "/AdminPortal/admin-dashboard",
+      action: handDashboard,
     },
     {
       title: "Students",
@@ -64,9 +71,7 @@ export default function Sidebar() {
     {
       title: "Programs",
       icon: <FaBook />,
-      submenu: [
-        { title: "All Programs", link: "/AdminPortal/SchoolDepartment" },
-      ],
+      action: handleProgram,
     },
     {
       title: "Courses",
@@ -105,7 +110,6 @@ export default function Sidebar() {
                     ? item.action()
                     : null
                 }
-                onMouseEnter={() => setHoveredMenu(item.title)}
               >
                 <span className="mr-2">{item.icon}</span>
                 <span>{item.title}</span>

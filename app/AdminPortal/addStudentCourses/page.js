@@ -10,7 +10,10 @@ export default function StudentCourses() {
   const [editCourse, setEditCourse] = useState(null);
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedCourseName, setSelectedCourseName] = useState("");
   const [newCourse, setNewCourse] = useState({
     course_name: "",
     course_code: "",
@@ -72,7 +75,6 @@ export default function StudentCourses() {
       let data = await res.json();
       data.sort((a, b) => a.id - b.id);
 
-      // const data = await res.json();
       setCourses(data);
     } catch (error) {
       setError(error.message);
@@ -103,6 +105,8 @@ export default function StudentCourses() {
       alert("Please fill in all fields before saving.");
       return;
     }
+    setSelectedCourseName(newCourse.course_name);
+    setShowConfirmation(true);
 
     const formattedCourse = {
       id: editCourse?.id ?? null, // If editing, include ID
@@ -116,59 +120,25 @@ export default function StudentCourses() {
     console.log("Saving formatted course:", formattedCourse);
 
     const token = localStorage.getItem("token");
+  };
 
+  const confirmAddCourse = async () => {
+    setShowConfirmation(false);
     try {
-      console.log("Saving course:", newCourse);
-
       const res = await fetch(`/api/admin/studentCourses?type=courses`, {
         method: editCourse ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formattedCourse),
+        body: JSON.stringify(newCourse),
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to save course");
-      }
-
-      const updatedCourseData = await res.json();
-
-      setCourses((prevCourses) => {
-        return prevCourses.map((course) =>
-          course.id === updatedCourseData.id
-            ? { ...course, ...updatedCourseData }
-            : course
-        );
-      });
-
+      if (!res.ok) throw new Error("Failed to save course");
       await fetchCourses();
-
-      setEditCourse(null);
-      setNewCourse({
-        course_name: "",
-        course_code: "",
-        program_id: "",
-        instructor_id: "",
-        year: "",
-      });
+      setShowSuccess(true);
     } catch (error) {
       console.error("Error saving course:", error);
       alert(`Error: ${error.message}`);
     }
-  };
-
-  // Handle Add New Course - resets form and opens the form
-  const handleAddNewCourse = () => {
-    setEditCourse(null); // Clear edit state
-    setNewCourse({
-      course_name: "",
-      course_code: "",
-      program_id: "",
-      instructor_id: "",
-      year: "",
-    });
   };
 
   if (loading) return <p>Loading courses...</p>;
@@ -182,10 +152,7 @@ export default function StudentCourses() {
       <div className={styles.contentContainer}>
         {/* Title and Add New Course Button */}
         <div className={styles.headerRow}>
-          <h1 className={styles.title}>Course List</h1>
-          <button className={styles.addButton} onClick={handleAddNewCourse}>
-            Add New Course
-          </button>
+          <h1 className={styles.title}>Add New Course</h1>
         </div>
 
         {/* Add/Edit Course Form (shows if adding or editing) */}
@@ -239,14 +206,21 @@ export default function StudentCourses() {
                 </option>
               ))}
             </select>
-            <input
-              type="number"
-              placeholder="Year"
+            <select
+              name="number"
+              className={styles.selectDropdown}
               value={newCourse.year}
               onChange={(e) =>
                 setNewCourse({ ...newCourse, year: e.target.value })
               }
-            />
+            >
+              <option value="">Select Year</option>
+              {[1, 2, 3, 4].map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
           </div>
           <div className={styles.buttonGroup}>
             <button className={styles.saveButton} onClick={handleSave}>
@@ -256,6 +230,21 @@ export default function StudentCourses() {
               Cancel
             </button>
           </div>
+
+          {/* Confirmation Modal */}
+          {showConfirmation && (
+            <div className={styles.popup}>
+              <p>Are you sure you want to add {selectedCourseName}?</p>
+              <button onClick={confirmAddCourse}>Yes</button>
+              <button onClick={() => setShowConfirmation(false)}>Cancel</button>
+            </div>
+          )}
+          {showSuccess && (
+            <div className={styles.popup}>
+              <p>{selectedCourseName} successfully added!</p>
+              <button onClick={() => setShowSuccess(false)}>OK</button>
+            </div>
+          )}
         </div>
       </div>
     </div>
