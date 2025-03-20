@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
-  FaBars,
   FaChevronDown,
   FaChevronRight,
   FaHome,
@@ -15,27 +15,17 @@ import {
 import Link from "next/link";
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true);
   const [activeMenu, setActiveMenu] = useState(null);
   const [hoveredMenu, setHoveredMenu] = useState(null);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-
-    // When collapsing the sidebar, close all dropdowns
-    if (!isOpen) {
-      setActiveMenu(null);
-    }
-  };
+  const router = useRouter();
 
   const toggleMenu = (menu) => {
-    // Only allow dropdowns if sidebar is open
-    if (isOpen) {
-      setActiveMenu(activeMenu === menu ? null : menu);
-    }
+    setActiveMenu(activeMenu === menu ? null : menu);
   };
+
   const handleLogout = () => {
-    router.push("/"); // Redirect to the homepage
+    console.log("Logging out...");
+    router.push("/");
   };
 
   const menuItems = [
@@ -50,7 +40,7 @@ export default function Sidebar() {
       submenu: [
         { title: "All Students", link: "/students" },
         { title: "Student Details", link: "/students/details" },
-        { title: "Admission Request", link: "/students/admission" },
+        { title: "Admission Request", link: "students/admission" },
         { title: "Admission Form", link: "/students/admission-form" },
       ],
     },
@@ -90,40 +80,36 @@ export default function Sidebar() {
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,
-      link: "/logout", //Attach the logout function here
+      action: handleLogout,
     },
   ];
 
   return (
     <div className="flex">
-      <div
-        className={`bg-gray-800 text-white transition-all duration-300 ${
-          isOpen ? "w-72" : "w-20"
-        }`}
-      >
+      <div className="bg-gray-800 text-white w-72 transition-all duration-300">
         {/* Sidebar Header */}
-        <div className="p-4 flex justify-between items-center bg-gray-900 border-b-2 border-gray-600">
-          <span className="text-xl font-bold">{isOpen ? "EEFCI" : ""}</span>
-          <button onClick={toggleSidebar} className="p-2">
-            <FaBars className="w-6 h-6" />
-          </button>
+        <div className="p-4 bg-gray-900 border-b-2 border-gray-600">
+          <span className="text-xl font-bold">EEFCI</span>
         </div>
 
         {/* Sidebar Menu */}
-        <nav className="p-4 space-y-2 relative">
+        <nav className="p-4 space-y-2">
           {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className="relative group border-b-2 border-gray-600"
-            >
+            <div key={index} className="relative border-b-2 border-gray-600">
               <div
                 className="flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer"
-                onClick={() => item.submenu && toggleMenu(item.title)}
+                onClick={() =>
+                  item.submenu
+                    ? toggleMenu(item.title)
+                    : item.action
+                    ? item.action()
+                    : null
+                }
                 onMouseEnter={() => setHoveredMenu(item.title)}
               >
                 <span className="mr-2">{item.icon}</span>
-                {isOpen && <span>{item.title}</span>}
-                {item.submenu && isOpen && (
+                <span>{item.title}</span>
+                {item.submenu && (
                   <span className="ml-auto">
                     {activeMenu === item.title ? (
                       <FaChevronDown />
@@ -135,29 +121,21 @@ export default function Sidebar() {
               </div>
 
               {/* Submenu Links */}
-              {item.submenu &&
-                (activeMenu === item.title ||
-                  (!isOpen && hoveredMenu === item.title)) && (
-                  <div
-                    className={`pl-8 space-y-1 ${
-                      isOpen
-                        ? ""
-                        : "absolute left-full top-0 bg-gray-800 p-2 rounded shadow-lg"
-                    }`}
-                  >
-                    {item.submenu.map((subitem, subindex) => (
-                      <Link key={subindex} href={subitem.link}>
-                        <div className="block p-2 hover:bg-gray-700 rounded">
-                          {subitem.title}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
+              {item.submenu && activeMenu === item.title && (
+                <div className="pl-8 space-y-1">
+                  {item.submenu.map((subitem, subindex) => (
+                    <Link key={subindex} href={subitem.link}>
+                      <div className="block p-2 hover:bg-gray-700 rounded">
+                        {subitem.title}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </nav>
-      </div>{" "}
+      </div>
     </div>
   );
 }
