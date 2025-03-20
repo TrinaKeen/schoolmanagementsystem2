@@ -365,3 +365,5 @@ export default function StudentCourses() {
     </div>
   );
 }
+
+// OpenAI. (2025). ChatGPT GPT-4o. Response to the question “Can you help me put edit and delete functions to the code and explain it to me?”. Accessed and retrieved on March 17, 2025 from https://chat.openai.com

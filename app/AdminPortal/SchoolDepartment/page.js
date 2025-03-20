@@ -82,3 +82,5 @@ export default function SchoolDept() {
     </div>
   );
 }
+
+// OpenAI. (2025). ChatGPT GPT-4o. Response to the question “can you give me a code that fetches the data from an API and explain it to me?”. Accessed and retrieved on March 19, 2025 from https://chat.openai.com

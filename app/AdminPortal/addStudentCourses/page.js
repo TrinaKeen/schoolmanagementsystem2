@@ -250,3 +250,5 @@ export default function StudentCourses() {
     </div>
   );
 }
+
+// OpenAI. (2025). ChatGPT GPT-4o. Response to the question “Can you give me a code where it helps me fetch the studentCourses API and show it?”. Accessed and retrieved on March 19, 2025 from https://chat.openai.com
