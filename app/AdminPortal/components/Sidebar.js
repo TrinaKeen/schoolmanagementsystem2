@@ -82,16 +82,18 @@ export default function Sidebar() {
       icon: <FaBook />,
       submenu: [
         { title: "All Courses", link: "/AdminPortal/StudentCourses" },
-        { title: "Add Courses", link: "/AdminPortal/addStudentCourses" },
+        {
+          title: "Add Courses",
+          link: "/AdminPortal/StudentCourses/addStudentCourses",
+        },
       ],
     },
-  
+
     {
       title: "Account Setting",
       icon: <FaCog />,
       action: handleAccountSettings,
     },
-
 
     {
       title: "Log Out",

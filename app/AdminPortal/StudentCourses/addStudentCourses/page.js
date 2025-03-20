@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import styles from "./studentCourses.module.css";
+import Sidebar from "../../components/Sidebar";
+import styles from "./addStudentCourses.module.css";
 
-export default function StudentCourses() {
+export default function addStudentCourses() {
   const [programs, setPrograms] = useState([]);
   const [courses, setCourses] = useState([]);
   const [editCourse, setEditCourse] = useState(null);
