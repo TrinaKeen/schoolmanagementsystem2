@@ -1,82 +1,133 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Sidebar from '../components/Sidebar'; // Importing the Sidebar component for layout
-import styles from '../components/Home.module.css'; // CSS module for styling the Home page
-import styles1 from '../components/Sidebar.module.css'; // CSS module for Sidebar
+import Sidebar from '../components/Sidebar';
+import styles from '../components/Home.module.css';
+import styles1 from '../components/Sidebar.module.css';
 
 export default function StudentDashboard() {
-  // Setting up React state hooks
-  const [studentData, setStudentData] = useState(null); // Holds fetched student data
-  const [loading, setLoading] = useState(true); // Loading state for fetching data
-  const [error, setError] = useState(''); // Error state to store any errors that occur during data fetching
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Fetch student data once the component mounts
+  // Fetch student data when the component mounts
   useEffect(() => {
-    fetchStudentData(); // Call the function to fetch student data
-  }, []); // Empty dependency array means this will run once when the component mounts
+    fetchStudentData();
+  }, []);
 
-  // Function to fetch student data from the server
+  // Function to fetch student data (includes student number)
   const fetchStudentData = async () => {
     try {
-      const token = localStorage.getItem('token'); // Get the token from localStorage for authorization
-      if (!token) throw new Error('Token not found'); // If token is not found, throw an error
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token not found');
 
-      console.log('Fetching student data with token:', token); // Debugging: log the token
+      console.log('Fetching student data with token:', token);
 
-      // Send a GET request to fetch student data from the API, with the token as authorization
       const res = await fetch('/api/students/student-data', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`, // Authorization header with Bearer token
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      // Check if the response is successful
       if (!res.ok) {
-        const errorData = await res.json(); // Parse the error response if any
-        throw new Error(errorData.error || 'Failed to fetch student data'); // Throw an error with the message
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to fetch student data');
       }
 
-      const data = await res.json(); // Parse the successful response
-      setStudentData(data); // Set the fetched student data into state
+      const data = await res.json();
+      setStudentData(data); // Set the student data in state
+      fetchStudentDetails(data.studentNumber); // Fetch student details using the student number
     } catch (err) {
-      console.error('Error fetching student data:', err); // Log the error for debugging
-      setError(err.message || 'An unexpected error occurred'); // Set error message in state
+      console.error('Error fetching student data:', err);
+      setError(err.message || 'An unexpected error occurred');
     } finally {
-      setLoading(false); // Set loading state to false after the data has been fetched or an error has occurred
+      setLoading(false); // Set loading state to false after data is fetched or if an error occurs
     }
+  };
+
+  // Function to fetch student details based on student number
+  const fetchStudentDetails = async (studentNumber) => {
+    try {
+      const res = await fetch(`/api/students/studentlogindetails?studentNumber=${studentNumber}`, {
+        method: 'GET',
+      });
+
+      if (!res.ok) {
+        const errorResponse = await res.json();
+        setError(errorResponse.error || 'Failed to fetch student details');
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      console.log('Fetched student data:', data); // Log the fetched data
+      setStudentData((prevData) => ({
+        ...prevData,
+        ...data, // Merge the fetched details into the previous student data
+      }));
+      setLoading(false);
+    } catch (error) {
+      setError('Failed to fetch student details');
+      setLoading(false);
+    }
+  };
+
+  // Format date for last login display
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? 'N/A' : date.toLocaleString();
   };
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh', color: 'black' }}>
-      {/* Sidebar with student number as a prop */}
       <Sidebar
         className={styles1.container}
-        studentNumber={studentData?.studentNumber || ''} // Pass student number to Sidebar (conditional rendering for loading state)
+        studentNumber={studentData?.studentNumber || ''} // Pass student number to Sidebar
       />
       <div className={styles.content}>
-        {/* Header with conditional rendering for loading or error messages */}
         <header className={styles.header}>
           {loading ? (
-            <p>Loading...</p> // Show loading message while data is being fetched
+            <p>Loading...</p> // Display loading message while fetching data
           ) : error ? (
-            <p>{error}</p> // Show error message if something goes wrong
+            <p>{error}</p> // Display error message if something went wrong
           ) : (
             <p>
-              Welcome, <strong>Student {studentData.studentNumber}</strong>!
+              Welcome, <strong>Student {studentData?.studentNumber}</strong>!
               <br />
-              Last Login: <strong>{new Date(studentData.lastLogin).toLocaleString()}</strong>
-              {/* Show student number and last login time */}
+              Last Login: <strong>{formatDate(studentData?.lastLogin)}</strong>
             </p>
           )}
         </header>
-        <main className={styles.main}>
-          {/* Main content of the dashboard */}
-          <h2>Welcome to the Student Portal</h2>
-          <p>Manage your school's admission, fees, and applications.</p>
-        </main>
+        <main style={{ padding: '40px', background: '#f7f7f7', borderRadius: '15px', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)', maxWidth: '900px', margin: '40px auto', color: '#333', fontFamily: 'Roboto, sans-serif' }}>
+  <h2 style={{ fontSize: '28px', marginBottom: '20px', fontWeight: '700', textAlign: 'center', color: '#2f3d4c', textTransform: 'uppercase', letterSpacing: '2px' }}>
+    Welcome to the Student Portal
+  </h2>
+  <p style={{ fontSize: '16px', textAlign: 'center', lineHeight: '1.8', marginBottom: '30px', fontWeight: '400', color: '#555' }}>
+    Manage your school's admission, fees, and applications.
+  </p>
+
+  {/* Display student details */}
+  {studentData && (
+    <div style={{ background: '#ffffff', padding: '20px', borderRadius: '10px', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)', border: '1px solid #d1d1d1', marginTop: '20px' }}>
+      <p style={{ margin: '15px 0', fontSize: '16px', color: '#333', display: 'flex', alignItems: 'center' }}>
+        <strong style={{ color: '#4a90e2', fontWeight: '600', marginRight: '10px' }}>Full Name:</strong> {studentData?.full_name}
+      </p>
+      <p style={{ margin: '15px 0', fontSize: '16px', color: '#333', display: 'flex', alignItems: 'center' }}>
+        <strong style={{ color: '#4a90e2', fontWeight: '600', marginRight: '10px' }}>Email:</strong> {studentData?.email}
+      </p>
+      <p style={{ margin: '15px 0', fontSize: '16px', color: '#333', display: 'flex', alignItems: 'center' }}>
+        <strong style={{ color: '#4a90e2', fontWeight: '600', marginRight: '10px' }}>Country:</strong> {studentData?.country}
+      </p>
+      <p style={{ margin: '15px 0', fontSize: '16px', color: '#333', display: 'flex', alignItems: 'center' }}>
+        <strong style={{ color: '#4a90e2', fontWeight: '600', marginRight: '10px' }}>Username:</strong> {studentData?.username}
+      </p>
+    </div>
+  )}
+</main>
+
+
+
         <footer className={styles.footer}>
-          {/* Footer section */}
           <p>&copy; 2024 School Management System</p>
         </footer>
       </div>
