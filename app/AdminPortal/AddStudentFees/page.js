@@ -5,6 +5,8 @@
 // Include validation, ensuring that required fields (name, ID number, amount) cannot be empty.
 // Have a reset button to clear all form fields.
 
+// OpenAI. (2025). ChatGPT GPT-4o. Accessed and retrieved on March 14, 2025, from https://chat.openai.com
+
 'use client';
 
 import { useState } from 'react'; // Importing React's state management hook
