@@ -1,0 +1,124 @@
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  display: flex;
+}
+
+.dashboardContent {
+  margin-left: 18rem;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.breadcrumb {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.cardLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.cardValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.chartCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  min-height: 320px;
+}
+
+.chartTitle {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.blueDot {
+  background-color: #3b82f6;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.redDot {
+  background-color: #ef4444;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.yellowDot {
+  background-color: #f59e0b;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.genderBreakdown {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+.genderItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

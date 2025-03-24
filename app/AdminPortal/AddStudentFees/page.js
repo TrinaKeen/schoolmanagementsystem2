@@ -10,7 +10,7 @@
 'use client';
 
 import { useState } from 'react'; // Importing React's state management hook
-import Header from '../components/header';
+import Sidebar from '../components/Sidebar';
 import styles from './AddStudentFees.module.css';
 
 // Functional Component for Adding Student Fees
@@ -41,8 +41,10 @@ export default function AddStudentFeesPage() {
     };
 
     return (
+        <div className={styles.dashboardWrapper}>
+            <Sidebar />
         <div className={styles.pageContainer}>
-            <Header />
+         
             <div className={styles.contentContainer}>
                 <h1 className={styles.title}>Add New Fee</h1>
                 
@@ -74,6 +76,7 @@ export default function AddStudentFeesPage() {
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     );
 }

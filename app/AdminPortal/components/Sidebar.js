@@ -68,8 +68,8 @@ export default function Sidebar() {
       title: "Fees",
       icon: <FaMoneyBill />,
       submenu: [
-        { title: "All Fees", link: "/fees" },
-        { title: "Add New Fees", link: "/fees/add" },
+        { title: "All Fees", link: "/AdminPortal/StudentFees" },
+        { title: "Add New Fees", link: "/AdminPortal/AddStudentFees" },
       ],
     },
     {
