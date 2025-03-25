@@ -4,8 +4,18 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./AdminDashboard.module.css";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
 const currencyFormat = (value) => `$${Number(value).toLocaleString()}`;
@@ -20,34 +30,39 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetch("/api/admin/stats/totalStudents")
-      .then(res => res.json())
-      .then(data => setTotalStudents(data.totalStudents))
-      .catch(err => console.error("Failed to load student count", err));
+      .then((res) => res.json())
+      .then((data) => setTotalStudents(data.totalStudents))
+      .catch((err) => console.error("Failed to load student count", err));
 
     fetch("/api/admin/stats/totalInstructors")
-      .then(res => res.json())
-      .then(data => setTotalInstructors(data.totalInstructors))
-      .catch(err => console.error("Failed to load instructor count", err));
+      .then((res) => res.json())
+      .then((data) => setTotalInstructors(data.totalInstructors))
+      .catch((err) => console.error("Failed to load instructor count", err));
 
     fetch("/api/admin/stats/totalEarnings")
-      .then(res => res.json())
-      .then(data => setTotalEarnings(data.totalEarnings))
-      .catch(err => console.error("Failed to load earnings", err));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setTotalEarnings(data.totalEarnings))
+      .catch((err) => console.error("Failed to load earnings", err)); // Added this line to catch errors in the fetch request since it was giving an error in the console.  - Trisha
 
     fetch("/api/admin/stats/studentGenderBreakdown")
-      .then(res => res.json())
-      .then(data => setGenderBreakdown(data.genderStats))
-      .catch(err => console.error("Failed to load gender breakdown", err));
+      .then((res) => res.json())
+      .then((data) => setGenderBreakdown(data.genderStats))
+      .catch((err) => console.error("Failed to load gender breakdown", err));
 
     fetch("/api/admin/stats/monthlyEarnings")
-      .then(res => res.json())
-      .then(data => setEarningsData(data.monthly))
-      .catch(err => console.error("Failed to load monthly earnings", err));
+      .then((res) => res.json())
+      .then((data) => setEarningsData(data.monthly))
+      .catch((err) => console.error("Failed to load monthly earnings", err));
 
     fetch("/api/admin/stats/monthlyExpenses")
-      .then(res => res.json())
-      .then(data => setExpenseData(data.monthly))
-      .catch(err => console.error("Failed to load monthly expenses", err));
+      .then((res) => res.json())
+      .then((data) => setExpenseData(data.monthly))
+      .catch((err) => console.error("Failed to load monthly expenses", err));
   }, []);
 
   const COLORS = ["#3b82f6", "#f59e0b"];
@@ -70,7 +85,9 @@ export default function AdminDashboard() {
           </div>
           <div className={styles.card}>
             <p className={styles.cardLabel}>Earnings</p>
-            <h3 className={styles.cardValue}>{currencyFormat(totalEarnings)}</h3>
+            <h3 className={styles.cardValue}>
+              {currencyFormat(totalEarnings)}
+            </h3>
           </div>
         </div>
 
@@ -80,8 +97,12 @@ export default function AdminDashboard() {
           <div className={styles.chartCard}>
             <h4 className={styles.chartTitle}>Earnings</h4>
             <div className={styles.chartLegend}>
-              <span className={styles.legendItem}><span className={styles.blueDot} /> Total Collections</span>
-              <span className={styles.legendItem}><span className={styles.redDot} /> Fees Collection</span>
+              <span className={styles.legendItem}>
+                <span className={styles.blueDot} /> Total Collections
+              </span>
+              <span className={styles.legendItem}>
+                <span className={styles.redDot} /> Fees Collection
+              </span>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={earningsData}>
@@ -89,7 +110,12 @@ export default function AdminDashboard() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip formatter={currencyFormat} />
-                <Area type="monotone" dataKey="earnings" stroke="#f43f5e" fill="#fda4af" />
+                <Area
+                  type="monotone"
+                  dataKey="earnings"
+                  stroke="#f43f5e"
+                  fill="#fda4af"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -113,9 +139,17 @@ export default function AdminDashboard() {
             <h4 className={styles.chartTitle}>Students</h4>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie data={genderBreakdown} dataKey="value" nameKey="label" outerRadius={70}>
+                <Pie
+                  data={genderBreakdown}
+                  dataKey="value"
+                  nameKey="label"
+                  outerRadius={70}
+                >
                   {genderBreakdown.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
               </PieChart>
@@ -123,8 +157,11 @@ export default function AdminDashboard() {
             <div className={styles.genderBreakdown}>
               {genderBreakdown.map((entry, index) => (
                 <div key={index} className={styles.genderItem}>
-                  <span className={index === 0 ? styles.blueDot : styles.yellowDot} />
-                  {entry.label}: <span className="font-semibold">{entry.value}</span>
+                  <span
+                    className={index === 0 ? styles.blueDot : styles.yellowDot}
+                  />
+                  {entry.label}:{" "}
+                  <span className="font-semibold">{entry.value}</span>
                 </div>
               ))}
             </div>
