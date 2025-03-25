@@ -1,182 +1,106 @@
-/* Page Layout */
-.container {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f7f7f7;
-    flex-wrap: wrap;
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    width: 280px;
-    background: white;
-    color: black;
-    padding: 30px;
-    border-radius: 8px;
-    border-right: 2px solid #ccc;
-    flex-shrink: 0;
+.contentWrapper {
+  display: flex;
+  flex: 1;
 }
 
-.sidebar h2 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f4f6f9;
+  overflow-x: auto;
+  margin-left: 288px;
 }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
-.sidebar li {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-size: 1.1rem;
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
 }
 
-.sidebar li:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
+.searchInput {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  width: 300px;
 }
 
-.sidebar li.active {
-    background-color: #4c8eaf;
-    transform: scale(1.05);
+.searchButton {
+  background-color: #ffca28;
+  color: #333;
+  border: none;
+  padding: 8px 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
-/* Tab Area Styling */
-.tabContent {
-    background-color: white;
-    color: black;
-    padding: 30px;
-    border-radius: 8px;
-    animation: fadeIn 0.5s ease-out;
+.tableWrapper {
+  overflow-x: auto;
 }
 
-.tabContent h1 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
 }
 
-/* Content Area Styling */
-.content {
-    flex-grow: 1;
-    padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    margin-left: 30px;
-    transition: all 0.3s ease;
-    min-width: 300px;
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
 }
 
-/* Dropdown and Button Container */
-.dropdownContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+.sortableHeader {
+  cursor: pointer;
+  background-color: #008080;
+  color: white;
 }
 
-.dropdown {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
+.sortableHeader:hover {
+  background-color: #006666;
 }
 
-.editButton {
-    padding: 10px 15px;
-    background-color: #4c8eaf;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
+.sortIcon {
+  margin-left: 6px;
 }
 
-.editButton:hover {
-    background-color: #357aab;
-    transform: scale(1.05);
+.profileImage {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-/* Student Fees Table */
-.semester {
-    margin-top: 20px;
+.paid {
+  color: green;
+  font-weight: bold;
 }
 
-.semester h2 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
-    text-align: center;
+.unpaid {
+  color: red;
+  font-weight: bold;
 }
 
-.feesTable {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.feesTable th {
-    background-color: #4c8eaf;
-    color: white;
-    padding: 12px;
-    text-align: left;
-}
-
-.feesTable td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-}
-
-.feesTable tr:hover {
-    background-color: #f1f1f1;
-}
-
-.totalCharges {
-    margin-top: 10px;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-align: right;
-    color: #333;
-}
-
-/* Fade-in Animation */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .sidebar {
-        width: 100%;
-        margin-bottom: 20px;
-        border-right: none;
-    }
-
-    .content {
-        margin-left: 0;
-        width: 100%;
-    }
+.noData {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
 }

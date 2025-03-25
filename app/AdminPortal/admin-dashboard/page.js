@@ -1,117 +1,167 @@
 "use client";
 
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
-import styles from "../components/HomePage.module.css";
-import teacherlogo from "/src/teachericon.png";
-import studentlogo from "/src/studentlogo.png";
-import courseslogo from "/src/courseslogo.png";
-import departmentslogo from "/src/departmentslogo.png";
-import studentfeeslogo from "/src/studentfeeslogo.png";
-import reportlogo from "/src/reportlogo.png";
-import AdminHeader from "../components/header";
+import { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
+import styles from "./AdminDashboard.module.css";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
-export default function Home() {
+const currencyFormat = (value) => `$${Number(value).toLocaleString()}`;
+
+export default function AdminDashboard() {
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalInstructors, setTotalInstructors] = useState(0);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [genderBreakdown, setGenderBreakdown] = useState([]);
+  const [earningsData, setEarningsData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/admin/stats/totalStudents")
+      .then((res) => res.json())
+      .then((data) => setTotalStudents(data.totalStudents))
+      .catch((err) => console.error("Failed to load student count", err));
+
+    fetch("/api/admin/stats/totalInstructors")
+      .then((res) => res.json())
+      .then((data) => setTotalInstructors(data.totalInstructors))
+      .catch((err) => console.error("Failed to load instructor count", err));
+
+    fetch("/api/admin/stats/totalEarnings")
+      .then((res) => res.json())
+      .then((data) => setTotalEarnings(data.totalEarnings))
+      .catch((err) => console.error("Failed to load earnings", err));
+
+    fetch("/api/admin/stats/studentGenderBreakdown")
+      .then((res) => res.json())
+      .then((data) => setGenderBreakdown(data.genderStats))
+      .catch((err) => console.error("Failed to load gender breakdown", err));
+
+    fetch("/api/admin/stats/monthlyEarnings")
+      .then((res) => res.json())
+      .then((data) => setEarningsData(data.monthly))
+      .catch((err) => console.error("Failed to load monthly earnings", err));
+
+    fetch("/api/admin/stats/monthlyExpenses")
+      .then((res) => res.json())
+      .then((data) => setExpenseData(data.monthly))
+      .catch((err) => console.error("Failed to load monthly expenses", err));
+  }, []);
+
+  const COLORS = ["#3b82f6", "#f59e0b"];
+
   return (
-    <div style={{ backgroundColor: "white", height: "100vh", color: "black" }}>
-      <AdminHeader />
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <h2>Welcome to the Super Admin Account</h2>
-          <p>
-            Manage your school's daily activities, student records, teacher
-            assignments, and more.
-          </p>
+    <div className={styles.wrapper}>
+      <Sidebar />
+      <div className={styles.dashboardContent}>
+        <h2 className={styles.pageTitle}>Admin Dashboard</h2>
 
-          <div className={styles.grid}>
-            <div className={styles.card}>
-              <Image
-                src={studentlogo}
-                alt="Student Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Student Management</h3>
-              <p>Manage student records and progress.</p>
-              <Link href="../AdminPortal/StudentPage">
-                Go to Student Management
-              </Link>
-            </div>
+        {/* Summary Stats */}
+        <div className={styles.summaryGrid}>
+          <div className={styles.card}>
+            <p className={styles.cardLabel}>Students</p>
+            <h3 className={styles.cardValue}>{totalStudents}</h3>
+          </div>
+          <div className={styles.card}>
+            <p className={styles.cardLabel}>Teachers</p>
+            <h3 className={styles.cardValue}>{totalInstructors}</h3>
+          </div>
+          <div className={styles.card}>
+            <p className={styles.cardLabel}>Earnings</p>
+            <h3 className={styles.cardValue}>
+              {currencyFormat(totalEarnings)}
+            </h3>
+          </div>
+        </div>
 
-            <div className={styles.card}>
-              <Image
-                src={teacherlogo}
-                alt="Teacher Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Teacher Management</h3>
-              <p>Manage teacher assignments and performance.</p>
-              <Link href="../AdminPortal/TeacherPage">
-                Go to Teacher Management{" "}
-              </Link>
+        {/* Charts Section */}
+        <div className={styles.chartGrid}>
+          {/* Earnings Area Chart */}
+          <div className={styles.chartCard}>
+            <h4 className={styles.chartTitle}>Earnings</h4>
+            <div className={styles.chartLegend}>
+              <span className={styles.legendItem}>
+                <span className={styles.blueDot} /> Total Collections
+              </span>
+              <span className={styles.legendItem}>
+                <span className={styles.redDot} /> Fees Collection
+              </span>
             </div>
-
-            <div className={styles.card}>
-              <Image
-                src={departmentslogo}
-                alt="Departments Logo"
-                width={200}
-                height={200}
-              />
-              <h3>School Departments</h3>
-              <p>Organize class schedules and attendance.</p>
-              <Link href="../AdminPortal/SchoolDepartment">
-                Go to Departments Management{" "}
-              </Link>
-            </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={earningsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip formatter={currencyFormat} />
+                <Area
+                  type="monotone"
+                  dataKey="earnings"
+                  stroke="#f43f5e"
+                  fill="#fda4af"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
 
-          <div className={styles.grid}>
-            <div className={styles.card}>
-              <Image
-                src={courseslogo}
-                alt="Courses Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Student Courses</h3>
-              <p>Manage student records and progress.</p>
-              <Link href="../AdminPortal/StudentCourses">
-                Go to Student Courses Management{" "}
-              </Link>
-            </div>
+          {/* Expenses Bar Chart */}
+          <div className={styles.chartCard}>
+            <h4 className={styles.chartTitle}>Expenses</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={expenseData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip formatter={currencyFormat} />
+                <Bar dataKey="expenses" fill="#38bdf8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-            <div className={styles.card}>
-              <Image
-                src={studentfeeslogo}
-                alt="Student Fees Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Student Fees</h3>
-              <p>Manage teacher assignments and performance.</p>
-              <Link href="../AdminPortal/StudentFees">
-                Go to Tuition Fees Management{" "}
-              </Link>
-            </div>
-
-            <div className={styles.card}>
-              <Image
-                src={reportlogo}
-                alt="Report Logo"
-                width={200}
-                height={200}
-              />
-              <h3>Reports</h3>
-              <p>Organize class schedules and attendance.</p>
-              <Link href="../AdminPortal/Reports">
-                Go to Reports Management{" "}
-              </Link>
+          {/* Gender Pie Chart */}
+          <div className={styles.chartCard}>
+            <h4 className={styles.chartTitle}>Students</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={genderBreakdown}
+                  dataKey="value"
+                  nameKey="label"
+                  outerRadius={70}
+                >
+                  {genderBreakdown.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className={styles.genderBreakdown}>
+              {genderBreakdown.map((entry, index) => (
+                <div key={index} className={styles.genderItem}>
+                  <span
+                    className={index === 0 ? styles.blueDot : styles.yellowDot}
+                  />
+                  {entry.label}:{" "}
+                  <span className="font-semibold">{entry.value}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

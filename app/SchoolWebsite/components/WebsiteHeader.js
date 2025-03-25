@@ -4,7 +4,7 @@ import React from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '../components/Register.module.css'; 
+import styles from './Header.module.css'; 
 import logo from '/src/school-logo.png';
 
 
@@ -24,9 +24,9 @@ export default function WebsiteHeader() {
         </div>
         <nav className={styles.navbar}>
           <Link href="/">HOME</Link>
-          <Link href="/">ADMISSION</Link>
-          <Link href="/">ABOUT US</Link>
-          <Link href="/SchoolWebsite/StudentRegistration">REGISTRATION</Link>
+          <Link href="/SchoolWebsite/AdminandPrograms">ADMISSION & PROGRAMS</Link>
+          <Link href="/SchoolWebsite/AboutUs">ABOUT EEFCI</Link>
+          <Link href="/SchoolWebsite/AdminandPrograms">CONTACT US</Link>
           <div className={styles.loginDropdown}>
             <button className={styles.dropdownButton}>LOG IN</button>
             <div className={styles.dropdownContent}>

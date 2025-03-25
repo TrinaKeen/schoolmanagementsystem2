@@ -54,4 +54,5 @@ export default async function handler(req, res) {
     // ChatGPT Command: "How do I handle unsupported HTTP methods in a Node.js API?"
     res.status(405).json({ error: 'Method Not Allowed' });
   }
+  
 }

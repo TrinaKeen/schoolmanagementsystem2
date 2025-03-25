@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './Home.module.css'; 
-import WebsiteHeader from './SchoolWebsite2/components/WebsiteHeader';
+import WebsiteHeader from './SchoolWebsite/components/WebsiteHeader';
 
 
 export default function Home() {
