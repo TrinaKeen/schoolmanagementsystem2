@@ -28,13 +28,13 @@ export default function Home() {
                   <td>BACHELOR OF TECHNICAL - VOCATIONAL TEACHER EDUCATION</td>
                   <td>BTVED</td>
                   <td>AUTOMOTIVE TECHNOLOGY</td>
-                  <td><a href="/SchoolWebsite2/Programs/BTVED">view</a></td>
+                  <td><a href="/SchoolWebsite/Programs/BTVED">view</a></td>
                 </tr>
                 <tr>
                   <td>BACHELOR OF TECHNICAL - VOCATIONAL TEACHER EDUCATION</td>
                   <td>TVED</td>
                   <td>FOOD AND SERVICES MANAGEMENT</td>
-                  <td><a href="/SchoolWebsite2/Programs/TVED">view</a></td>
+                  <td><a href="/SchoolWebsite/Programs/TVED">view</a></td>
                 </tr>
                 <tr>
                   <td>BACHELOR OF TECHNICAL - VOCATIONAL TEACHER EDUCATION</td>
