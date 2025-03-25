@@ -12,6 +12,11 @@ export default function StudentCourses() {
   const [formVisible, setFormVisible] = useState(false); // Added by Martin
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [newCourse, setNewCourse] = useState({
     course_name: "",
     course_code: "",
@@ -55,13 +60,11 @@ export default function StudentCourses() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      // const token = localStorage.getItem("token"); Not necessary anymore - Martin
 
       const res = await fetch("/api/admin/studentCourses?type=courses");
 
       if (res.status === 401) {
         alert("Session expired. Please log in again.");
-        // localStorage.removeItem("token");
         window.location.href = "/login";
         return;
       }
@@ -73,7 +76,6 @@ export default function StudentCourses() {
       let data = await res.json();
       data.sort((a, b) => a.id - b.id);
 
-      // const data = await res.json();
       setCourses(data);
     } catch (error) {
       setError(error.message);
@@ -96,8 +98,43 @@ export default function StudentCourses() {
       : "Unknown Instructor";
   };
 
+  const filterCourses = courses.filter((course) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      course.id.toString().includes(query) ||
+      course.course_name.toLowerCase().includes(query) ||
+      course.course_code.toLowerCase().includes(query) ||
+      getProgramName(course.program_id).toLowerCase().includes(query) ||
+      getInstructorName(course.instructor_id).toLowerCase().includes(query) ||
+      course.year.toString().includes(query)
+    );
+  });
+
+  const sortedCourses = [...filterCourses].sort((a, b) => a.id - b.id);
+  if (sortConfig.key) {
+    sortedCourses.sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) return -1;
+      if (a[sortConfig.key] > b[sortConfig.key]) return 1;
+      return 0;
+    });
+    if (sortConfig.direction === "desc") {
+      sortedCourses.reverse();
+    }
+  }
+
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const handleChange = (e) => {
+    setNewCourse({ ...newCourse, [e.target.name]: e.target.value });
+  };
+
   const handleEdit = (course) => {
-    // console.log("Editing course:", course);
     setEditCourse(course);
     setFormVisible(true); // Show form when editing - Added by Martin
     setNewCourse({
@@ -110,16 +147,18 @@ export default function StudentCourses() {
   };
 
   const handleDelete = async (id, courseName) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the course ${courseName}?`
-    );
+    setCourseToDelete({ id, name: courseName });
+    setShowDeleteConfirmation(true);
+  };
 
-    if (!confirmDelete) return;
+  const confirmDelete = async () => {
+    if (!courseToDelete) return;
 
     try {
       const token = localStorage.getItem("token");
+
       const res = await fetch(
-        `/api/admin/studentCourses?type=courses&id=${id}`,
+        `/api/admin/studentCourses?type=courses&id=${courseToDelete.id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -131,9 +170,15 @@ export default function StudentCourses() {
         throw new Error(`Failed to delete course: ${errorText}`);
       }
 
-      setCourses(courses.filter((course) => course.id !== id));
+      setCourses((prevCourses) =>
+        prevCourses.filter((course) => course.id !== courseToDelete.id)
+      );
+
+      setShowDeleteConfirmation(false);
+      setCourseToDelete(null);
     } catch (error) {
       console.error("Error deleting course:", error);
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -149,7 +194,9 @@ export default function StudentCourses() {
     });
   };
 
-  const handleSave = async () => {
+  const handleSave = (e) => {
+    e.preventDefault();
+
     if (
       !newCourse.course_name ||
       !newCourse.course_code ||
@@ -161,8 +208,14 @@ export default function StudentCourses() {
       return;
     }
 
+    setShowConfirmation(true);
+  };
+
+  const confirmSave = async () => {
+    setShowConfirmation(false); // hide modal
+
     const formattedCourse = {
-      id: editCourse?.id ?? null, // If editing, include ID
+      id: editCourse?.id ?? null,
       course_name: newCourse.course_name,
       course_code: newCourse.course_code,
       program_id: parseInt(newCourse.program_id, 10) || null,
@@ -170,13 +223,9 @@ export default function StudentCourses() {
       year: parseInt(newCourse.year, 10) || null,
     };
 
-    console.log("Saving formatted course:", formattedCourse);
-
     const token = localStorage.getItem("token");
 
     try {
-      console.log("Saving course:", newCourse);
-
       const res = await fetch(`/api/admin/studentCourses?type=courses`, {
         method: editCourse ? "PUT" : "POST",
         headers: {
@@ -187,23 +236,30 @@ export default function StudentCourses() {
       });
 
       if (!res.ok) {
+        const text = await res.text();
         throw new Error("Failed to save course");
       }
 
-      const updatedCourseData = await res.json();
+      let updatedCourseData = {};
+      try {
+        updatedCourseData = await res.json();
+      } catch (error) {
+        console.error("Error parsing response:", error);
+      }
 
-      setCourses((prevCourses) => {
-        return prevCourses.map((course) =>
+      // const updatedCourseData = await res.json();
+
+      setCourses((prevCourses) =>
+        prevCourses.map((course) =>
           course.id === updatedCourseData.id
             ? { ...course, ...updatedCourseData }
             : course
-        );
-      });
+        )
+      );
 
       await fetchCourses();
-
       setEditCourse(null);
-      setFormVisible(false); // Hide form after saving
+      setFormVisible(false);
       setNewCourse({
         course_name: "",
         course_code: "",
@@ -224,142 +280,180 @@ export default function StudentCourses() {
 
   return (
     <div className={styles.pageContainer}>
-      <Sidebar className={styles.sidebar} />
+      <Sidebar />
       <div className={styles.contentContainer}>
-        {/* Title and Add New Course Button */}
-        <div className={styles.headerRow}>
+        <div className={styles.mainContent}>
           <h1 className={styles.title}>Course List</h1>
-        </div>
 
-        {/* Add/Edit Course Form (shows if adding or editing) */}
-        {formVisible && (
-          <div className={styles.formContainer}>
-            <h2>{editCourse ? "Edit Course" : "Add New Course"}</h2>
-            <div className={styles.formGrid}>
-              <input
-                type="text"
-                placeholder="Course Name"
-                value={newCourse.course_name}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, course_name: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Course Code"
-                value={newCourse.course_code}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, course_code: e.target.value })
-                }
-              />
-              {/* Dropdown for Program ID */}
-              <select
-                name="program_id"
-                className={styles.selectDropdown}
-                value={newCourse.program_id}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, program_id: e.target.value })
-                }
-              >
-                <option value="">Select Program</option>
-                {programs.map((program) => (
-                  <option key={program.id} value={program.id}>
-                    {`${program.program_name} ${program.major}`}
-                  </option>
-                ))}
-              </select>
-              <select
-                name="instructor_id"
-                className={styles.selectDropdown}
-                value={newCourse.instructor_id}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, instructor_id: e.target.value })
-                }
-              >
-                <option value="">Select Instructor</option>
-                {instructors.map((instructor) => (
-                  <option key={instructor.id} value={instructor.id}>
-                    {`${instructor.first_name} ${instructor.last_name}`}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="number"
-                placeholder="Year"
-                value={newCourse.year}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, year: e.target.value })
-                }
-              />
+          {/* Add/Edit Course Form (shows if adding or editing) */}
+          {formVisible && (
+            <div className={styles.mainContent2}>
+              <form className={styles.formContainer}>
+                <h1 className={styles.title2}>Edit Course</h1>
+
+                <div className={styles.formGrid}>
+                  <input
+                    type="text"
+                    name="course_name"
+                    placeholder="Course Name"
+                    value={newCourse.course_name}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    name="course_code"
+                    placeholder="Course Code"
+                    value={newCourse.course_code}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {/* Dropdown for Program ID */}
+                <div className={styles.formGrid}>
+                  <select
+                    name="program_id"
+                    className={styles.selectDropdown}
+                    value={newCourse.program_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Program</option>
+                    {programs.map((program) => (
+                      <option key={program.id} value={program.id}>
+                        {`${program.program_name} ${program.major}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.formGrid}>
+                  <select
+                    name="instructor_id"
+                    className={styles.selectDropdown}
+                    value={newCourse.instructor_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Instructor</option>
+                    {instructors.map((instructor) => (
+                      <option key={instructor.id} value={instructor.id}>
+                        {`${instructor.first_name} ${instructor.last_name}`}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    name="year"
+                    className={styles.selectDropdown}
+                    value={newCourse.year}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Year</option>
+                    {[1, 2, 3, 4].map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.buttonGroup}>
+                  <button className={styles.saveButton} onClick={handleSave}>
+                    Save Changes
+                  </button>
+                  <button className={styles.cancelButton} onClick={handCancel}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
-            <div className={styles.buttonGroup}>
-              <button className={styles.saveButton} onClick={handleSave}>
-                {editCourse ? "Save Changes" : "Add Course"}
-              </button>
-              <button className={styles.cancelButton} onClick={handCancel}>
+          )}
+
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              placeholder="Search by ID, Name, or Code"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
+
+          {/* Table of Courses */}
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.idColumn}>ID</th>
+                  <th>Course Name</th>
+                  <th>Course Code</th>
+                  <th className={styles.wideColumn}>Program Name</th>
+                  <th className={styles.wideColumn}>Instructor Name</th>
+                  <th className={styles.yearColumn}>Year</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedCourses.length > 0 ? (
+                  sortedCourses.map((course) => (
+                    <tr key={course.id}>
+                      <td className={styles.idColumn}>{course.id}</td>
+                      <td>{course.course_name}</td>
+                      <td>{course.course_code}</td>
+                      <td className={styles.wideColumn}>
+                        {getProgramName(course.program_id)}
+                      </td>
+                      <td className={styles.wideColumn}>
+                        {getInstructorName(course.instructor_id)}
+                      </td>
+                      <td className={styles.yearColumn}>{course.year}</td>
+                      <td>
+                        <div className={styles.actions}>
+                          <button
+                            className={styles.editButton}
+                            onClick={() => handleEdit(course)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className={styles.deleteButton}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDelete(course.id, course.course_name);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className={styles.noData}>
+                      No courses found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {showConfirmation && (
+            <div className={styles.popup}>
+              <p>Do you want to save the changes?</p>
+              <button onClick={() => confirmSave()}>Yes</button>
+              <button onClick={() => setShowConfirmation(false)}>Cancel</button>
+            </div>
+          )}
+          {showDeleteConfirmation && (
+            <div className={styles.popup}>
+              <p>
+                Are you sure you want to delete{" "}
+                <strong>{courseToDelete?.name}</strong>?
+              </p>
+              <button onClick={confirmDelete}>Yes</button>
+              <button onClick={() => setShowDeleteConfirmation(false)}>
                 Cancel
               </button>
             </div>
-          </div>
-        )}
-
-        {/* Table of Courses */}
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.idColumn}>ID</th>
-                <th>Course Name</th>
-                <th>Course Code</th>
-                <th className={styles.wideColumn}>Program Name</th>
-                <th className={styles.wideColumn}>Instructor Name</th>
-                <th className={styles.yearColumn}>Year</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.length > 0 ? (
-                courses.map((course) => (
-                  <tr key={course.id}>
-                    <td className={styles.idColumn}>{course.id}</td>
-                    <td>{course.course_name}</td>
-                    <td>{course.course_code}</td>
-                    <td className={styles.wideColumn}>
-                      {getProgramName(course.program_id)}
-                    </td>
-                    <td className={styles.wideColumn}>
-                      {getInstructorName(course.instructor_id)}
-                    </td>
-                    <td className={styles.yearColumn}>{course.year}</td>
-                    <td>
-                      <div className={styles.actions}>
-                        <button
-                          className={styles.editButton}
-                          onClick={() => handleEdit(course)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() =>
-                            handleDelete(course.id, course.course_name)
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className={styles.noData}>
-                    No courses found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          )}
         </div>
       </div>
     </div>

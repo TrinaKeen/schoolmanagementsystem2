@@ -1,6 +1,10 @@
-import sql from '../../../../db';
+import sql from "../../../../db";
 
-export async function GET() {
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
     // Fetch total tuition fees (PAID only)
     const tuitionResult = await sql`
@@ -8,7 +12,7 @@ export async function GET() {
       WHERE payment_status = 'Paid';
     `;
 
-    // Fetch total course fees (if separated)
+    // Fetch total course fees
     const courseFeeResult = await sql`
       SELECT COALESCE(SUM(total_fee), 0) AS total FROM fees;
     `;
@@ -19,18 +23,14 @@ export async function GET() {
       WHERE payment_status = 'Paid';
     `;
 
-    // Add them all up
-    const totalEarnings = 
+    const totalEarnings =
       Number(tuitionResult[0].total) +
       Number(courseFeeResult[0].total) +
       Number(miscResult[0].total);
 
-    return new Response(JSON.stringify({ totalEarnings }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    res.status(200).json({ totalEarnings });
   } catch (error) {
-    console.error('Error fetching total earnings:', error);
-    return new Response(JSON.stringify({ error: "Failed to fetch earnings" }), { status: 500 });
+    console.error("Error fetching total earnings:", error);
+    res.status(500).json({ error: "Failed to fetch earnings" });
   }
 }

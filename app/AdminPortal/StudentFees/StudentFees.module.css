@@ -1,107 +1,106 @@
 .dashboardContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .contentWrapper {
-    display: flex;
-    flex: 1;
-  }
-  
-  .mainContent {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #f4f6f9;
-    overflow-x: auto;
-    margin-left: 288px;
-  }
-  
-  .title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .searchContainer {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-  }
-  
-  .searchInput {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    width: 300px;
-  }
-  
-  .searchButton {
-    background-color: #ffca28;
-    color: #333;
-    border: none;
-    padding: 8px 15px;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .tableWrapper {
-    overflow-x: auto;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-  }
-  
-  .table th,
-  .table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  .sortableHeader {
-    cursor: pointer;
-    background-color: #008080;
-    color: white;
-  }
-  
-  .sortableHeader:hover {
-    background-color: #006666;
-  }
-  
-  .sortIcon {
-    margin-left: 6px;
-  }
-  
-  .profileImage {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  
-  .paid {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .unpaid {
-    color: red;
-    font-weight: bold;
-  }
-  
-  .noData {
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
-    color: #666;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.contentWrapper {
+  display: flex;
+  flex: 1;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f4f6f9;
+  overflow-x: auto;
+  margin-left: 288px;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  width: 300px;
+}
+
+.searchButton {
+  background-color: #ffca28;
+  color: #333;
+  border: none;
+  padding: 8px 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  background-color: #008080;
+  color: white;
+}
+
+.sortableHeader:hover {
+  background-color: #006666;
+}
+
+.sortIcon {
+  margin-left: 6px;
+}
+
+.profileImage {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.paid {
+  color: green;
+  font-weight: bold;
+}
+
+.unpaid {
+  color: red;
+  font-weight: bold;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}

@@ -40,14 +40,9 @@ export default function AdminDashboard() {
       .catch((err) => console.error("Failed to load instructor count", err));
 
     fetch("/api/admin/stats/totalEarnings")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => setTotalEarnings(data.totalEarnings))
-      .catch((err) => console.error("Failed to load earnings", err)); // Added this line to catch errors in the fetch request since it was giving an error in the console.  - Trisha
+      .catch((err) => console.error("Failed to load earnings", err));
 
     fetch("/api/admin/stats/studentGenderBreakdown")
       .then((res) => res.json())
