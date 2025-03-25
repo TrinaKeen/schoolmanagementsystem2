@@ -1,74 +1,57 @@
 /* -------------------- General Layout -------------------- */
 .pageContainer {
   display: flex;
-  /* flex-direction: column; */
   min-height: 100vh;
-  background-color: #f0f4f8; /* Light background */
-  color: #333;
-  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
 }
 
 .contentContainer {
-  flex: 1;
-  margin-left: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 50px 20px;
+  flex-grow: 1;
+  padding: 40px;
+  margin-left: 288px;
+}
+
+.mainContent {
+  margin: auto;
   background-color: white;
+  color: #333;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1400px;
-  width: calc(100% - 250px);
-}
-
-.sidebar {
-  width: 250px;
-  min-height: 100vh;
-  background: #0d253f;
-  color: white;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  padding-top: 20px;
-}
-
-/* -------------------- Header -------------------- */
-.headerRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
   max-width: 1200px;
-  margin-bottom: 20px;
+  width: 100%;
 }
 
+/* -------------------- Title -------------------- */
 .title {
   font-size: 24px;
   font-weight: bold;
-  text-align: left;
-  margin: 0;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* -------------------- Buttons -------------------- */
-.addButton,
-.saveButton {
-  background-color: #0a9396;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  transition: 0.2s;
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.addButton:hover,
+.saveButton {
+  background-color: #ffca28;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
 .saveButton:hover {
-  background-color: #09757c;
+  transform: scale(1.1);
 }
 
 .buttonContainer {
@@ -80,17 +63,18 @@
 }
 
 .cancelButton {
-  background-color: #ccc;
-  color: #333;
-  padding: 8px 12px;
+  background-color: #37474f;
+  color: white;
   border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
-  margin-left: 8px;
+  transition: transform 0.2s ease;
 }
 
 .cancelButton:hover {
-  background-color: #bbb;
+  transform: scale(1.1);
 }
 
 .editButton {
@@ -245,11 +229,9 @@
 
 /* -------------------- Form Styling -------------------- */
 .formContainer {
-  background-color: #f0f0f0;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .formContainer h2 {
@@ -259,74 +241,17 @@
 }
 
 .formGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .formGrid input,
 .selectDropdown {
-  width: 100%;
-  height: 38px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* -------------------- Table Styling -------------------- */
-.tableWrapper {
-  width: 100%;
-  max-width: 1200px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: white;
-  margin-top: 20px; /* Spacing between title and table */
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  /* margin-top: 15px; */
-  font-size: 14px;
-}
-
-.table th,
-.table td {
+  flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
-}
-
-.table th {
-  background-color: #0a9396;
-  color: white;
-  font-weight: bold;
-  padding: 10px 12px; /* Adjust padding to prevent extra space */
-  text-align: center;
-  vertical-align: middle;
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.wideColumn {
-  min-width: 250px;
-}
-
-.idColumn {
-  min-width: 100px; /* Adjust as needed */
-  max-width: 120px;
-}
-
-.yearColumn {
-  min-width: 80px; /* Adjust as needed */
-  max-width: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
 .noData {

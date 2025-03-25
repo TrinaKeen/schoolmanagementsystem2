@@ -44,39 +44,41 @@ export default function SchoolDept() {
     <div className={styles.pageContainer}>
       <Sidebar />
       <div className={styles.contentContainer}>
-        <h1 className={styles.title}>Programs List</h1>
+        <div className={styles.mainContent}>
+          <h1 className={styles.title}>Programs List</h1>
 
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Program ID</th>
-                <th>Program Type</th>
-                <th>Program Name</th>
-                <th>Major</th>
-                <th>Program Code</th>
-              </tr>
-            </thead>
-            <tbody>
-              {programs.length > 0 ? (
-                programs.map((program) => (
-                  <tr key={program.id}>
-                    <td>{program.id}</td>
-                    <td>{program.program_type}</td>
-                    <td>{program.program_name}</td>
-                    <td>{program.major || "N/A"}</td>
-                    <td>{program.program_code}</td>
-                  </tr>
-                ))
-              ) : (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
                 <tr>
-                  <td colSpan="5" className={styles.noData}>
-                    No programs found.
-                  </td>
+                  <th>Program ID</th>
+                  <th>Program Type</th>
+                  <th>Program Name</th>
+                  <th>Major</th>
+                  <th>Program Code</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {programs.length > 0 ? (
+                  programs.map((program) => (
+                    <tr key={program.id}>
+                      <td>{program.id}</td>
+                      <td>{program.program_type}</td>
+                      <td>{program.program_name}</td>
+                      <td>{program.major || "N/A"}</td>
+                      <td>{program.program_code}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className={styles.noData}>
+                      No programs found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

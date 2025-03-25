@@ -1,53 +1,30 @@
 /* -------------------- General Layout -------------------- */
 .pageContainer {
   display: flex;
-  /* flex-direction: column; */
-  min-height: 100vh;
-  background-color: #f0f4f8; /* Light background */
-  color: #333;
-  font-family: Arial, sans-serif;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .contentContainer {
-  flex: 1;
-  margin-left: 250px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 50px 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1400px;
-  width: calc(100% - 250px);
+  flex: 1;
 }
 
-.sidebar {
-  width: 250px;
-  min-height: 100vh;
-  background: #0d253f;
-  color: white;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  padding-top: 20px;
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f4f6f9;
+  overflow-x: auto;
+  margin-left: 288px;
+  color: #333;
 }
 
 /* -------------------- Header -------------------- */
-.headerRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 /* -------------------- Form Styling -------------------- */
@@ -85,26 +62,19 @@
 /* -------------------- Table Styling -------------------- */
 .tableWrapper {
   overflow-x: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: white;
-  margin: 0;
-  padding: 0;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  /* margin-top: 15px; */
-  font-size: 14px;
+  background-color: white;
 }
 
 .table th,
 .table td {
-  padding: 10px;
   border: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
+  padding: 12px;
+  text-align: left;
 }
 
 .table th {
