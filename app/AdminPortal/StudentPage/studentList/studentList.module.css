@@ -188,9 +188,61 @@
 }
 
 /* -------------------- Buttons -------------------- */
-.saveButton {
-  background-color: #005f73;
+.actionsWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.actionsButton {
+  background-color: #0a9396;
   color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.actionsButton:hover {
+  background-color: #005f73;
+}
+
+.actionsDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 8px 0;
+  min-width: 200px;
+}
+
+.actionsDropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.actionsDropdown li:hover {
+  background-color: #f0f0f0;
+}
+
+.saveButton {
+  background-color: #ffca28;
+  color: #333;
   border: none;
   padding: 10px 20px;
   font-size: 16px;
@@ -220,8 +272,8 @@
 }
 
 .cancelButton {
-  background-color: #7296a8;
-  color: #333;
+  background-color: #37474f;
+  color: white;
   border: none;
   padding: 10px 20px;
   font-size: 16px;
@@ -235,7 +287,7 @@
 }
 
 .editButton {
-  background-color: #005f73;
+  background-color: #f0ad4e;
   color: white;
   padding: 6px 12px;
   border: none;
@@ -251,9 +303,9 @@
   transform: scale(1.1);
 }
 
-.deleteButton {
-  background-color: #7296a8;
-  color: #333;
+.viewButton {
+  background-color: #005f73;
+  color: white;
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -264,7 +316,7 @@
   transition: transform 0.2s ease;
 }
 
-.deleteButton:hover {
+.viewButton:hover {
   transform: scale(1.1);
 }
 

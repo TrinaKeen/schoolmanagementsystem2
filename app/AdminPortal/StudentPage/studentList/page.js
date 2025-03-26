@@ -1,11 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import "../../components/studentpage.modules.css";
+import styles from "./studentList.module.css";
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
-import logo from "/src/school-logo.png";
-import Image from "next/image";
-import Link from "next/link";
 import { HiChevronDown } from "react-icons/hi";
 
 const AdminStudentList = () => {
@@ -15,31 +12,27 @@ const AdminStudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const adminId = 1; // Replace this with the actual admin ID from your context or state
-  const dropdownRef = useRef(null); // For actions dropdown menu
+  const adminId = 1;
+  const dropdownRef = useRef(null);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await fetch("/api/admin/admin-approvals");
+      if (!res.ok) {
+        const errorResponse = await res.json();
+        throw new Error(errorResponse.error || "Failed to fetch students");
+      }
+      const data = await res.json();
+      setStudents(data);
+    } catch (error) {
+      console.error("Error fetching students:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const res = await fetch("/api/admin/admin-approvals", {
-          method: "GET",
-        });
-
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          throw new Error(errorResponse.error || "Failed to fetch students");
-        }
-
-        const data = await res.json();
-        setStudents(data);
-      } catch (error) {
-        console.error("Error fetching students:", error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStudents();
   }, []);
 
@@ -55,7 +48,7 @@ const AdminStudentList = () => {
       student_number: selectedStudent.student_number,
       admin_id: adminId,
       approval_status: event.target.approval_status.value,
-      approval_date: new Date().toISOString().split("T")[0], // This will ensure the current date is passed
+      approval_date: new Date().toISOString().split("T")[0],
       rejection_reason: event.target.rejection_reason.value,
       approval_comments: event.target.approval_comments.value,
     };
@@ -63,15 +56,13 @@ const AdminStudentList = () => {
     try {
       const response = await fetch("/api/admin/update-approval", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),
       });
 
       if (response.ok) {
         closeModal();
-        await fetchStudents(); // Ensure the list of students is refreshed after update
+        await fetchStudents();
       } else {
         const errorData = await response.json();
         console.error("API Error:", errorData);
@@ -86,7 +77,6 @@ const AdminStudentList = () => {
     setSelectedStudent(null);
   };
 
-  // Download logs function
   const handleDownloadLogs = () => {
     window.location.href = "/api/admin/downloadRegistrationLogs";
   };
@@ -97,122 +87,57 @@ const AdminStudentList = () => {
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (error) {
-    return <p className="error-message">{error}</p>;
-  }
-
-  if (!students.length) {
+  if (loading) return <p>Loading students...</p>;
+  if (error) return <p className="error-message">{error}</p>;
+  if (!students.length)
     return <p className="no-students-message">No students found.</p>;
-  }
-
-  const handleBack = () => {
-    window.location.href = "/AdminPortal/admin-dashboard";
-  };
 
   return (
-    <div style={{ backgroundColor: "white", height: "100vh", color: "black" }}>
-      <div>
-        <Sidebar />
-      </div>
-
-      <div>
-        <h1
-          style={{ paddingLeft: "300px", paddingTop: "50px", fontSize: "2rem" }}
-        >
-          List of Students for Admission Application
-        </h1>
-
-        {/* Actions Dropdown for downloading logs */}
-        <div className="actions-container" ref={dropdownRef}>
-          {" "}
-          {/* Allows user to click out of menu */}
-          <button
-            className="actions-button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+    <div className={styles.pageContainer}>
+      <Sidebar />
+      <div className={styles.contentContainer}>
+        <div className={styles.mainContent}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            Actions
-            <HiChevronDown size={20} />
-          </button>
-          {isDropdownOpen && (
-            <ul className="actions-dropdown">
-              <li onClick={handleDownloadLogs}>Download Registration Logs</li>
-              <li>Export to Excel</li>
-              <li>Bulk Update Status</li>
-            </ul>
-          )}
-        </div>
+            <h1 className={styles.title}>
+              List of Students for Admission Application
+            </h1>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Student Number</th>
-              <th>Name</th>
-              <th>DOB</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Phone Number</th>
-              <th>Program</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student.student_number}>
-                <td>{student.student_number}</td>
-                <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>
-                <td>
-                  {student.dob
-                    ? new Date(student.dob).toLocaleDateString()
-                    : "N/A"}
-                </td>
-                <td>{student.gender}</td>
-                <td>{student.email}</td>
-                <td>{student.phone_number}</td>
-                <td>{student.program_name || "N/A"}</td>
-                <td>{student.approval_status || "Approved"}</td>
-                <td>
-                  <button
-                    onClick={() => handleView(student)}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "#0a9396",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "1rem",
-                      transition: "background-color 0.3s ease",
-                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#005f73")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#0a9396")
-                    }
-                  >
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <div className={styles.actionsWrapper} ref={dropdownRef}>
+              <button
+                className={styles.actionsButton}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                Actions <HiChevronDown size={20} />
+              </button>
+              {isDropdownOpen && (
+                <ul className={styles.actionsDropdown}>
+                  <li onClick={handleDownloadLogs}>
+                    Download Registration Logs
+                  </li>
+                  <li>Export to Excel</li>
+                  <li>Bulk Update Status</li>
+                </ul>
+              )}
+            </div>
+          </div>
 
-        {/* Modal for viewing/updating student details */}
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          {selectedStudent && (
-            <form onSubmit={handleUpdate}>
-              <div>
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            title="Student Details"
+          >
+            {selectedStudent && (
+              <form className={styles.formContainer} onSubmit={handleUpdate}>
                 <h3>
                   <strong>Student Details</strong>
                 </h3>
@@ -243,15 +168,26 @@ const AdminStudentList = () => {
                   <strong>Home Address:</strong>{" "}
                   {selectedStudent.home_address || ""}
                 </p>
+
+                <h3>
+                  <strong>Emergency Contact</strong>
+                </h3>
                 <p>
-                  <strong>Emergency Contact:</strong>{" "}
-                  {selectedStudent.emergency_contact_name} (
-                  {selectedStudent.emergency_contact_relationship})
+                  <strong>Name:</strong>{" "}
+                  {selectedStudent.emergency_contact_name}
                 </p>
                 <p>
-                  <strong>Emergency Contact Phone:</strong>{" "}
+                  <strong>Relationship:</strong>{" "}
+                  {selectedStudent.emergency_contact_relationship}
+                </p>
+                <p>
+                  <strong>Phone:</strong>{" "}
                   {selectedStudent.emergency_contact_phone}
                 </p>
+
+                <h3>
+                  <strong>Academic Information</strong>
+                </h3>
                 <p>
                   <strong>Previous Schools:</strong>{" "}
                   {selectedStudent.previous_schools || ""}
@@ -277,220 +213,139 @@ const AdminStudentList = () => {
                       ).toLocaleDateString()
                     : ""}
                 </p>
-                <br></br>
+
                 <h3>
                   <strong>Documents</strong>
                 </h3>
                 <ul>
-                  <li>
-                    <strong>Diploma: </strong>
-                    {selectedStudent.diploma ? (
-                      <a
-                        href={selectedStudent.diploma}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Form 137:</strong>{" "}
-                    {selectedStudent.form137 ? (
-                      <a
-                        href={selectedStudent.form137}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Identification Card:</strong>{" "}
-                    {selectedStudent.identification_card ? (
-                      <a
-                        href={selectedStudent.identification_card}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Photo: </strong>{" "}
-                    {selectedStudent.photo ? (
-                      <a
-                        href={selectedStudent.photo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Marriage Certificate: </strong>{" "}
-                    {selectedStudent.marriage_certificate ? (
-                      <a
-                        href={selectedStudent.marriage_certificate}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Birth Certificate:</strong>{" "}
-                    {selectedStudent.birth_certificate ? (
-                      <a
-                        href={selectedStudent.birth_certificate}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Good Moral Certificate:</strong>{" "}
-                    {selectedStudent.good_moral ? (
-                      <a
-                        href={selectedStudent.good_moral}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Honorable Dismissal:</strong>{" "}
-                    {selectedStudent.honorable_dismissal ? (
-                      <a
-                        href={selectedStudent.honorable_dismissal}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Report Card:</strong>{" "}
-                    {selectedStudent.report_card ? (
-                      <a
-                        href={selectedStudent.report_card}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    {" "}
-                    <strong>Terms and Conditions:</strong>{" "}
-                    {selectedStudent.terms_and_conditions ? (
-                      <a
-                        href={selectedStudent.terms_and_conditions}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
-                  <li>
-                    <strong>Data Privacy Consent: </strong>
-                    {selectedStudent.data_privacy_consent ? (
-                      <a
-                        href={selectedStudent.data_privacy_consent}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Attached
-                      </a>
-                    ) : (
-                      "No attachment"
-                    )}
-                  </li>
+                  {[
+                    "diploma",
+                    "form137",
+                    "identification_card",
+                    "photo",
+                    "marriage_certificate",
+                    "birth_certificate",
+                    "good_moral",
+                    "honorable_dismissal",
+                    "report_card",
+                    "terms_and_conditions",
+                    "data_privacy_consent",
+                  ].map((key, index) => {
+                    const value = selectedStudent[key];
+                    return (
+                      <li key={index}>
+                        <strong>
+                          {key
+                            .replace(/_/g, " ")
+                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                          :
+                        </strong>{" "}
+                        {typeof value === "string" &&
+                        value.startsWith("http") ? (
+                          <a
+                            href={value}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Attached
+                          </a>
+                        ) : (
+                          "No attachment"
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
 
-                <br></br>
                 <h3>
                   <strong>Approval Details</strong>
                 </h3>
-                <div>
-                  <label>Approval Status:</label>
-                  <div>
-                    <label>Approval Status:</label>
-                    <select
-                      name="approval_status"
-                      defaultValue="Approved"
-                      disabled
-                    >
-                      <option value="Approved">Approved</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label>Approval Date:</label>
-                    <input
-                      type="date"
-                      name="approval_date"
-                      defaultValue={new Date().toISOString().split("T")[0]}
-                      readOnly
-                    />
-                  </div>
-                  <div>
-                    <label>Rejection Reason:</label>
-                    <input
-                      type="text"
-                      name="rejection_reason"
-                      defaultValue="N/A"
-                      disabled
-                    />
-                  </div>
+                <label>Approval Status:</label>
+                <select name="approval_status" defaultValue="Approved" disabled>
+                  <option value="Approved">Approved</option>
+                </select>
 
-                  <div>
-                    <label>Reviewer Comments:</label>
-                    <input
-                      type="text"
-                      name="approval_comments"
-                      defaultValue="Approved successfully."
-                      disabled
-                    />
-                  </div>
+                <label>Approval Date:</label>
+                <input
+                  type="date"
+                  name="approval_date"
+                  defaultValue={new Date().toISOString().split("T")[0]}
+                  readOnly
+                />
+
+                <label>Rejection Reason:</label>
+                <input
+                  type="text"
+                  name="rejection_reason"
+                  defaultValue="N/A"
+                  disabled
+                />
+
+                <label>Reviewer Comments:</label>
+                <input
+                  type="text"
+                  name="approval_comments"
+                  defaultValue="Approved successfully."
+                  disabled
+                />
+
+                <div className={styles.buttonGroup}>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </button>
                 </div>
-              </div>
-              <button type="button" onClick={closeModal}>
-                Cancel
-              </button>
-            </form>
-          )}
-        </Modal>
+              </form>
+            )}
+          </Modal>
+
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Student Number</th>
+                  <th>Name</th>
+                  <th>DOB</th>
+                  <th>Gender</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
+                  <th>Program</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => (
+                  <tr key={student.student_number}>
+                    <td>{student.student_number}</td>
+                    <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>
+                    <td>
+                      {student.dob
+                        ? new Date(student.dob).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td>{student.gender}</td>
+                    <td>{student.email}</td>
+                    <td>{student.phone_number}</td>
+                    <td>{student.program_name || "N/A"}</td>
+                    <td>{student.approval_status || "Approved"}</td>
+                    <td>
+                      <button
+                        onClick={() => handleView(student)}
+                        className={styles.viewButton}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
