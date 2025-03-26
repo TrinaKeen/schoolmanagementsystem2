@@ -59,9 +59,11 @@ export default function Sidebar() {
       title: "Instructor",
       icon: <FaUser />,
       submenu: [
-        { title: "All Instructors", link: "/instructors" },
-        { title: "Instructor Details", link: "/instructors/details" },
-        { title: "Add New Instructor", link: "/instructors/add" },
+        { title: "All Instructors", link: "/AdminPortal/TeacherPage" },
+        {
+          title: "Add New Instructor",
+          link: "/AdminPortal/TeacherPage/addInstructor",
+        },
       ],
     },
     {
