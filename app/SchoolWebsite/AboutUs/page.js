@@ -1,5 +1,5 @@
+"use client"
 import Head from 'next/head';
-import Footer from '../../SchoolWebsite/components/Footer';
 import styles from './AboutUs.module.css';
 import WebsiteHeader from '../components/WebsiteHeader';
 
@@ -44,8 +44,7 @@ const About = () => {
         </section>
       </main>
 
-      <Footer />
-    </>
+      </>
   );
 };
 

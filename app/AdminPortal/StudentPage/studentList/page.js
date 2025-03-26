@@ -131,7 +131,10 @@ const AdminStudentList = () => {
             </div>
           </div>
 
+
           <Modal isOpen={isModalOpen} onClose={closeModal}>
+
+
             {selectedStudent && (
               <form className={styles.formContainer} onSubmit={handleUpdate}>
                 <h3>

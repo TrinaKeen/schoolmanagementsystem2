@@ -7,7 +7,7 @@ import WebsiteHeader from './SchoolWebsite/components/WebsiteHeader';
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh' }}>
+    <div style={{backgroundColor: 'white', flex: 1  }}>
       <WebsiteHeader />
     
       <main className={styles.body}>

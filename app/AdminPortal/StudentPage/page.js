@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import "../components/studentpage.modules.css";
 import Modal from "../components/Modal";

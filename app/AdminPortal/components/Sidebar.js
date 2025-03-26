@@ -52,7 +52,7 @@ export default function Sidebar() {
         { title: "All Students", link: "/AdminPortal/StudentPage/studentList" },
         { title: "Student Details", link: "/students/details" },
         { title: "Admission Request", link: "/AdminPortal/StudentPage" },
-        { title: "Admission Form", link: "/students/admission-form" },
+        { title: "Admission Form", link: "/AdminPortal/StudentPage/admission-form" },
       ],
     },
     {

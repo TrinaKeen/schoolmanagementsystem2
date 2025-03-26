@@ -103,7 +103,7 @@ tr:hover td {
   background-color: #f1f4f7; /* Hover effect */
 }
 
-a {
+tbody a {
   display: inline-block;
   padding: 6px 15px;
   background-color: #3498db;
@@ -115,8 +115,9 @@ a {
   justify-content: flex-start;
 }
 
-a:hover {
+tbody a:hover {
   background-color: #2980b9;
+  transform: translateY(-3px);
 }
 
 ul {
