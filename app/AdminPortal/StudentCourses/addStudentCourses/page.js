@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import styles from "./addStudentCourses.module.css";
-import { format } from "path";
 
 export default function addStudentCourses() {
   const [programs, setPrograms] = useState([]);
