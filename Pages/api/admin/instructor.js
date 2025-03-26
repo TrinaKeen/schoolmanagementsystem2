@@ -72,17 +72,17 @@ const updateData = async (type, body) => {
   try {
     switch (type) {
       case "instructors":
-        const result = await sql`
-          UPDATE instructors
-          SET first_name = ${body.first_name},
-              last_name = ${body.last_name},
-              email = ${body.email},
-              phone = ${body.phone},
-              hire_date = ${body.hire_date},
-              specialization = ${body.specialization}
-          WHERE id = ${body.id}
-          RETURNING *;
-        `;
+        return await sql`
+        UPDATE instructors
+        SET first_name = ${body.first_name},
+            last_name = ${body.last_name},
+            email = ${body.email},
+            phone = ${body.phone},
+            hire_date = ${body.hire_date},
+            specialization = ${body.specialization}
+        WHERE id = ${body.id}
+        RETURNING *;
+      `;
       default:
         throw new Error("Invalid type for update");
     }
