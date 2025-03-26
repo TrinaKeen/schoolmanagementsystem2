@@ -2,11 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import '../components/studentpage.modules.css';
 import Modal from '../components/Modal';
-import AdminHeader from "../components/header";
 import Sidebar from "../components/Sidebar";
-import logo from '/src/school-logo.png';
-import Image from 'next/image';
-import Link from 'next/link';
+
 
 const AdminStudentList = () => {
   const [students, setStudents] = useState([]);
