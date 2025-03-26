@@ -81,7 +81,6 @@ export default function StudentFeesPage() {
                 <tr>
                   {[
                     "id",
-                    "photo",
                     "name",
                     "gender",
                     "class",
@@ -114,13 +113,6 @@ export default function StudentFeesPage() {
                   sortedFees.map((fee) => (
                     <tr key={fee.id}>
                       <td>{fee.id}</td>
-                      <td>
-                        <img
-                          src={fee.photo || "/default-avatar.png"}
-                          alt="Profile"
-                          className={styles.profileImage}
-                        />
-                      </td>
                       <td>{fee.name}</td>
                       <td>{fee.gender}</td>
                       <td>{fee.class}</td>
@@ -142,7 +134,7 @@ export default function StudentFeesPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="11" className={styles.noData}>
+                    <td colSpan="10" className={styles.noData}>
                       No matching student fees found.
                     </td>
                   </tr>
