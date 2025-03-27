@@ -1,10 +1,10 @@
 .body {
   font-family: 'Roboto', sans-serif;
   background-color: #f4f7fa; /* Light background color for the whole page */
-  color: black; /* Changed to black for better contrast */
   line-height: 1.6;
   margin: 0;
   padding: 0;    
+  height: 100%;
 }
 
 /* Styles for desktop screens */
@@ -48,7 +48,11 @@
 }
 
 /* Main Section Styling */
+main{
+  background-color: white;
+}
 section {
+  
   color: black;
   display: flex;
   flex-direction: column;
@@ -57,7 +61,7 @@ section {
   text-align: center; /* Center text */
   padding: 30px; /* Adjusted padding */
   background-color: white;
-  margin-bottom: 40px; /* Space between sections */
+  
 }
 
 h1 {

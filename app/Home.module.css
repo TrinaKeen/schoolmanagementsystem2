@@ -7,6 +7,7 @@
     'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   color: #333;
+ 
   
 }
 
@@ -236,10 +237,7 @@
     flex: 1;
 }
 
-.body {
-    padding: 20px;
-    background-color: #f9f9f9;
-}
+
 
 @keyframes slideshow {
     0% { background-image: url('../src/CollegeImg.jpg'); }
