@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import styles from "./AdminDashboard.module.css";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell
+  PieChart, Pie, Cell
 } from "recharts";
 
 const currencyFormat = (value) => `$${Number(value).toLocaleString()}`;
@@ -18,7 +18,6 @@ export default function AdminDashboard() {
   const [totalCourses, setTotalCourses] = useState(0);
   const [genderBreakdown, setGenderBreakdown] = useState([]);
   const [earningsData, setEarningsData] = useState([]);
-  const [expenseData, setExpenseData] = useState([]);
 
   useEffect(() => {
     fetch("/api/admin/stats/totalStudents")
@@ -48,10 +47,6 @@ export default function AdminDashboard() {
     fetch("/api/admin/stats/monthlyEarnings")
       .then(res => res.json())
       .then(data => setEarningsData(data.monthly));
-
-    fetch("/api/admin/stats/monthlyExpenses")
-      .then(res => res.json())
-      .then(data => setExpenseData(data.monthly));
   }, []);
 
   const COLORS = ["#3b82f6", "#f59e0b"];
@@ -103,19 +98,6 @@ export default function AdminDashboard() {
                 <Tooltip formatter={currencyFormat} />
                 <Area type="monotone" dataKey="earnings" stroke="#f43f5e" fill="#fda4af" />
               </AreaChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className={styles.chartCard}>
-            <h4 className={styles.chartTitle}>Expenses</h4>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={expenseData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={currencyFormat} />
-                <Bar dataKey="expenses" fill="#38bdf8" />
-              </BarChart>
             </ResponsiveContainer>
           </div>
 

@@ -1,3 +1,5 @@
+// /pages/api/admin/dashboard/totalEarnings.js
+
 import sql from "../../../../db";
 
 export default async function handler(req, res) {
@@ -6,27 +8,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch total tuition fees (PAID only)
-    const tuitionResult = await sql`
-      SELECT COALESCE(SUM(total_fee), 0) AS total FROM tuition_fees
-      WHERE payment_status = 'Paid';
+    // Fetch total earnings only from PAID student_tuition_fees
+    const result = await sql`
+      SELECT 
+        COALESCE(SUM(f.total_fee + mf.amount), 0) AS total
+      FROM student_tuition_fees stf
+      LEFT JOIN fees f ON stf.fees_id = f.id
+      LEFT JOIN miscellaneous_fees mf ON stf.miscellaneous_id = mf.id
+      WHERE stf.payment_status = 'Paid';
     `;
 
-    // Fetch total course fees
-    const courseFeeResult = await sql`
-      SELECT COALESCE(SUM(total_fee), 0) AS total FROM fees;
-    `;
-
-    // Fetch total miscellaneous fees (PAID only)
-    const miscResult = await sql`
-      SELECT COALESCE(SUM(amount), 0) AS total FROM miscellaneous_fees
-      WHERE payment_status = 'Paid';
-    `;
-
-    const totalEarnings =
-      Number(tuitionResult[0].total) +
-      Number(courseFeeResult[0].total) +
-      Number(miscResult[0].total);
+    const totalEarnings = Number(result[0].total);
 
     res.status(200).json({ totalEarnings });
   } catch (error) {
