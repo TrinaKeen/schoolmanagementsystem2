@@ -6,7 +6,7 @@ import WebsiteHeader from '../components/WebsiteHeader';
 
 export default function Home() {
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh' }}>
+    <div className={styles.body}>
       <WebsiteHeader />
     
       <main className={styles.body}>
