@@ -1,164 +1,299 @@
-/* Updated CSS for the employee form alignment */
-
+/* -------------------- General Layout -------------------- */
 .pageContainer {
   display: flex;
-  flex-direction: column;
   min-height: 100vh;
   background-color: #f0f4f8;
-  font-family: Arial, sans-serif;
-  
 }
 
 .contentContainer {
-  
-  margin: 80px auto 0;
+  flex-grow: 1;
+  padding: 40px;
+  margin-left: 288px;
+}
+
+.mainContent {
+  margin: auto;
   background-color: white;
   color: #333;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-left: 350px;
-  width: 80%;
-}
-
-.employeeForm {
-  
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns for first row */
-  gap: 10px;
-  margin-bottom: 20px;
-  width: 100%; /* Ensure the form fills the width available but doesn't exceed max-width */
-  margin: 0 auto; /* Center the form horizontally */
-  padding: 20px; /* Add padding inside the form */
-}
-
-.employeeForm input,
-.employeeForm select,
-.employeeForm textarea,
-.employeeForm button {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.employeeForm .half-width {
-  grid-column: span 2; /* Span across 2 columns for the second row (name fields) */
-}
-
-.employeeForm .full-width {
-  grid-column: span 4; /* Full-width form elements (like Address, etc.) */
-}
-
-.employeeForm input[type="date"] {
+  max-width: 1200px;
   width: 100%;
 }
 
-/* Styling for the form container */
-.employeeForm {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+/* -------------------- Title -------------------- */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.employeeForm input,
-.employeeForm select,
-.employeeForm textarea,
-.employeeForm button {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
+/* -------------------- Buttons -------------------- */
+.buttonGroup {
+  grid-column: span 2;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.saveButton {
+  background-color: #005f73;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.saveButton:hover {
+  transform: scale(1.1);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Space between buttons */
+  height: 100%; /* Ensures buttons match row height */
+}
+
+.cancelButton {
+  background-color: #7296a8;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cancelButton:hover {
+  transform: scale(1.1);
+}
+
+.editButton {
+  background-color: #f0ad4e;
+  color: white;
+  padding: 6px 12px;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  flex: 1;
 }
 
-.employeeForm .half-width {
-  grid-column: span 2; /* Makes the fields span two columns */
+.editButton:hover {
+  background-color: #ec971f;
 }
 
-.employeeForm .full-width {
-  grid-column: span 4; /* Makes the fields span all columns */
+.deleteButton {
+  background-color: #d9534f;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  flex: 1;
 }
 
+.deleteButton:hover {
+  background-color: #c9302c;
+}
 
-/* General Button Styling */
-.employeeForm button,
-.employeeCard button {
+.actions {
+  display: flex;
+  gap: 8px; /* Space between buttons */
+}
+
+/* -------------------- Popup Styling with Animation -------------------- */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+  min-width: 300px;
+  opacity: 0;
+  animation: fadeInPopup 0.3s ease-out forwards;
+}
+
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOutPopup {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.popup.closing {
+  animation: fadeOutPopup 0.3s ease-in forwards;
+}
+
+.popup p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.popup button {
   background-color: #0a9396;
   color: white;
-  padding: 10px 16px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
   font-size: 14px;
-  transition: 0.2s;
-}
-
-.employeeForm button:hover,
-.employeeCard button:hover {
-  background-color: #0056b3; /* Darker blue when hovered */
-  transform: scale(1.05); /* Slightly enlarge the button */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
-}
-
-/* Focus Effect */
-.employeeForm button:focus,
-.employeeCard button:focus {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 0 2px #0056b3; /* Add blue glow when focused */
-  background-color: #0a9396;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
   font-weight: bold;
-  font-size: 14px;
-  transition: 0.2s;
+  margin: 8px;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
-/* Style for the Delete Button */
-.delete {
-  background-color: #dc3545;
-  color: white;
-  font-weight: bold;
-}
-
-.delete:hover {
-  background-color: #c82333; /* Darker red when hovered */
+.popup button:hover {
+  background-color: #09757c;
   transform: scale(1.05);
 }
 
-.delete:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #c82333;
+.popup button:nth-child(2) {
+  background-color: #ccc;
+  color: #333;
 }
 
-/* Style for Add Button */
-.add-button {
-  background-color: #0a9396;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.add-button:hover {
-  background-color: #218838;
+.popup button:nth-child(2):hover {
+  background-color: #bbb;
   transform: scale(1.05);
 }
 
-.add-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #218838;
+/* Overlay with Fade-in Animation */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  animation: fadeInOverlay 0.3s ease-out forwards;
 }
 
-/* Add some padding to the employee cards buttons */
-.employeeCard button {
-  padding: 8px 15px;
-  font-size: 13px;
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutOverlay {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.overlay.closing {
+  animation: fadeOutOverlay 0.3s ease-in forwards;
+}
+
+/* -------------------- Form Styling -------------------- */
+.formContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 20px;
+}
+
+.formContainer input,
+.formContainer select,
+.formContainer textarea {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formContainer textarea {
+  resize: vertical;
+  min-height: 80px;
+  grid-column: span 2;
+}
+
+.breadcrumb {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.fullWidth {
+  grid-column: span 2;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+.employeeTableContainer {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.employeeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.employeeTable th,
+.employeeTable td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.employeeTable th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.subTitle {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
 }

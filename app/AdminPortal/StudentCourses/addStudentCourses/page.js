@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import styles from "./addStudentCourses.module.css";
-import { format } from "path";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function addStudentCourses() {
   const [programs, setPrograms] = useState([]);
@@ -110,15 +110,6 @@ export default function addStudentCourses() {
   const confirmAddCourse = async () => {
     setShowConfirmation(false);
 
-    // const formattedCourse = {
-    //   id: editCourse?.id ?? null, // If editing, include ID
-    //   course_name: newCourse.course_name,
-    //   course_code: newCourse.course_code,
-    //   program_id: parseInt(newCourse.program_id, 10) || null,
-    //   instructor_id: parseInt(newCourse.instructor_id, 10) || null,
-    //   year: parseInt(newCourse.year, 10) || null,
-    // };
-
     const res = await fetch(`/api/admin/studentCourses?type=courses`, {
       method: editCourse ? "PUT" : "POST",
       headers: {
@@ -141,8 +132,7 @@ export default function addStudentCourses() {
     });
   };
 
-  if (loading) return <p>Loading courses...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <LoadingSpinner />;
 
   console.log("Course data:", courses);
 
@@ -152,6 +142,7 @@ export default function addStudentCourses() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Add New Course</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Add Student Courses</p> */}
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
           <form className={styles.formContainer} onSubmit={handleSave}>

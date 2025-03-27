@@ -16,14 +16,13 @@ const AdminLogin = () => {
 
   // handles form submission which is the admin login
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent page reload on form submission
-    setLoading(true); // Set loading to true
-
-    const normalizedUsername = username.trim().toLowerCase(); // Normalize username by removing whitespace and converting to lowercase for consistency
-    const loginTimestamp = new Date().toISOString(); // Get the current timestamp
-
+    e.preventDefault();
+    setLoading(true);
+  
+    const normalizedUsername = username.trim().toLowerCase();
+    const loginTimestamp = new Date().toISOString();
+  
     try {
-      // Make API request to login
       const res = await fetch("/api/admin/adminlogin", {
         method: "POST",
         headers: {
@@ -35,26 +34,26 @@ const AdminLogin = () => {
           loginTimestamp,
         }),
       });
-
+  
       const data = await res.json();
-
+  
       if (res.ok) {
-        // Store admin username and token details in localStorage
-        // Ensure to store the login timestamp if needed
         localStorage.setItem("adminUsername", data.username);
         localStorage.setItem("token", data.token);
-        localStorage.setItem("loginTimestamp", loginTimestamp); // Save timestamp locally if needed
-
-        router.push("/AdminPortal/admin-dashboard"); // Redirect to admin dashboard
+        localStorage.setItem("employeeID", data.employee_id); // Store employee ID
+        localStorage.setItem("loginTimestamp", loginTimestamp);
+  
+        router.push("/AdminPortal/admin-dashboard");
       } else {
         setError(data.error || "An unexpected error occurred");
       }
     } catch (error) {
-      setError("Network error, please try again later"); // Handle network errors
+      setError("Network error, please try again later");
     } finally {
-      setLoading(false); // hide loading indicator
+      setLoading(false);
     }
   };
+  
 
   // handles password input change when typing
   const handleChange = (e) => {
@@ -114,9 +113,15 @@ const AdminLogin = () => {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>
-          {loading ? "Logging in..." : "Log In"}
-        </button>
+        {loading ? (
+          <div className={styles.loaderWrapper}>
+            <div className={styles.loader}></div>
+          </div>
+        ) : (
+          <button type="submit" className={styles.submitButton}>
+            Log In
+          </button>
+        )}
       </form>
     </div>
   );

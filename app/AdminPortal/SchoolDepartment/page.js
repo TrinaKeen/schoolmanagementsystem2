@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import styles from "./StudentDepartment.module.css"; // Ensure this CSS file exists
+import styles from "./StudentDepartment.module.css";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function SchoolDept() {
   const [programs, setPrograms] = useState([]);
@@ -37,8 +38,7 @@ export default function SchoolDept() {
     }
   };
 
-  if (loading) return <p>Loading programs...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>
@@ -46,6 +46,7 @@ export default function SchoolDept() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Programs List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Programs</p> */}
 
           <div className={styles.tableWrapper}>
             <table className={styles.table}>

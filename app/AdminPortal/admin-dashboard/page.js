@@ -11,8 +11,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
@@ -24,40 +22,39 @@ export default function AdminDashboard() {
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalInstructors, setTotalInstructors] = useState(0);
   const [totalEarnings, setTotalEarnings] = useState(0);
+  const [totalPrograms, setTotalPrograms] = useState(0);
+  const [totalCourses, setTotalCourses] = useState(0);
   const [genderBreakdown, setGenderBreakdown] = useState([]);
   const [earningsData, setEarningsData] = useState([]);
-  const [expenseData, setExpenseData] = useState([]);
 
   useEffect(() => {
     fetch("/api/admin/stats/totalStudents")
       .then((res) => res.json())
-      .then((data) => setTotalStudents(data.totalStudents))
-      .catch((err) => console.error("Failed to load student count", err));
+      .then((data) => setTotalStudents(data.totalStudents));
 
     fetch("/api/admin/stats/totalInstructors")
       .then((res) => res.json())
-      .then((data) => setTotalInstructors(data.totalInstructors))
-      .catch((err) => console.error("Failed to load instructor count", err));
+      .then((data) => setTotalInstructors(data.totalInstructors));
 
     fetch("/api/admin/stats/totalEarnings")
       .then((res) => res.json())
-      .then((data) => setTotalEarnings(data.totalEarnings))
-      .catch((err) => console.error("Failed to load earnings", err));
+      .then((data) => setTotalEarnings(data.totalEarnings));
+
+    fetch("/api/admin/stats/totalPrograms")
+      .then((res) => res.json())
+      .then((data) => setTotalPrograms(data.totalPrograms));
+
+    fetch("/api/admin/stats/totalCourses")
+      .then((res) => res.json())
+      .then((data) => setTotalCourses(data.totalCourses));
 
     fetch("/api/admin/stats/studentGenderBreakdown")
       .then((res) => res.json())
-      .then((data) => setGenderBreakdown(data.genderStats))
-      .catch((err) => console.error("Failed to load gender breakdown", err));
+      .then((data) => setGenderBreakdown(data.genderStats));
 
     fetch("/api/admin/stats/monthlyEarnings")
       .then((res) => res.json())
-      .then((data) => setEarningsData(data.monthly))
-      .catch((err) => console.error("Failed to load monthly earnings", err));
-
-    fetch("/api/admin/stats/monthlyExpenses")
-      .then((res) => res.json())
-      .then((data) => setExpenseData(data.monthly))
-      .catch((err) => console.error("Failed to load monthly expenses", err));
+      .then((data) => setEarningsData(data.monthly));
   }, []);
 
   const COLORS = ["#3b82f6", "#f59e0b"];
@@ -67,9 +64,10 @@ export default function AdminDashboard() {
       <Sidebar />
       <div className={styles.dashboardContent}>
         <h2 className={styles.pageTitle}>Admin Dashboard</h2>
+        {/* <p className={styles.breadcrumb}>Home &gt; Admin</p> */}
 
-        {/* Summary Stats */}
-        <div className={styles.summaryGrid}>
+        {/* Summary Cards */}
+        <div className={styles.summaryGridWide}>
           <div className={styles.card}>
             <p className={styles.cardLabel}>Students</p>
             <h3 className={styles.cardValue}>{totalStudents}</h3>
@@ -84,11 +82,18 @@ export default function AdminDashboard() {
               {currencyFormat(totalEarnings)}
             </h3>
           </div>
+          <div className={styles.card}>
+            <p className={styles.cardLabel}>Programs</p>
+            <h3 className={styles.cardValue}>{totalPrograms}</h3>
+          </div>
+          <div className={styles.card}>
+            <p className={styles.cardLabel}>Courses</p>
+            <h3 className={styles.cardValue}>{totalCourses}</h3>
+          </div>
         </div>
 
         {/* Charts Section */}
         <div className={styles.chartGrid}>
-          {/* Earnings Area Chart */}
           <div className={styles.chartCard}>
             <h4 className={styles.chartTitle}>Earnings</h4>
             <div className={styles.chartLegend}>
@@ -115,21 +120,6 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
           </div>
 
-          {/* Expenses Bar Chart */}
-          <div className={styles.chartCard}>
-            <h4 className={styles.chartTitle}>Expenses</h4>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={expenseData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={currencyFormat} />
-                <Bar dataKey="expenses" fill="#38bdf8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Gender Pie Chart */}
           <div className={styles.chartCard}>
             <h4 className={styles.chartTitle}>Students</h4>
             <ResponsiveContainer width="100%" height={200}>

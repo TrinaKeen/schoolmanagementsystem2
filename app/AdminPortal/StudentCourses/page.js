@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./studentCourses.module.css";
+import Modal from "../components/Modal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StudentCourses() {
   const [programs, setPrograms] = useState([]);
@@ -273,8 +275,7 @@ export default function StudentCourses() {
     }
   };
 
-  if (loading) return <p>Loading courses...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <LoadingSpinner />;
 
   console.log("Course data:", courses);
 
@@ -284,87 +285,86 @@ export default function StudentCourses() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Course List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Course List</p> */}
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
-          {formVisible && (
-            <div className={styles.mainContent2}>
-              <form className={styles.formContainer}>
-                <h1 className={styles.title2}>Edit Course</h1>
+          <Modal isOpen={formVisible} onClose={handCancel}>
+            <form className={styles.formContainer}>
+              <h1 className={styles.title2}>Edit Course</h1>
 
-                <div className={styles.formGrid}>
-                  <input
-                    type="text"
-                    name="course_name"
-                    placeholder="Course Name"
-                    value={newCourse.course_name}
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="text"
-                    name="course_code"
-                    placeholder="Course Code"
-                    value={newCourse.course_code}
-                    onChange={handleChange}
-                  />
-                </div>
+              <div className={styles.formGrid}>
+                <input
+                  type="text"
+                  name="course_name"
+                  placeholder="Course Name"
+                  value={newCourse.course_name}
+                  onChange={handleChange}
+                />
+                <input
+                  type="text"
+                  name="course_code"
+                  placeholder="Course Code"
+                  value={newCourse.course_code}
+                  onChange={handleChange}
+                />
+              </div>
 
-                {/* Dropdown for Program ID */}
-                <div className={styles.formGrid}>
-                  <select
-                    name="program_id"
-                    className={styles.selectDropdown}
-                    value={newCourse.program_id}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Program</option>
-                    {programs.map((program) => (
-                      <option key={program.id} value={program.id}>
-                        {`${program.program_name} ${program.major}`}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {/* Dropdown for Program ID */}
+              <div className={styles.formGrid}>
+                <select
+                  name="program_id"
+                  className={styles.selectDropdown}
+                  value={newCourse.program_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Program</option>
+                  {programs.map((program) => (
+                    <option key={program.id} value={program.id}>
+                      {`${program.program_name} ${program.major}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className={styles.formGrid}>
-                  <select
-                    name="instructor_id"
-                    className={styles.selectDropdown}
-                    value={newCourse.instructor_id}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Instructor</option>
-                    {instructors.map((instructor) => (
-                      <option key={instructor.id} value={instructor.id}>
-                        {`${instructor.first_name} ${instructor.last_name}`}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    name="year"
-                    className={styles.selectDropdown}
-                    value={newCourse.year}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Year</option>
-                    {[1, 2, 3, 4].map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className={styles.formGrid}>
+                <select
+                  name="instructor_id"
+                  className={styles.selectDropdown}
+                  value={newCourse.instructor_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Instructor</option>
+                  {instructors.map((instructor) => (
+                    <option key={instructor.id} value={instructor.id}>
+                      {`${instructor.first_name} ${instructor.last_name}`}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  name="year"
+                  className={styles.selectDropdown}
+                  value={newCourse.year}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Year</option>
+                  {[1, 2, 3, 4].map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className={styles.buttonGroup}>
-                  <button className={styles.saveButton} onClick={handleSave}>
-                    Save Changes
-                  </button>
-                  <button className={styles.cancelButton} onClick={handCancel}>
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
+              <div className={styles.buttonGroup}>
+                <button className={styles.saveButton} onClick={handleSave}>
+                  Save Changes
+                </button>
+                <button className={styles.cancelButton} onClick={handCancel}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </Modal>
 
           <div className={styles.searchContainer}>
             <input

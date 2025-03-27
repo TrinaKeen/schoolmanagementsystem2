@@ -40,7 +40,6 @@
   font-weight: 500;
 }
 
-
 .navbar {
   display: flex;
   gap: 2rem;
@@ -90,7 +89,7 @@
   right: 0;
   background: white;
   min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   overflow: hidden;
   z-index: 1;
@@ -101,7 +100,7 @@
 }
 
 .dropdownContent a {
-  color: #0056A8;
+  color: #0056a8;
   padding: 12px 16px;
   display: block;
   text-decoration: none;
@@ -119,13 +118,13 @@
     padding: 1rem;
     gap: 1rem;
   }
-  
+
   .navbar {
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
   }
-  
+
   .logo h1 {
     font-size: 1.5rem;
   }
