@@ -126,7 +126,7 @@ const StudentRegistration = () => {
       router.push('/StudentPortal/student-dashboard'); // Navigate to the student dashboard after successful registration
     } catch (error) {
       console.error('Error registering student:', error);
-      alert('Failed to register student.'); // Alert user on failure
+      
     }
   };
 

@@ -5,7 +5,7 @@ import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import { HiChevronDown } from "react-icons/hi";
 
-const AdminStudentList = () => {
+const ApprovedStudentPage = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -149,7 +149,7 @@ const AdminStudentList = () => {
             }}
           >
             <h1 className={styles.title}>
-              List of Approved Students Application
+              Student List
             </h1>
 
             <div className={styles.actionsWrapper} ref={dropdownRef}>
@@ -244,89 +244,10 @@ const AdminStudentList = () => {
                 <p>
                   <strong>Major:</strong> {selectedStudent.major || ""}
                 </p>
-                <p>
-                  <strong>Application Submitted At:</strong>{" "}
-                  {selectedStudent.application_submitted_at
-                    ? new Date(
-                        selectedStudent.application_submitted_at
-                      ).toLocaleDateString()
-                    : ""}
-                </p>
+               
+                
 
-                <h3>
-                  <strong>Documents</strong>
-                </h3>
-                <ul>
-                  {[
-                    "diploma",
-                    "form137",
-                    "identification_card",
-                    "photo",
-                    "marriage_certificate",
-                    "birth_certificate",
-                    "good_moral",
-                    "honorable_dismissal",
-                    "report_card",
-                    "terms_and_conditions",
-                    "data_privacy_consent",
-                  ].map((key, index) => {
-                    const value = selectedStudent[key];
-                    return (
-                      <li key={index}>
-                        <strong>
-                          {key
-                            .replace(/_/g, " ")
-                            .replace(/\b\w/g, (c) => c.toUpperCase())}
-                          :
-                        </strong>{" "}
-                        {typeof value === "string" &&
-                        value.startsWith("http") ? (
-                          <a
-                            href={value}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Attached
-                          </a>
-                        ) : (
-                          "No attachment"
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-
-                <h3>
-                  <strong>Approval Details</strong>
-                </h3>
-                <label>Approval Status:</label>
-                <select name="approval_status" defaultValue="Approved" disabled>
-                  <option value="Approved">Approved</option>
-                </select>
-
-                <label>Approval Date:</label>
-                <input
-                  type="date"
-                  name="approval_date"
-                  defaultValue={new Date().toISOString().split("T")[0]}
-                  readOnly
-                />
-
-                <label>Rejection Reason:</label>
-                <input
-                  type="text"
-                  name="rejection_reason"
-                  defaultValue="N/A"
-                  disabled
-                />
-
-                <label>Reviewer Comments:</label>
-                <input
-                  type="text"
-                  name="approval_comments"
-                  defaultValue="Approved successfully."
-                  disabled
-                />
+                
 
                 <div className={styles.buttonGroup}>
                   <button
@@ -370,7 +291,7 @@ const AdminStudentList = () => {
                     <td>{student.email}</td>
                     <td>{student.phone_number}</td>
                     <td>{student.program_name || "N/A"}</td>
-                    <td>{student.approval_status || "Approved"}</td>
+                    <td>{student.approval_status || "Active"}</td>
                     <td>
                       <button
                         onClick={() => handleView(student)}
@@ -392,4 +313,4 @@ const AdminStudentList = () => {
   );
 };
 
-export default AdminStudentList;
+export default ApprovedStudentPage;

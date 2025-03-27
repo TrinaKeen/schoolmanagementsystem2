@@ -58,12 +58,10 @@ export default function Sidebar({ onLogout }) {
       title: "Students",
       icon: <FaUser />,
       submenu: [
-        { title: "All Students", link: "/AdminPortal/StudentPage/studentList" },
-        { title: "Admission Request", link: "/AdminPortal/StudentPage" },
-        {
-          title: "Admission Form",
-          link: "/AdminPortal/StudentPage/admission-form",
-        },
+        { title: "All Students", link: "/AdminPortal/StudentPage/approved-students" },
+        { title: "Approved Students", link: "/AdminPortal/StudentPage/studentList" },
+        { title: "Admission Request", link: "/AdminPortal/StudentPage/admission-approvals" },
+
       ],
     },
     {
