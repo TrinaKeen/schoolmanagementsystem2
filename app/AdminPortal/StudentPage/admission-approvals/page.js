@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken"; // Make sure to import jwt for decoding
 import styles from "../../components/studentpage.module.css"; // Adjust the path if necessary
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdmissionApprovalPage = () => {
   const [students, setStudents] = useState([]);
@@ -167,6 +168,8 @@ const AdmissionApprovalPage = () => {
 
     return fullName.includes(query) || studentNumber.includes(query);
   });
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./AddCourseFee.module.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function AddCourseFeePage() {
   const [formData, setFormData] = useState({
@@ -76,6 +77,8 @@ export default function AddCourseFeePage() {
     }
   };
 
+  if (loading) return <LoadingSpinner />;
+
   return (
     <div className={styles.dashboardWrapper}>
       <Sidebar />
@@ -118,7 +121,11 @@ export default function AddCourseFeePage() {
                 type="reset"
                 className={styles.resetButton}
                 onClick={() =>
-                  setFormData({ course_id: "", base_fee: "", additional_fees: "" })
+                  setFormData({
+                    course_id: "",
+                    base_fee: "",
+                    additional_fees: "",
+                  })
                 }
               >
                 Reset

@@ -4,6 +4,7 @@ import styles from "./studentList.module.css";
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import { HiChevronDown } from "react-icons/hi";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ApprovedStudentPage = () => {
   const [students, setStudents] = useState([]);
@@ -114,11 +115,11 @@ const ApprovedStudentPage = () => {
       console.log("API Response:", response.status, response.statusText, data);
 
       if (!response.ok) {
-        console.error("❌ Failed to approve student. Server response:", data);
+        console.error("Failed to approve student. Server response:", data);
         return;
       }
 
-      console.log("✅ Student approved successfully:", data);
+      console.log("Student approved successfully:", data);
       fetchStudents(); // Refresh list
     } catch (error) {
       console.error("⚠️ Error approving student:", error.message);
@@ -134,8 +135,8 @@ const ApprovedStudentPage = () => {
     return fullName.includes(query) || studentNumber.includes(query);
   });
 
-  if (loading) return <p>Loading students...</p>;
-  if (error) return <p className="error-message">{error}</p>;
+  if (loading) return <LoadingSpinner />;
+  if (error) return <LoadingSpinner />;
   if (!students.length)
     return <p className="no-students-message">No students found.</p>;
 

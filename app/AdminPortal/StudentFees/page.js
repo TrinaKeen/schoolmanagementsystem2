@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./StudentFees.module.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function StudentFeesPage() {
   const [fees, setFees] = useState([]);
@@ -64,6 +65,8 @@ export default function StudentFeesPage() {
       console.error("Failed to fetch breakdown:", err);
     }
   };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.dashboardContainer}>

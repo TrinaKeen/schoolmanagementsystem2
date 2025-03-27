@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./AddMiscFee.module.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function AddMiscellaneousFeePage() {
   const [formData, setFormData] = useState({
@@ -50,6 +51,8 @@ export default function AddMiscellaneousFeePage() {
       alert("Error occurred while submitting the form.");
     }
   };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.dashboardWrapper}>

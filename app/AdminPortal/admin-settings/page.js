@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../components/AccountInformation.module.css";
 import Sidebar from "../components/Sidebar";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const initialFormState = {
   employee_number: "",
@@ -115,6 +116,8 @@ const EmployeeTable = () => {
   };
 
   console.log("Employees data:", employees);
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>

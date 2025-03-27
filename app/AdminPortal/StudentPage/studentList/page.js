@@ -4,6 +4,7 @@ import styles from "./studentList.module.css";
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import { HiChevronDown } from "react-icons/hi";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdminStudentList = () => {
   const [students, setStudents] = useState([]);
@@ -134,8 +135,8 @@ const AdminStudentList = () => {
     return fullName.includes(query) || studentNumber.includes(query);
   });
 
-  if (loading) return <p>Loading students...</p>;
-  if (error) return <p className="error-message">{error}</p>;
+  if (loading) return <LoadingSpinner />;
+  if (error) return <LoadingSpinner />;
   if (!students.length)
     return <p className="no-students-message">No students found.</p>;
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import styles from "./addIntructor.module.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function AddInstructorPage() {
   const [instructors, setInstructors] = useState([]);
@@ -98,8 +99,8 @@ export default function AddInstructorPage() {
     });
   };
 
-  if (loading) return <p>Loading instructors...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <LoadingSpinner />;
+  if (error) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>

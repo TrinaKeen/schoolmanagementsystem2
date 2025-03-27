@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Modal from "../../components/Modal";
 import styles from "./employees.module.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const initialFormState = {
   employee_number: "",
@@ -165,6 +166,8 @@ export default function AllEmployees() {
       console.error("Failed to save employee:", err.message);
     }
   };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>

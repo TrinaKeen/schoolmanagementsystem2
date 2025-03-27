@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./teacherPage.module.css";
 import Modal from "../components/Modal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function TeacherPage() {
   const [instructors, setInstructors] = useState([]);
@@ -207,6 +208,8 @@ export default function TeacherPage() {
     if (a[sortKey] > b[sortKey]) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.pageContainer}>
