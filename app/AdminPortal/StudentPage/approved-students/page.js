@@ -12,6 +12,7 @@ const ApprovedStudentPage = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const adminId = 1;
   const dropdownRef = useRef(null);
 
@@ -124,6 +125,15 @@ const ApprovedStudentPage = () => {
     }
   };
 
+  const filteredStudents = students.filter((student) => {
+    const fullName =
+      `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
+    const studentNumber = String(student.student_number);
+    const query = searchQuery.toLowerCase();
+
+    return fullName.includes(query) || studentNumber.includes(query);
+  });
+
   if (loading) return <p>Loading students...</p>;
   if (error) return <p className="error-message">{error}</p>;
   if (!students.length)
@@ -134,33 +144,17 @@ const ApprovedStudentPage = () => {
       <Sidebar />
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h1 className={styles.title}>Student List</h1>
-            {/* <p className={styles.breadcrumb}>Home &gt; All Students</p> */}
+          <h1 className={styles.title}>Student List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; All Students</p> */}
 
-            <div className={styles.actionsWrapper} ref={dropdownRef}>
-              <button
-                className={styles.actionsButton}
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                Actions <HiChevronDown size={20} />
-              </button>
-              {isDropdownOpen && (
-                <ul className={styles.actionsDropdown}>
-                  <li onClick={handleDownloadLogs}>
-                    Download Registration Logs
-                  </li>
-                  <li>Export to Excel</li>
-                  <li>Bulk Update Status</li>
-                </ul>
-              )}
-            </div>
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Search by name or student number..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
           <Modal isOpen={isModalOpen} onClose={closeModal}>
@@ -263,7 +257,7 @@ const ApprovedStudentPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
+                {filteredStudents.map((student) => (
                   <tr key={student.student_number}>
                     <td>{student.student_number}</td>
                     <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>

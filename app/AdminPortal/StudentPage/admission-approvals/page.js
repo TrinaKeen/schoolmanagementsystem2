@@ -12,6 +12,7 @@ const AdmissionApprovalPage = () => {
   const [error, setError] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [employee, setEmployee] = useState(null); // Store admin details from localStorage
   const dropdownRef = useRef(null); // For actions dropdown menu
 
@@ -158,6 +159,15 @@ const AdmissionApprovalPage = () => {
     window.location.href = "/AdminPortal/admin-dashboard";
   };
 
+  const filteredStudents = students.filter((student) => {
+    const fullName =
+      `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
+    const studentNumber = String(student.student_number);
+    const query = searchQuery.toLowerCase();
+
+    return fullName.includes(query) || studentNumber.includes(query);
+  });
+
   return (
     <div className={styles.pageContainer}>
       <Sidebar />
@@ -171,9 +181,10 @@ const AdmissionApprovalPage = () => {
           <input
             className={styles.searchInput}
             type="text"
-            placeholder="Search..."
+            placeholder="Search by name or student number..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className={styles.searchButton}>Search</button>
         </div>
 
         <table className={styles.table}>
@@ -194,7 +205,7 @@ const AdmissionApprovalPage = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <tr key={student.student_number}>
                 <td>{student.student_number}</td>
                 <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>
