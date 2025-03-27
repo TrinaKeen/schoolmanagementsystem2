@@ -62,51 +62,39 @@ const EmployeeTable = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put("/api/admin/account-setting", {
+        // Send the PUT request with formData, ensuring employee_number is included
+        await axios.put("/api/admin/addnewadmin-account", {
           ...formData,
           id: editId,
         });
       } else {
-        await axios.post("/api/admin/account-setting", formData);
+        // Send the POST request with formData, ensuring employee_number is included
+        await axios.post("/api/admin/addnewadmin-account", formData);
       }
-
-      setSuccessMessage("Employee added successfully!");
+  
+      setSuccessMessage(editMode ? "Employee updated successfully!" : "Employee added successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
-      setFormData({
-        employee_number: "",
-        first_name: "",
-        last_name: "",
-        user_type: "",
-        gender: "",
-        father_name: "",
-        mother_name: "",
-        date_of_birth: "",
-        religion: "",
-        joining_date: "",
-        email: "",
-        contact_number: "",
-        address: "",
-        program: "",
-        course: "",
-        section: "",
-        specification: "",
-        username: "",
-        password: "",
-      });
+      
+      // Reset form data and state
+      setFormData(initialFormState); // Ensure initialFormState is defined
       setEditMode(false);
       setEditId(null);
-      // Reload employees
-      const { data } = await axios.get("/api/admin/account-setting");
-      setEmployees(data);
-    } catch (error) {
-      setErrorMessage(
-        "Error adding/updating employee. Please check the employee number."
+  
+      // Optionally, update the employees list without refetching all data
+      const updatedEmployee = editMode ? { ...formData, id: editId } : formData;
+      setEmployees((prevEmployees) => 
+        editMode 
+          ? prevEmployees.map(emp => emp.id === editId ? updatedEmployee : emp)
+          : [...prevEmployees, updatedEmployee]
       );
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Error adding/updating employee.";
+      setErrorMessage(errorMessage);
       setTimeout(() => setErrorMessage(""), 3000);
       console.error("Error adding/updating employee:", error);
     }
   };
-
+  
   const handleEdit = (employee) => {
     setFormData(employee);
     setEditMode(true);
