@@ -23,7 +23,7 @@ export default function Sidebar({ onLogout }) {
     const token = localStorage.getItem("token");
 
     if (token) {
-      const decoded = jwt.decode(token);  // Decode token to get user data
+      const decoded = jwt.decode(token); // Decode token to get user data
       console.log("Received Employee Name:", decoded.fullName);
       console.log("Received Role:", decoded.role);
       console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
@@ -43,13 +43,17 @@ export default function Sidebar({ onLogout }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("employeeNumber");  // Remove employee ID on logout
+    localStorage.removeItem("employeeNumber"); // Remove employee ID on logout
     localStorage.removeItem("loginTimestamp");
-    router.push("/");  // Redirect to the home page or login page
+    router.push("/"); // Redirect to the home page or login page
   };
 
   const menuItems = [
-    { title: "Dashboard", icon: <FaHome />, action: () => router.push("/AdminPortal/admin-dashboard") },
+    {
+      title: "Dashboard",
+      icon: <FaHome />,
+      action: () => router.push("/AdminPortal/admin-dashboard"),
+    },
     {
       title: "Students",
       icon: <FaUser />,
@@ -82,16 +86,36 @@ export default function Sidebar({ onLogout }) {
         { title: "Add Students Fees", link: "/AdminPortal/AddStudentFees" },
       ],
     },
-    { title: "Programs", icon: <FaBook />, action: () => router.push("/AdminPortal/SchoolDepartment") },
+    {
+      title: "Programs",
+      icon: <FaBook />,
+      action: () => router.push("/AdminPortal/SchoolDepartment"),
+    },
     {
       title: "Courses",
       icon: <FaBook />,
       submenu: [
         { title: "All Courses", link: "/AdminPortal/StudentCourses" },
-        { title: "Add Courses", link: "/AdminPortal/StudentCourses/addStudentCourses" },
+        {
+          title: "Add Courses",
+          link: "/AdminPortal/StudentCourses/addStudentCourses",
+        },
       ],
     },
-    { title: "Account Setting", icon: <FaCog />, action: () => router.push("/AdminPortal/admin-settings") },
+    {
+      title: "Account Setting",
+      icon: <FaCog />,
+      submenu: [
+        {
+          title: "All Employees",
+          link: "/AdminPortal/admin-settings/allEmployees",
+        },
+        {
+          title: "Add New Employees",
+          link: "/AdminPortal/admin-settings",
+        },
+      ],
+    },
     { title: "Log Out", icon: <FaSignOutAlt />, action: handleLogout },
   ];
 
@@ -111,9 +135,14 @@ export default function Sidebar({ onLogout }) {
         {/* Employee Info Section */}
         {employee && (
           <div className="p-4 bg-gray-800 text-white border-b-2 border-gray-600">
-            <div className="text-lg font-semibold">Welcome, {employee.full_name}</div>
-            <div className="text-sm">Employee #: {employee.employee_number}</div>
-            <div className="text-sm">Role: {employee.role}</div> {/* Added role */}
+            <div className="text-lg font-semibold">
+              Welcome, {employee.full_name}
+            </div>
+            <div className="text-sm">
+              Employee #: {employee.employee_number}
+            </div>
+            <div className="text-sm">Role: {employee.role}</div>{" "}
+            {/* Added role */}
             <div className="text-sm">Last Login: {employee.loginTimestamp}</div>
           </div>
         )}
@@ -137,7 +166,11 @@ export default function Sidebar({ onLogout }) {
                   <span>{item.title}</span>
                   {item.submenu && (
                     <span className="ml-auto">
-                      {activeMenu === item.title ? <FaChevronDown /> : <FaChevronRight />}
+                      {activeMenu === item.title ? (
+                        <FaChevronDown />
+                      ) : (
+                        <FaChevronRight />
+                      )}
                     </span>
                   )}
                 </div>
@@ -147,7 +180,9 @@ export default function Sidebar({ onLogout }) {
                   <div className="pl-8 space-y-1">
                     {item.submenu.map((subitem, subindex) => (
                       <Link key={subindex} href={subitem.link}>
-                        <div className="block p-2 hover:bg-gray-700 rounded">{subitem.title}</div>
+                        <div className="block p-2 hover:bg-gray-700 rounded">
+                          {subitem.title}
+                        </div>
                       </Link>
                     ))}
                   </div>

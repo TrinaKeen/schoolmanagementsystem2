@@ -298,58 +298,6 @@ const EmployeeTable = () => {
             </div>
           </form>
         </div>
-
-        {/* Employee List */}
-        <div className={styles.employeeTableContainer}>
-          <h1 className={styles.subTitle}>Employee List</h1>
-          {employees.length > 0 ? (
-            <table className={styles.employeeTable}>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>User Type</th>
-                  <th>Email</th>
-                  <th>Contact</th>
-                  <th>Program</th>
-                  <th>Course</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((employee) => (
-                  <tr key={employee.id}>
-                    <td>{employee.employee_number}</td>
-                    <td>
-                      {employee.first_name} {employee.last_name}
-                    </td>
-                    <td>{employee.user_type}</td>
-                    <td>{employee.email}</td>
-                    <td>{employee.contact_number}</td>
-                    <td>{employee.program}</td>
-                    <td>{employee.course}</td>
-                    <td>
-                      <button
-                        onClick={() => handleEdit(employee)}
-                        className={styles.editButton}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(employee.id)}
-                        className={styles.deleteButton}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className={styles.noData}>No employees found.</div>
-          )}
-        </div>
       </div>
     </div>
   );
