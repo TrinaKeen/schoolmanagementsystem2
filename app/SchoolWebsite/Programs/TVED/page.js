@@ -73,10 +73,10 @@ export default function TVED() {
             <p>Phone: (123) 456-7890</p>
           </section>
           <section className={styles.buttonContainer}>
-            <Link href="#">
+            <Link href="/SchoolWebsite/Applynow">
               <button className={styles.applyButton}>Apply Now</button>
             </Link>
-            <Link href="/SchoolWebsite2/AdminandPrograms">
+            <Link href="/SchoolWebsite/AdminandPrograms">
               <button className={styles.backButton}>Back</button>
             </Link>
           </section>
