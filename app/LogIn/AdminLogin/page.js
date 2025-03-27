@@ -113,9 +113,15 @@ const AdminLogin = () => {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>
-          {loading ? "Logging in..." : "Log In"}
-        </button>
+        {loading ? (
+          <div className={styles.loaderWrapper}>
+            <div className={styles.loader}></div>
+          </div>
+        ) : (
+          <button type="submit" className={styles.submitButton}>
+            Log In
+          </button>
+        )}
       </form>
     </div>
   );

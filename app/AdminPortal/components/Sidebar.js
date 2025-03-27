@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import jwt from "jsonwebtoken"; // Ensure this import is present for decoding JWT
 
-export default function Sidebar() {
+export default function Sidebar({ onLogout }) {
   const [activeMenu, setActiveMenu] = useState(null);
   const [employee, setEmployee] = useState(null);
   const router = useRouter();
@@ -55,18 +55,22 @@ export default function Sidebar() {
       icon: <FaUser />,
       submenu: [
         { title: "All Students", link: "/AdminPortal/StudentPage/studentList" },
-        { title: "Student Details", link: "/students/details" },
         { title: "Admission Request", link: "/AdminPortal/StudentPage" },
-        { title: "Admission Form", link: "/AdminPortal/StudentPage/admission-form" },
+        {
+          title: "Admission Form",
+          link: "/AdminPortal/StudentPage/admission-form",
+        },
       ],
     },
     {
       title: "Instructor",
       icon: <FaUser />,
       submenu: [
-        { title: "All Instructors", link: "/instructors" },
-        { title: "Instructor Details", link: "/instructors/details" },
-        { title: "Add New Instructor", link: "/instructors/add" },
+        { title: "All Instructors", link: "/AdminPortal/TeacherPage" },
+        {
+          title: "Add New Instructor",
+          link: "/AdminPortal/TeacherPage/addInstructor",
+        },
       ],
     },
     {
@@ -95,7 +99,12 @@ export default function Sidebar() {
     <div className="flex fixed h-full">
       <div className="bg-gray-800 text-white w-72 h-full flex flex-col">
         {/* Sidebar Header */}
-        <div className="p-4 bg-gray-900 border-b-2 border-gray-600">
+        <div className="p-4 bg-gray-900 border-b-2 border-gray-600 flex items-center space-x-3">
+          <img
+            src="/school-logo.png"
+            alt="logo"
+            className="h-10 w-10 object-contain"
+          />
           <span className="text-xl font-bold">EEFCI</span>
         </div>
 

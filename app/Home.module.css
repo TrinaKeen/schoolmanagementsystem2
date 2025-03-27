@@ -214,7 +214,7 @@
 
 .featuredPrograms {
     text-align: center;
-    margin-top: 40px;
+    padding: 40px 20px;
 }
 
 .featuredPrograms h1 {
@@ -227,6 +227,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 20px;
 }
 
 .programs .card {
@@ -240,17 +241,23 @@
     background-color: #f9f9f9;
 }
 
+@keyframes slideshow {
+    0% { background-image: url('../src/CollegeImg.jpg'); }
+    50% { background-image: url('../src/team-working-together.jpg'); }
+    100% { background-image: url('../src/CollegeImg.jpg'); }
+}
 .coverPhoto {
-    background-image: linear-gradient(135deg, rgba(0, 95, 115, 0.85), rgba(10, 147, 150, 0.85)),
-    url('/src/team-working-together.jpg'); /* Add overlay */
+    width: 100%;
+    height: 500px; /* Adjust as needed */
+    display: flex;
     background-size: cover;
-    background-position: center center;
+    background-position: center;
     color: white;
     text-align: center;
-    padding: 60px 20px;
-    margin-bottom: 40px;
-    position: relative;
-    background-blend-mode: multiply;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: slideshow 10s infinite;
 }
 
 .coverPhoto h1 {
@@ -265,7 +272,7 @@
     font-size: 1.8rem;
     margin-bottom: 30px;
     color: white;
-    font-weight: 300;
+    font-weight: 700;
 }
 
 .ctaButton {
@@ -296,15 +303,24 @@
 
 .card {
     background: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
     margin: 10px;
     flex: 1;
     min-width: 250px;
     max-width: 300px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+  }
 
 .card h3 {
     margin: 0;

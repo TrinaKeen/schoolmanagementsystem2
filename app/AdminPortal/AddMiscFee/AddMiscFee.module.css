@@ -4,14 +4,12 @@
     background-color: #f0f4f8;
   }
   
-
   .pageContainer {
     flex-grow: 1;
     padding: 40px;
-    margin-left: 288px; 
+    margin-left: 288px;
   }
   
-
   .contentContainer {
     margin: auto;
     background-color: white;

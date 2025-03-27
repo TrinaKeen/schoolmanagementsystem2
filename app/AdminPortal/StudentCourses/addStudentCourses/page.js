@@ -109,15 +109,6 @@ export default function addStudentCourses() {
   const confirmAddCourse = async () => {
     setShowConfirmation(false);
 
-    // const formattedCourse = {
-    //   id: editCourse?.id ?? null, // If editing, include ID
-    //   course_name: newCourse.course_name,
-    //   course_code: newCourse.course_code,
-    //   program_id: parseInt(newCourse.program_id, 10) || null,
-    //   instructor_id: parseInt(newCourse.instructor_id, 10) || null,
-    //   year: parseInt(newCourse.year, 10) || null,
-    // };
-
     const res = await fetch(`/api/admin/studentCourses?type=courses`, {
       method: editCourse ? "PUT" : "POST",
       headers: {

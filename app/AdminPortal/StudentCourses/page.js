@@ -287,11 +287,7 @@ export default function StudentCourses() {
           <h1 className={styles.title}>Course List</h1>
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
-          <Modal
-            isOpen={formVisible}
-            onClose={handCancel}
-            title={editCourse ? "Edit Course" : "Add Course"}
-          >
+          <Modal isOpen={formVisible} onClose={handCancel}>
             <form className={styles.formContainer}>
               <h1 className={styles.title2}>Edit Course</h1>
 
