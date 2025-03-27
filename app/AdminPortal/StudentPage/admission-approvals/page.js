@@ -120,6 +120,7 @@ const AdmissionApprovalPage = () => {
   };
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // Download logs function
   const handleDownloadLogs = () => {
     window.location.href = "/api/admin/downloadRegistrationLogs";
@@ -137,6 +138,8 @@ const AdmissionApprovalPage = () => {
     return <p className="loading-message">Loading students...</p>;
   }
 =======
+=======
+>>>>>>> Stashed changes
   const filteredStudents = students.filter((student) => {
     const fullName =
       `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
@@ -147,6 +150,9 @@ const AdmissionApprovalPage = () => {
   });
 
   if (loading) return <LoadingSpinner />;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
   if (error) {
@@ -169,7 +175,10 @@ const AdmissionApprovalPage = () => {
           List of Students for Admission Application
         </h1>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
 >>>>>>> Stashed changes
         <div className={styles.searchContainer}>
@@ -267,10 +276,13 @@ const AdmissionApprovalPage = () => {
                     name="approval_status"
                     defaultValue={selectedStudent.approval_status}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     onChange={(e) => {
                       const approvalDateInput = document.querySelector('input[name="approval_date"]');
                       approvalDateInput.value = new Date().toISOString().split("T")[0]; // Set current date
                     }}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                     required
@@ -300,6 +312,7 @@ const AdmissionApprovalPage = () => {
                     name="approval_comments"
                     defaultValue={selectedStudent.approval_comments}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     required={selectedStudent.approval_status === "Rejected" || selectedStudent.approval_status === "Waitlist"}
                   />
                 </div>
@@ -312,6 +325,15 @@ const AdmissionApprovalPage = () => {
               </div>
               <button type="submit">Save Changes</button>
               <button type="button" onClick={closeModal}>Close</button>
+=======
+                    required
+                  />
+                </div>
+                <button type="submit" className={styles.updateButton}>
+                  Update Approval Status
+                </button>
+              </div>
+>>>>>>> Stashed changes
 =======
                     required
                   />
