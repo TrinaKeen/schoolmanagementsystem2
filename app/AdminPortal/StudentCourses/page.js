@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./studentCourses.module.css";
 import Modal from "../components/Modal";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StudentCourses() {
   const [programs, setPrograms] = useState([]);

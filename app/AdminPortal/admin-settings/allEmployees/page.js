@@ -38,6 +38,7 @@ export default function AllEmployees() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [formData, setFormData] = useState(initialFormState);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchEmployees();
@@ -69,6 +70,8 @@ export default function AllEmployees() {
     } catch (err) {
       console.error("Failed to fetch employees", err);
       setEmployees([]);
+    } finally {
+      setLoading(false);
     }
   };
 

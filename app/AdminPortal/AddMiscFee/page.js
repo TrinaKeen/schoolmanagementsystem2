@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./AddMiscFee.module.css";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function AddMiscellaneousFeePage() {
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     student_number: "",
     fee_name: "",
@@ -16,6 +18,16 @@ export default function AddMiscellaneousFeePage() {
     payment_status: "Unpaid",
   });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <LoadingSpinner />;
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -25,6 +37,8 @@ export default function AddMiscellaneousFeePage() {
     console.log("Submitting miscellaneous fee:", formData);
 
     try {
+      setSubmitting(true);
+
       const res = await fetch("/api/admin/addMiscFee", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,10 +63,10 @@ export default function AddMiscellaneousFeePage() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Error occurred while submitting the form.");
+    } finally {
+      setSubmitting(false);
     }
   };
-
-  if (loading) return <LoadingSpinner />;
 
   return (
     <div className={styles.dashboardWrapper}>
@@ -123,12 +137,16 @@ export default function AddMiscellaneousFeePage() {
             </div>
 
             <div className={styles.buttonGroup}>
-              <button type="submit" className={styles.saveButton}>
-                Save
+              <button
+                type="submit"
+                disabled={submitting}
+                className={styles.saveButton}
+              >
+                {submitting ? "Submitting..." : "Submit"}
               </button>
               <button
                 type="reset"
-                className={styles.resetButton}
+                className={styles.cancelButton}
                 onClick={() =>
                   setFormData({
                     student_number: "",

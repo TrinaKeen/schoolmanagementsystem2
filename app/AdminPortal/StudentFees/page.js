@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./StudentFees.module.css";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StudentFeesPage() {
   const [fees, setFees] = useState([]);
@@ -11,10 +11,13 @@ export default function StudentFeesPage() {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [selectedFee, setSelectedFee] = useState(null); // for modal data
   const [showModal, setShowModal] = useState(false); // control modal
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchFees() {
       try {
+        setLoading(true);
+
         const res = await fetch("/api/admin/fetchStudentFees", {
           cache: "no-store",
         });
@@ -23,6 +26,8 @@ export default function StudentFeesPage() {
         setFees(data);
       } catch (err) {
         console.error("Failed to fetch student fees:", err);
+      } finally {
+        setLoading(false);
       }
     }
     fetchFees();
@@ -84,7 +89,6 @@ export default function StudentFeesPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
             />
-            <button className={styles.searchButton}>Search</button>
           </div>
 
           <div className={styles.tableWrapper}>

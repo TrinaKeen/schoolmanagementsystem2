@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./StudentDepartment.module.css";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function SchoolDept() {
   const [programs, setPrograms] = useState([]);

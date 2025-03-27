@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./AddCourseFee.module.css";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function AddCourseFeePage() {
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     course_id: "",
     base_fee: "",
@@ -21,11 +22,15 @@ export default function AddCourseFeePage() {
 
   const fetchFees = async () => {
     try {
+      setLoading(true);
+
       const res = await fetch("/api/admin/fetchCourseFees");
       const data = await res.json();
       setFees(data);
     } catch (error) {
       console.error("Error fetching fees:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,7 +124,7 @@ export default function AddCourseFeePage() {
               </button>
               <button
                 type="reset"
-                className={styles.resetButton}
+                className={styles.cancelButton}
                 onClick={() =>
                   setFormData({
                     course_id: "",

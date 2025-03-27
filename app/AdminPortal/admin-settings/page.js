@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../components/AccountInformation.module.css";
 import Sidebar from "../components/Sidebar";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const initialFormState = {
   employee_number: "",
@@ -34,15 +34,20 @@ const EmployeeTable = () => {
   const [editId, setEditId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Fetch employees
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
+        setLoading(true);
+
         const { data } = await axios.get("/api/admin/account-setting");
         setEmployees(data);
       } catch (error) {
         console.error("Error fetching employees:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchEmployees();
