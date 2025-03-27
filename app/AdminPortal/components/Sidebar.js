@@ -52,7 +52,10 @@ export default function Sidebar() {
         { title: "All Students", link: "/AdminPortal/StudentPage/studentList" },
         { title: "Student Details", link: "/students/details" },
         { title: "Admission Request", link: "/AdminPortal/StudentPage" },
-        { title: "Admission Form", link: "/AdminPortal/StudentPage/admission-form" },
+        {
+          title: "Admission Form",
+          link: "/AdminPortal/StudentPage/admission-form",
+        },
       ],
     },
     {
@@ -71,7 +74,8 @@ export default function Sidebar() {
       icon: <FaMoneyBill />,
       submenu: [
         { title: "All Fees", link: "/AdminPortal/StudentFees" },
-        { title: "Add New Fees", link: "/AdminPortal/AddStudentFees" },
+        { title: "Add Course Fees", link: "/AdminPortal/AddCourseFee" },
+        { title: "Add Misc Fee", link: "/AdminPortal/AddMiscFee" }, 
       ],
     },
     {
@@ -90,13 +94,11 @@ export default function Sidebar() {
         },
       ],
     },
-
     {
       title: "Account Setting",
       icon: <FaCog />,
       action: handleAccountSettings,
     },
-
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,

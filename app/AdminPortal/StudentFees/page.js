@@ -1,26 +1,25 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import styles from "./StudentFees.module.css";
+import { useEffect, useState } from 'react';
+import Sidebar from '../components/Sidebar';
+import styles from './StudentFees.module.css';
 
 export default function StudentFeesPage() {
   const [fees, setFees] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   useEffect(() => {
     async function fetchFees() {
-      const res = await fetch("/api/admin/fetchStudentFees", { cache: "no-store" });
+      const res = await fetch('/api/admin/fetchStudentFees', { cache: 'no-store' });
 
       if (!res.ok) {
         if (res.status === 401) {
-          window.location.href = "/LogIn/AdminLogin";
-          return;
+          window.location.href = '/LogIn/AdminLogin';
         } else {
-          console.error("Failed to fetch student fees", res.status, res.statusText);
-          return;
+          console.error('Failed to fetch student fees', res.statusText);
         }
+        return;
       }
 
       const data = await res.json();
@@ -33,10 +32,9 @@ export default function StudentFeesPage() {
   const filteredFees = fees.filter((fee) => {
     const query = searchQuery.toLowerCase();
     return (
-      fee.id.toString().includes(query) ||
       fee.student_number?.toLowerCase().includes(query) ||
-      fee.payment_status?.toLowerCase().includes(query) ||
-      (fee.program_id && fee.program_id.toString().includes(query))
+      fee.program_id?.toString().includes(query) ||
+      fee.payment_status?.toLowerCase().includes(query)
     );
   });
 
@@ -44,17 +42,21 @@ export default function StudentFeesPage() {
     if (!sortConfig.key) return 0;
     const aValue = a[sortConfig.key];
     const bValue = b[sortConfig.key];
-    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
     return 0;
   });
 
   const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  const handleViewClick = (studentNumber) => {
+    alert(`Show fee breakdown for ${studentNumber}`);
   };
 
   return (
@@ -67,7 +69,7 @@ export default function StudentFeesPage() {
           <div className={styles.searchContainer}>
             <input
               type="text"
-              placeholder="Search by ID, Name, or Phone"
+              placeholder="Search by Student Number, Program ID, or Status"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
@@ -79,62 +81,51 @@ export default function StudentFeesPage() {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  {[
-                    "id",
-                    "name",
-                    "gender",
-                    "class",
-                    "section",
-                    "expense",
-                    "amount",
-                    "status",
-                    "phone",
-                    "email",
-                  ].map((key) => (
+                  {['Student Number', 'Program ID', 'Total Fee', 'Payment Status', 'Action'].map((col) => (
                     <th
-                      key={key}
-                      onClick={() => handleSort(key)}
+                      key={col}
+                      onClick={() =>
+                        col !== 'Action' && handleSort(col.toLowerCase().replace(/ /g, '_'))
+                      }
                       className={styles.sortableHeader}
                     >
-                      {key.toUpperCase()}
-                      <span className={styles.sortIcon}>
-                        {sortConfig.key === key
-                          ? sortConfig.direction === "asc"
-                            ? " ▲"
-                            : " ▼"
-                          : " ⬍"}
-                      </span>
+                      {col.toUpperCase()}
+                      {col !== 'Action' && (
+                        <span className={styles.sortIcon}>
+                          {sortConfig.key === col.toLowerCase().replace(/ /g, '_')
+                            ? sortConfig.direction === 'asc'
+                              ? ' ▲'
+                              : ' ▼'
+                            : ' ⬍'}
+                        </span>
+                      )}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {sortedFees.length > 0 ? (
-                  sortedFees.map((fee) => (
-                    <tr key={fee.id}>
-                      <td>{fee.id}</td>
-                      <td>{fee.name}</td>
-                      <td>{fee.gender}</td>
-                      <td>{fee.class}</td>
-                      <td>{fee.section}</td>
-                      <td>{fee.expense}</td>
-                      <td>{fee.amount}</td>
-                      <td>
-                        <span
-                          className={
-                            fee.status === "Paid" ? styles.paid : styles.unpaid
-                          }
-                        >
-                          {fee.status}
-                        </span>
+                  sortedFees.map((fee, index) => (
+                    <tr key={index}>
+                      <td>{fee.student_number}</td>
+                      <td>{fee.program_id}</td>
+                      <td>{fee.total_fee}</td>
+                      <td className={fee.payment_status === 'Paid' ? styles.paid : styles.unpaid}>
+                        {fee.payment_status}
                       </td>
-                      <td>{fee.phone}</td>
-                      <td>{fee.email}</td>
+                      <td>
+                        <button
+                          className={styles.viewButton}
+                          onClick={() => handleViewClick(fee.student_number)}
+                        >
+                          View
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="10" className={styles.noData}>
+                    <td colSpan="5" className={styles.noData}>
                       No matching student fees found.
                     </td>
                   </tr>
