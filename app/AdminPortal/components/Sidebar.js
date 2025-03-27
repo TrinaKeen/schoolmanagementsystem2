@@ -72,7 +72,8 @@ export default function Sidebar({ onLogout }) {
       icon: <FaMoneyBill />,
       submenu: [
         { title: "All Fees", link: "/AdminPortal/StudentFees" },
-        { title: "Add New Fees", link: "/AdminPortal/AddStudentFees" },
+        { title: "Add Course Fees", link: "/AdminPortal/AddCourseFee" },
+        { title: "Add Misc Fee", link: "/AdminPortal/AddMiscFee" }, 
       ],
     },
     {
@@ -91,13 +92,11 @@ export default function Sidebar({ onLogout }) {
         },
       ],
     },
-
     {
       title: "Account Setting",
       icon: <FaCog />,
       action: handleAccountSettings,
     },
-
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,
