@@ -4,29 +4,31 @@ import axios from "axios";
 import styles from "../components/AccountInformation.module.css";
 import Sidebar from "../components/Sidebar";
 
+const initialFormState = {
+  employee_number: "",
+  first_name: "",
+  last_name: "",
+  user_type: "",
+  gender: "",
+  father_name: "",
+  mother_name: "",
+  date_of_birth: "",
+  religion: "",
+  joining_date: "",
+  email: "",
+  contact_number: "",
+  address: "",
+  program: "",
+  course: "",
+  section: "",
+  specification: "",
+  username: "",
+  password: "",
+};
+
 const EmployeeTable = () => {
   const [employees, setEmployees] = useState([]);
-  const [formData, setFormData] = useState({
-    employee_number: "",
-    first_name: "",
-    last_name: "",
-    user_type: "",
-    gender: "",
-    father_name: "",
-    mother_name: "",
-    date_of_birth: "",
-    religion: "",
-    joining_date: "",
-    email: "",
-    contact_number: "",
-    address: "",
-    program: "",
-    course: "",
-    section: "",
-    specification: "",
-    username: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState(initialFormState);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -111,6 +113,8 @@ const EmployeeTable = () => {
     const { data } = await axios.get("/api/admin/account-setting");
     setEmployees(data);
   };
+
+  console.log("Employees data:", employees);
 
   return (
     <div className={styles.pageContainer}>
@@ -296,35 +300,52 @@ const EmployeeTable = () => {
         </div>
 
         {/* Employee List */}
-        <div className={styles.employeeCardContainer}>
+        <div className={styles.employeeTableContainer}>
+          <h1 className={styles.subTitle}>Employee List</h1>
           {employees.length > 0 ? (
-            employees.map((employee) => (
-              <div key={employee.id} className={styles.employeeCard}>
-                <h3>
-                  {employee.first_name} {employee.last_name}
-                </h3>
-                <p>
-                  <strong>Employee Number:</strong> {employee.employee_number}
-                </p>
-                <p>
-                  <strong>Email:</strong> {employee.email}
-                </p>
-                <div className={styles.actions}>
-                  <button
-                    onClick={() => handleEdit(employee)}
-                    className={styles.editButton}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(employee.id)}
-                    className={styles.deleteButton}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))
+            <table className={styles.employeeTable}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>User Type</th>
+                  <th>Email</th>
+                  <th>Contact</th>
+                  <th>Program</th>
+                  <th>Course</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map((employee) => (
+                  <tr key={employee.id}>
+                    <td>{employee.employee_number}</td>
+                    <td>
+                      {employee.first_name} {employee.last_name}
+                    </td>
+                    <td>{employee.user_type}</td>
+                    <td>{employee.email}</td>
+                    <td>{employee.contact_number}</td>
+                    <td>{employee.program}</td>
+                    <td>{employee.course}</td>
+                    <td>
+                      <button
+                        onClick={() => handleEdit(employee)}
+                        className={styles.editButton}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(employee.id)}
+                        className={styles.deleteButton}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
             <div className={styles.noData}>No employees found.</div>
           )}
