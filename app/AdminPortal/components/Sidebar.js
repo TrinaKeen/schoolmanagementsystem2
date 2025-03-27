@@ -80,8 +80,8 @@ export default function Sidebar({ onLogout }) {
       icon: <FaMoneyBill />,
       submenu: [
         { title: "All Fees", link: "/AdminPortal/StudentFees" },
-        { title: "Add Course Fees", link: "/AdminPortal/AddStudentFees" },
-        { title: "Add Students Fees", link: "/AdminPortal/AddStudentFees" },
+        { title: "Add Course Fees", link: "/AdminPortal/AddCourseFee" },
+        { title: "Add Students Fees", link: "/AdminPortal/AddMiscFee" },
       ],
     },
     {
