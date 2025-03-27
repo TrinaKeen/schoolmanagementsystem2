@@ -243,8 +243,10 @@
 
 @keyframes slideshow {
     0% { background-image: url('../src/CollegeImg.jpg'); }
-    50% { background-image: url('../src/team-working-together.jpg'); }
+    33% { background-image: url('../src/School-Img1.JPG'); }
+    66% { background-image: url('../src/School-Img2.JPG'); }
     100% { background-image: url('../src/CollegeImg.jpg'); }
+    
 }
 .coverPhoto {
     width: 100%;
@@ -257,7 +259,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    animation: slideshow 10s infinite;
+    animation: slideshow 25s infinite;
+    transition: background-image 1s ease-in-out;
 }
 
 .coverPhoto h1 {
