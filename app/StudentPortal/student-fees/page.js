@@ -1,19 +1,23 @@
-'use client';
-import { useState, useEffect } from 'react';
-import '../components/studentfees.css';
-import Sidebar from '../components/Sidebar'; 
+"use client";
 
+import { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
+import styles from "./StudentFees.module.css";
 
-const StudentFees = () => {
-  const [studentNumber, setStudentNumber] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function StudentFees() {
   const [fees, setFees] = useState([]);
-  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [selectedFee, setSelectedFee] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [studentData, setStudentData] = useState(null);
+  const [studentNumber, setStudentNumber] = useState(null);
 
   useEffect(() => {
     const fetchStudentNumber = async () => {
       const token = localStorage.getItem('token');
-
       if (!token) {
         setError('Authorization token is missing');
         setLoading(false);
@@ -36,11 +40,34 @@ const StudentFees = () => {
         }
 
         const data = await res.json();
-        setStudentNumber(data.studentNumber); // Save the student number
+        const studentNumber = data.studentNumber;
+        setStudentNumber(studentNumber); // Save the student number
+        fetchStudentDetails(studentNumber);
       } catch (error) {
         console.error('Error fetching student number:', error);
         setError('Failed to fetch student number');
-      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchStudentDetails = async (studentNumber) => {
+      try {
+        const res = await fetch(`/api/students/studentlogindetails?studentNumber=${studentNumber}`, {
+          method: 'GET',
+        });
+    
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          setError(errorResponse.error || 'Failed to fetch student details');
+          setLoading(false);
+          return;
+        }
+    
+        const data = await res.json();
+        setStudentData(data);
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch student details');
         setLoading(false);
       }
     };
@@ -48,99 +75,217 @@ const StudentFees = () => {
     fetchStudentNumber();
   }, []);
 
-  // Static fees data for testing (simulating database response)
-  const staticFeesData = [
-    {
-      id: 1,
-      feeType: 'Tuition Fee',
-      amount: 5000,
-      status: 'Unpaid',
-      dueDate: '2025-04-30',
-    },
-    {
-      id: 2,
-      feeType: 'Laboratory Fee',
-      amount: 200,
-      status: 'Paid',
-      dueDate: '2025-03-10',
-    },
-    {
-      id: 3,
-      feeType: 'Activity Fee',
-      amount: 100,
-      status: 'Unpaid',
-      dueDate: '2025-05-15',
-    },
-  ];
-
   useEffect(() => {
-    // Simulate a delay for fetching data (like calling an API)
-    setTimeout(() => {
+    async function fetchFees() {
       try {
-        setFees(staticFeesData); // Set the static fees data
+        const res = await fetch("/api/students/studentfees", { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const data = await res.json();
+        setFees(data);
       } catch (err) {
-        setError('An error occurred while fetching fees');
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch student fees:", err);
       }
-    }, 1000);
+    }
+    fetchFees();
   }, []);
 
+  const filteredFees = fees.filter((fee) => fee.student_number === studentNumber); // Only show fees for the fetched studentNumber
+
+  const sortedFees = [...filteredFees].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (key) => {
+    let direction = sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
+    setSortConfig({ key, direction });
+  };
+
+  const handleViewClick = async (studentNumber) => {
+    try {
+      const res = await fetch(`/api/students/fetchStudentFeeBreakdown?student_number=${studentNumber}`);
+      const data = await res.json();
+      setSelectedFee(data);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Failed to fetch breakdown:", err);
+    }
+  };
+
+
   return (
-    <div>
-      {/* Sidebar */}
+    <div style={{ backgroundColor: 'white', height: '100vh'}}>
+      {/* Pass studentNumber to Sidebar */}
       <Sidebar studentNumber={studentNumber} />
 
-      <div className="form-container">
-      <h1 style={{ textAlign: 'left', fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '20px' }}>
-  Outstanding Fees and Payment Status
-</h1>
+      <div className={styles.dashboardContainer}>
+        <div className={styles.contentWrapper}>
+          <div className={styles.mainContent}>
+            <h1 className={styles.title}>All Fees Collection</h1>
 
+            <div className={styles.searchContainer}>
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+              <button className={styles.searchButton}>Search</button>
+            </div>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p style={{ color: 'red' }}>{error}</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Fee Type</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Due Date</th>
-                <th>Payment Method</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fees.length > 0 ? (
-                fees.map((fee) => (
-                  <tr key={fee.id}>
-                    <td>{fee.feeType}</td>
-                    <td>Php {fee.amount.toFixed(2).toLocaleString()}</td>
-                    <td>{fee.status}</td>
-                    <td>{fee.dueDate}</td>
-                    <td>
-                      <button
-                        onClick={() => alert(`Proceeding to pay fee: ${fee.feeType}`)}
-                        disabled={fee.status === 'Paid'}
-                      >
-                        {fee.status === 'Paid' ? 'Paid' : 'Pay Now'}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5">No fees found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        )}
+            {loading ? (
+              <p>Loading student number...</p>
+            ) : error ? (
+              <p style={{ color: "red" }}>{error}</p>
+            ) : (
+              <div className={styles.tableWrapper}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      {["Student Number", "Program ID", "Total Fee", "Payment Status", "Action"].map((col) => (
+                        <th
+                          key={col}
+                          onClick={() => col !== "Action" && handleSort(col.toLowerCase().replace(/ /g, "_"))}
+                          className={styles.sortableHeader}
+                        >
+                          {col.toUpperCase()}
+                          {col !== "Action" && (
+                            <span className={styles.sortIcon}>
+                              {sortConfig.key === col.toLowerCase().replace(/ /g, "_")
+                                ? sortConfig.direction === "asc"
+                                  ? " ▲"
+                                  : " ▼"
+                                : " ⬍"}
+                            </span>
+                          )}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedFees.length > 0 ? (
+                      sortedFees.map((fee, index) => (
+                        <tr key={index}>
+                          <td>{fee.student_number}</td>
+                          <td>{fee.program_id}</td>
+                          <td>{Number(fee.total_fee).toFixed(2)}</td>
+                          <td className={fee.payment_status === "Paid" ? styles.paid : styles.unpaid}>
+                            {fee.payment_status}
+                          </td>
+                          <td>
+                            <button className={styles.viewButton} onClick={() => handleViewClick(fee.student_number)}>
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className={styles.noData}>
+                          No matching student fees found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+           {/* Modal for Fee Breakdown */}
+          {showModal && selectedFee && (
+            <div className={styles.modalBackdrop}>
+              <div className={styles.modalContent}>
+                <h2 className={styles.modalTitle}>
+                  Fee Breakdown for {selectedFee.student_number}
+                </h2>
+
+                <div className={styles.modalSection}>
+                  <p>
+                    <strong>Program ID:</strong> {selectedFee.program_id}
+                  </p>
+                  <p>
+                    <strong>Payment Status:</strong>{" "}
+                    {selectedFee.payment_status}
+                  </p>
+                </div>
+
+                <hr />
+
+                <div className={styles.modalSection}>
+                  <h3>Course Fees</h3>
+                  {selectedFee.course_fees?.length > 0 ? (
+                    <table className={styles.modalTable}>
+                      <thead>
+                        <tr>
+                          <th>Base Fee</th>
+                          <th>Additional Fees</th>
+                          <th>Total Fee</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedFee.course_fees.map((fee, index) => (
+                          <tr key={index}>
+                            <td>{fee.base_fee}</td>
+                            <td>{fee.additional_fees}</td>
+                            <td>{fee.total_fee}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p>No course fees available.</p>
+                  )}
+                </div>
+
+                <hr />
+
+                <div className={styles.modalSection}>
+                  <h3>Miscellaneous Fees</h3>
+                  {selectedFee.misc_fees?.length > 0 ? (
+                    <table className={styles.modalTable}>
+                      <thead>
+                        <tr>
+                          <th>Fee Name</th>
+                          <th>Amount</th>
+                          <th>Type</th>
+                          <th>Due Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedFee.misc_fees.map((fee, index) => (
+                          <tr key={index}>
+                            <td>{fee.fee_name}</td>
+                            <td>{fee.amount}</td>
+                            <td>{fee.fee_type}</td>
+                            <td>
+                              {new Date(fee.due_date).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p>No miscellaneous fees available.</p>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setShowModal(false)}
+                  className={styles.closeButton}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
+    </div>
   );
-};
-
-export default StudentFees;
+}
