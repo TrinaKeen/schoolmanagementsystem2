@@ -106,16 +106,7 @@ const AdmissionApprovalPage = () => {
         console.error("API Error:", errorData);
       }
     } catch (error) {
-      if (error && error instanceof Error) {
-        // Log the error message if it's an instance of Error
-        console.error("Error updating approval:", error.message);
-      } else if (error && typeof error === "object" && error.message) {
-        // Handle non-Error objects that have a `message` property
-        console.error("Error updating approval:", error.message);
-      } else {
-        // Fallback for unexpected error types (e.g., string or other object)
-        console.error("Unexpected error updating approval:", error);
-      }
+      console.error("Error updating approval:", error.message);
     }
     
     
@@ -128,6 +119,7 @@ const AdmissionApprovalPage = () => {
     setSelectedStudent(null);
   };
 
+<<<<<<< Updated upstream
   // Download logs function
   const handleDownloadLogs = () => {
     window.location.href = "/api/admin/downloadRegistrationLogs";
@@ -144,6 +136,18 @@ const AdmissionApprovalPage = () => {
   if (loading) {
     return <p className="loading-message">Loading students...</p>;
   }
+=======
+  const filteredStudents = students.filter((student) => {
+    const fullName =
+      `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
+    const studentNumber = String(student.student_number);
+    const query = searchQuery.toLowerCase();
+
+    return fullName.includes(query) || studentNumber.includes(query);
+  });
+
+  if (loading) return <LoadingSpinner />;
+>>>>>>> Stashed changes
 
   if (error) {
     return <p className="error-message">{error}</p>;
@@ -164,6 +168,10 @@ const AdmissionApprovalPage = () => {
       <h1 className={styles.title}>
           List of Students for Admission Application
         </h1>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         <div className={styles.searchContainer}>
           <input
             className={styles.searchInput}
@@ -258,10 +266,13 @@ const AdmissionApprovalPage = () => {
                   <select
                     name="approval_status"
                     defaultValue={selectedStudent.approval_status}
+<<<<<<< Updated upstream
                     onChange={(e) => {
                       const approvalDateInput = document.querySelector('input[name="approval_date"]');
                       approvalDateInput.value = new Date().toISOString().split("T")[0]; // Set current date
                     }}
+=======
+>>>>>>> Stashed changes
                     required
                   >
                     <option value="Approved">Approved</option>
@@ -284,11 +295,11 @@ const AdmissionApprovalPage = () => {
                   />
                 </div>
                 <div>
-                  <label>Reviewer Comments:</label>
-                  <input
-                    type="text"
+                  <label>Approval Comments:</label>
+                  <textarea
                     name="approval_comments"
                     defaultValue={selectedStudent.approval_comments}
+<<<<<<< Updated upstream
                     required={selectedStudent.approval_status === "Rejected" || selectedStudent.approval_status === "Waitlist"}
                   />
                 </div>
@@ -301,6 +312,15 @@ const AdmissionApprovalPage = () => {
               </div>
               <button type="submit">Save Changes</button>
               <button type="button" onClick={closeModal}>Close</button>
+=======
+                    required
+                  />
+                </div>
+                <button type="submit" className={styles.updateButton}>
+                  Update Approval Status
+                </button>
+              </div>
+>>>>>>> Stashed changes
             </form>
           )}
         </Modal>
