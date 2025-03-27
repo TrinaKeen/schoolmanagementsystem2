@@ -9,7 +9,7 @@ export default function Home() {
     <div className={styles.body}>
       <WebsiteHeader />
     
-      <main className={styles.body}>
+      <main className={styles.main}>
         <div className={styles.container}>
           
           <section>
