@@ -64,6 +64,21 @@
   margin-bottom: 40px;
 }
 
+.missionVision a {
+  line-height: 1.6;
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-left: 20px;
+  text-decoration: underline;
+}
+
+.missionVision a:hover {
+  color: blue;
+}
+
+
 .almaMater {
   margin-bottom: 60px;
 }
