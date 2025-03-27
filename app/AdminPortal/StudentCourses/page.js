@@ -285,6 +285,7 @@ export default function StudentCourses() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Course List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Course List</p> */}
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
           <Modal isOpen={formVisible} onClose={handCancel}>

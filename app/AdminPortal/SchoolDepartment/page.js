@@ -46,6 +46,7 @@ export default function SchoolDept() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Programs List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Programs</p> */}
 
           <div className={styles.tableWrapper}>
             <table className={styles.table}>

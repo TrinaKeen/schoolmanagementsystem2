@@ -91,7 +91,6 @@ const ApprovedStudentPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const handleApproveStudent = async (student_number) => {
     try {
       const response = await fetch("/api/admin/update-approval", {
@@ -103,33 +102,27 @@ const ApprovedStudentPage = () => {
           approval_date: new Date().toISOString(),
         }),
       });
-  
+
       let data;
       try {
         data = await response.json(); // Ensure JSON response
       } catch (jsonError) {
         data = await response.text(); // Fallback to text if JSON fails
       }
-  
+
       console.log("API Response:", response.status, response.statusText, data);
-  
+
       if (!response.ok) {
         console.error("❌ Failed to approve student. Server response:", data);
         return;
       }
-  
+
       console.log("✅ Student approved successfully:", data);
       fetchStudents(); // Refresh list
-  
     } catch (error) {
       console.error("⚠️ Error approving student:", error.message);
     }
   };
-  
-  
-  
-
-
 
   if (loading) return <p>Loading students...</p>;
   if (error) return <p className="error-message">{error}</p>;
@@ -148,9 +141,8 @@ const ApprovedStudentPage = () => {
               alignItems: "center",
             }}
           >
-            <h1 className={styles.title}>
-              Student List
-            </h1>
+            <h1 className={styles.title}>Student List</h1>
+            {/* <p className={styles.breadcrumb}>Home &gt; All Students</p> */}
 
             <div className={styles.actionsWrapper} ref={dropdownRef}>
               <button
@@ -171,10 +163,7 @@ const ApprovedStudentPage = () => {
             </div>
           </div>
 
-
           <Modal isOpen={isModalOpen} onClose={closeModal}>
-
-
             {selectedStudent && (
               <form className={styles.formContainer} onSubmit={handleUpdate}>
                 <h3>
@@ -244,10 +233,6 @@ const ApprovedStudentPage = () => {
                 <p>
                   <strong>Major:</strong> {selectedStudent.major || ""}
                 </p>
-               
-                
-
-                
 
                 <div className={styles.buttonGroup}>
                   <button
@@ -299,8 +284,6 @@ const ApprovedStudentPage = () => {
                       >
                         View
                       </button>
-                     
-
                     </td>
                   </tr>
                 ))}

@@ -123,6 +123,7 @@ const EmployeeTable = () => {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Add New Account</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Add New Employees</p> */}
 
           {successMessage && (
             <div className={styles.popup}>{successMessage}</div>

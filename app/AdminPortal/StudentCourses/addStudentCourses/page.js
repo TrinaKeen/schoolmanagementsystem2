@@ -142,6 +142,7 @@ export default function addStudentCourses() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Add New Course</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Add Student Courses</p> */}
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
           <form className={styles.formContainer} onSubmit={handleSave}>

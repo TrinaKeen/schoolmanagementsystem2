@@ -253,6 +253,12 @@
   grid-column: span 2;
 }
 
+.breadcrumb {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
 .fullWidth {
   grid-column: span 2;
 }

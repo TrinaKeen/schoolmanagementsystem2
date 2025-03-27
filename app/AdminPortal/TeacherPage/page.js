@@ -214,6 +214,7 @@ export default function TeacherPage() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Instructors List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Instructor List</p> */}
 
           <Modal isOpen={formVisible} onClose={handleCancel}>
             <form className={styles.formContainer}>

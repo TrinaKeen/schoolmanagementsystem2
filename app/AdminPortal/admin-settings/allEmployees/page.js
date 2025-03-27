@@ -172,6 +172,7 @@ export default function AllEmployees() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Employees List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; All Employees</p> */}
 
           {/* -------- Modal Form -------- */}
           <Modal isOpen={formVisible} onClose={handleCancel}>

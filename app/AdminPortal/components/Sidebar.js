@@ -10,6 +10,7 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { IoPeople } from "react-icons/io5";
 import Link from "next/link";
 import jwt from "jsonwebtoken"; // Ensure this import is present for decoding JWT
 
@@ -58,10 +59,18 @@ export default function Sidebar({ onLogout }) {
       title: "Students",
       icon: <FaUser />,
       submenu: [
-        { title: "All Students", link: "/AdminPortal/StudentPage/approved-students" },
-        { title: "Approved Students", link: "/AdminPortal/StudentPage/studentList" },
-        { title: "Admission Request", link: "/AdminPortal/StudentPage/admission-approvals" },
-
+        {
+          title: "All Students",
+          link: "/AdminPortal/StudentPage/approved-students",
+        },
+        {
+          title: "Approved Students",
+          link: "/AdminPortal/StudentPage/studentList",
+        },
+        {
+          title: "Admission Request",
+          link: "/AdminPortal/StudentPage/admission-approvals",
+        },
       ],
     },
     {
@@ -72,6 +81,20 @@ export default function Sidebar({ onLogout }) {
         {
           title: "Add New Instructor",
           link: "/AdminPortal/TeacherPage/addInstructor",
+        },
+      ],
+    },
+    {
+      title: "Employees",
+      icon: <IoPeople />,
+      submenu: [
+        {
+          title: "All Employees",
+          link: "/AdminPortal/admin-settings/allEmployees",
+        },
+        {
+          title: "Add New Employees",
+          link: "/AdminPortal/admin-settings",
         },
       ],
     },
@@ -97,20 +120,6 @@ export default function Sidebar({ onLogout }) {
         {
           title: "Add Courses",
           link: "/AdminPortal/StudentCourses/addStudentCourses",
-        },
-      ],
-    },
-    {
-      title: "Account Setting",
-      icon: <FaCog />,
-      submenu: [
-        {
-          title: "All Employees",
-          link: "/AdminPortal/admin-settings/allEmployees",
-        },
-        {
-          title: "Add New Employees",
-          link: "/AdminPortal/admin-settings",
         },
       ],
     },

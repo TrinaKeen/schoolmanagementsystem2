@@ -107,6 +107,7 @@ export default function AddInstructorPage() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Add New Instructor</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Add New Instructor</p> */}
 
           <form className={styles.formContainer} onSubmit={handleSave}>
             <div className={styles.formGrid}>

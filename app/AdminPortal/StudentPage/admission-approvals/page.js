@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import jwt from "jsonwebtoken"; // Make sure to import jwt for decoding
-import styles from '../../components/studentpage.module.css';  // Adjust the path if necessary
+import styles from "../../components/studentpage.module.css"; // Adjust the path if necessary
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 
@@ -46,7 +46,7 @@ const AdmissionApprovalPage = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
-      const decoded = jwt.decode(token);  // Decode token to get user data
+      const decoded = jwt.decode(token); // Decode token to get user data
       console.log("Received Employee Name:", decoded.fullName);
       console.log("Received Role:", decoded.role);
       console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
@@ -67,7 +67,7 @@ const AdmissionApprovalPage = () => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-  
+
     const updatedData = {
       student_number: selectedStudent.student_number,
       approval_status: event.target.approval_status.value,
@@ -75,15 +75,18 @@ const AdmissionApprovalPage = () => {
       rejection_reason: event.target.rejection_reason.value,
       approval_comments: event.target.approval_comments.value,
     };
-  
+
     if (
-      (updatedData.approval_status === "Rejected" || updatedData.approval_status === "Waitlist") &&
+      (updatedData.approval_status === "Rejected" ||
+        updatedData.approval_status === "Waitlist") &&
       (!updatedData.rejection_reason || !updatedData.approval_comments)
     ) {
-      alert("Rejection Reason and Comments are required for Rejected or Waitlist status.");
+      alert(
+        "Rejection Reason and Comments are required for Rejected or Waitlist status."
+      );
       return;
     }
-  
+
     try {
       const response = await fetch("/api/admin/update-approval", {
         method: "PUT",
@@ -92,13 +95,15 @@ const AdmissionApprovalPage = () => {
         },
         body: JSON.stringify(updatedData),
       });
-  
+
       if (response.ok) {
         closeModal();
         const updatedStudent = await response.json();
         setStudents((prevStudents) =>
           prevStudents.map((student) =>
-            student.student_number === updatedStudent.student.student_number ? updatedStudent.student : student
+            student.student_number === updatedStudent.student.student_number
+              ? updatedStudent.student
+              : student
           )
         );
       } else {
@@ -117,11 +122,7 @@ const AdmissionApprovalPage = () => {
         console.error("Unexpected error updating approval:", error);
       }
     }
-    
-    
   };
-  
-  
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -135,7 +136,7 @@ const AdmissionApprovalPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("employeeNumber");  // Remove employee ID on logout
+    localStorage.removeItem("employeeNumber"); // Remove employee ID on logout
     localStorage.removeItem("loginTimestamp");
     // Redirect to the home page or login page
     window.location.href = "/";
@@ -161,9 +162,11 @@ const AdmissionApprovalPage = () => {
     <div className={styles.pageContainer}>
       <Sidebar />
       <div className={styles.mainContent}>
-      <h1 className={styles.title}>
+        <h1 className={styles.title}>
           List of Students for Admission Application
         </h1>
+        {/* <p className={styles.breadcrumb}>Home &gt; Admission Request</p> */}
+
         <div className={styles.searchContainer}>
           <input
             className={styles.searchInput}
@@ -173,8 +176,7 @@ const AdmissionApprovalPage = () => {
           <button className={styles.searchButton}>Search</button>
         </div>
 
-         <table className={styles.table}>
-
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Student Number</th>
@@ -227,8 +229,12 @@ const AdmissionApprovalPage = () => {
                       transition: "background-color 0.3s ease",
                       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                     }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = "#005f73")}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = "#0a9396")}
+                    onMouseOver={(e) =>
+                      (e.target.style.backgroundColor = "#005f73")
+                    }
+                    onMouseOut={(e) =>
+                      (e.target.style.backgroundColor = "#0a9396")
+                    }
                   >
                     View
                   </button>
@@ -243,24 +249,52 @@ const AdmissionApprovalPage = () => {
           {selectedStudent && (
             <form onSubmit={handleUpdate}>
               <div>
-                <h3><strong>Student Details</strong></h3>
-                <p><strong>Student Number:</strong> {selectedStudent.student_number}</p>
-                <p><strong>Full Name:</strong> {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}</p>
-                <p><strong>Date of Birth:</strong> {selectedStudent.dob ? new Date(selectedStudent.dob).toLocaleDateString() : ""}</p>
-                <p><strong>Gender:</strong> {selectedStudent.gender}</p>
-                <p><strong>Email:</strong> {selectedStudent.email}</p>
-                <p><strong>Phone Number:</strong> {selectedStudent.phone_number}</p>
-                <p><strong>Program:</strong> {selectedStudent.program_name || "N/A"}</p>
+                <h3>
+                  <strong>Student Details</strong>
+                </h3>
+                <p>
+                  <strong>Student Number:</strong>{" "}
+                  {selectedStudent.student_number}
+                </p>
+                <p>
+                  <strong>Full Name:</strong>{" "}
+                  {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}
+                </p>
+                <p>
+                  <strong>Date of Birth:</strong>{" "}
+                  {selectedStudent.dob
+                    ? new Date(selectedStudent.dob).toLocaleDateString()
+                    : ""}
+                </p>
+                <p>
+                  <strong>Gender:</strong> {selectedStudent.gender}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedStudent.email}
+                </p>
+                <p>
+                  <strong>Phone Number:</strong> {selectedStudent.phone_number}
+                </p>
+                <p>
+                  <strong>Program:</strong>{" "}
+                  {selectedStudent.program_name || "N/A"}
+                </p>
 
-                <h3><strong>Approval Details</strong></h3>
+                <h3>
+                  <strong>Approval Details</strong>
+                </h3>
                 <div>
                   <label>Approval Status:</label>
                   <select
                     name="approval_status"
                     defaultValue={selectedStudent.approval_status}
                     onChange={(e) => {
-                      const approvalDateInput = document.querySelector('input[name="approval_date"]');
-                      approvalDateInput.value = new Date().toISOString().split("T")[0]; // Set current date
+                      const approvalDateInput = document.querySelector(
+                        'input[name="approval_date"]'
+                      );
+                      approvalDateInput.value = new Date()
+                        .toISOString()
+                        .split("T")[0]; // Set current date
                     }}
                     required
                   >
@@ -272,7 +306,12 @@ const AdmissionApprovalPage = () => {
                 </div>
                 <div>
                   <label>Approval Date:</label>
-                  <input type="date" name="approval_date" defaultValue={selectedStudent.approval_date} readOnly />
+                  <input
+                    type="date"
+                    name="approval_date"
+                    defaultValue={selectedStudent.approval_date}
+                    readOnly
+                  />
                 </div>
                 <div>
                   <label>Rejection Reason:</label>
@@ -280,7 +319,10 @@ const AdmissionApprovalPage = () => {
                     type="text"
                     name="rejection_reason"
                     defaultValue={selectedStudent.rejection_reason}
-                    required={selectedStudent.approval_status === "Rejected" || selectedStudent.approval_status === "Waitlist"}
+                    required={
+                      selectedStudent.approval_status === "Rejected" ||
+                      selectedStudent.approval_status === "Waitlist"
+                    }
                   />
                 </div>
                 <div>
@@ -289,23 +331,30 @@ const AdmissionApprovalPage = () => {
                     type="text"
                     name="approval_comments"
                     defaultValue={selectedStudent.approval_comments}
-                    required={selectedStudent.approval_status === "Rejected" || selectedStudent.approval_status === "Waitlist"}
+                    required={
+                      selectedStudent.approval_status === "Rejected" ||
+                      selectedStudent.approval_status === "Waitlist"
+                    }
                   />
                 </div>
 
                 {/* Admin Details */}
                 <div>
                   <label>Admin: </label>
-                  <span>{employee ? `${employee.employee_number} - ${employee.full_name}` : "Loading admin details..."}</span>
+                  <span>
+                    {employee
+                      ? `${employee.employee_number} - ${employee.full_name}`
+                      : "Loading admin details..."}
+                  </span>
                 </div>
               </div>
               <button type="submit">Save Changes</button>
-              <button type="button" onClick={closeModal}>Close</button>
+              <button type="button" onClick={closeModal}>
+                Close
+              </button>
             </form>
           )}
         </Modal>
-
-       
       </div>
     </div>
   );
