@@ -26,13 +26,20 @@ const About = () => {
               Pioneer-Telstar St., Doña Vicenta Village, Davao City
             </p>
             <p>
-              Habitants pharetra id magna duis congue ridiculus fringilla neque. Sed sit amet est ut felis fermentum elementum.
+              Evelyn E. Fabie College, Inc. (formerly Fabie School of Midwifery) is a private college in Davao City. It has programs for Senior High School and college students. EEFCI has available strands from the Academic and the Technical-Vocational-Livelihood (TVL) tracks. 
+              The undergraduate programs offered are in Technical-Vocational Teacher Education and in Midwifery.
+              Evelyn E. Fabi College is recognized by the Commission on Higher Education (CHED) and the Department of Education (DepEd).
             </p>
           </div>
 
           <div className={styles.missionVision}>
             <h2>Our Mission</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.</p>
+            <p>Choosing the right program can help you set your future goals and visualize where you want to be. 
+              Whether you want to be an engineer, a teacher, an accountant, or you want to level up in your profession, 
+              making yourself informed with the right choices will surely back you up in the future. 
+              Are you ready to map your career with Evelyn E. Fabie College, Inc.? 
+              Make the best decision in choosing the right path for you, click through the list of programs offered by Evelyn E. Fabie College, Inc. below:</p>
+              <a href='/SchoolWebsite/AdminandPrograms'>View Available Programs</a>
             <h2>Our Vision</h2>
             <p>Conubia sodales gravida laoreet natoque nibh. Etiam feugiat lorem non metus vulputate.</p>
           </div>
