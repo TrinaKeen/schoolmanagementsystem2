@@ -42,14 +42,22 @@ const EmployeeTable = () => {
       try {
         setLoading(true);
 
-        const { data } = await axios.get("/api/admin/account-setting");
+        const { data } = await axios.get("/api/admin/account-setting", {
+          params: { type: "employees" },
+          withCredentials: true,
+        });
+
         setEmployees(data);
       } catch (error) {
-        console.error("Error fetching employees:", error);
+        console.error(
+          "Error fetching employees:",
+          error.response?.data || error.message
+        );
       } finally {
         setLoading(false);
       }
     };
+
     fetchEmployees();
   }, []);
 
@@ -71,41 +79,35 @@ const EmployeeTable = () => {
         // Send the POST request with formData, ensuring employee_number is included
         await axios.post("/api/admin/addnewadmin-account", formData);
       }
-  
-      setSuccessMessage(editMode ? "Employee updated successfully!" : "Employee added successfully!");
+
+      setSuccessMessage(
+        editMode
+          ? "Employee updated successfully!"
+          : "Employee added successfully!"
+      );
       setTimeout(() => setSuccessMessage(""), 3000);
-      
+
       // Reset form data and state
       setFormData(initialFormState); // Ensure initialFormState is defined
       setEditMode(false);
       setEditId(null);
-  
+
       // Optionally, update the employees list without refetching all data
       const updatedEmployee = editMode ? { ...formData, id: editId } : formData;
-      setEmployees((prevEmployees) => 
-        editMode 
-          ? prevEmployees.map(emp => emp.id === editId ? updatedEmployee : emp)
+      setEmployees((prevEmployees) =>
+        editMode
+          ? prevEmployees.map((emp) =>
+              emp.id === editId ? updatedEmployee : emp
+            )
           : [...prevEmployees, updatedEmployee]
       );
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Error adding/updating employee.";
+      const errorMessage =
+        error.response?.data?.message || "Error adding/updating employee.";
       setErrorMessage(errorMessage);
       setTimeout(() => setErrorMessage(""), 3000);
       console.error("Error adding/updating employee:", error);
     }
-  };
-  
-  const handleEdit = (employee) => {
-    setFormData(employee);
-    setEditMode(true);
-    setEditId(employee.id);
-  };
-
-  const handleDelete = async (id) => {
-    await axios.delete(`/api/admin/account-setting?id=${id}`);
-    // Reload employees
-    const { data } = await axios.get("/api/admin/account-setting");
-    setEmployees(data);
   };
 
   console.log("Employees data:", employees);
