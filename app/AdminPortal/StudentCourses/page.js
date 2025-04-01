@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./studentCourses.module.css";
 import Modal from "../components/Modal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StudentCourses() {
   const [programs, setPrograms] = useState([]);
@@ -274,8 +275,7 @@ export default function StudentCourses() {
     }
   };
 
-  if (loading) return <p>Loading courses...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <LoadingSpinner />;
 
   console.log("Course data:", courses);
 
@@ -285,6 +285,7 @@ export default function StudentCourses() {
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Course List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Course List</p> */}
 
           {/* Add/Edit Course Form (shows if adding or editing) */}
           <Modal isOpen={formVisible} onClose={handCancel}>

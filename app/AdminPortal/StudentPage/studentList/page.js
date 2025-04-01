@@ -4,6 +4,7 @@ import styles from "./studentList.module.css";
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import { HiChevronDown } from "react-icons/hi";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdminStudentList = () => {
   const [students, setStudents] = useState([]);
@@ -12,6 +13,7 @@ const AdminStudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const adminId = 1;
   const dropdownRef = useRef(null);
 
@@ -91,8 +93,50 @@ const AdminStudentList = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (loading) return <p>Loading students...</p>;
-  if (error) return <p className="error-message">{error}</p>;
+  const handleApproveStudent = async (student_number) => {
+    try {
+      const response = await fetch("/api/admin/update-approval", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_number,
+          approval_status: "Approved",
+          approval_date: new Date().toISOString(),
+        }),
+      });
+
+      let data;
+      try {
+        data = await response.json(); // Ensure JSON response
+      } catch (jsonError) {
+        data = await response.text(); // Fallback to text if JSON fails
+      }
+
+      console.log("API Response:", response.status, response.statusText, data);
+
+      if (!response.ok) {
+        console.error("❌ Failed to approve student. Server response:", data);
+        return;
+      }
+
+      console.log("✅ Student approved successfully:", data);
+      fetchStudents(); // Refresh list
+    } catch (error) {
+      console.error("⚠️ Error approving student:", error.message);
+    }
+  };
+
+  const filteredStudents = students.filter((student) => {
+    const fullName =
+      `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
+    const studentNumber = String(student.student_number);
+    const query = searchQuery.toLowerCase();
+
+    return fullName.includes(query) || studentNumber.includes(query);
+  });
+
+  if (loading) return <LoadingSpinner />;
+  if (error) return <LoadingSpinner />;
   if (!students.length)
     return <p className="no-students-message">No students found.</p>;
 
@@ -101,40 +145,22 @@ const AdminStudentList = () => {
       <Sidebar />
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h1 className={styles.title}>
-              List of Students for Admission Application
-            </h1>
+          <h1 className={styles.title}>
+            List of Approved Students Application
+          </h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Approved Students</p> */}
 
-            <div className={styles.actionsWrapper} ref={dropdownRef}>
-              <button
-                className={styles.actionsButton}
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                Actions <HiChevronDown size={20} />
-              </button>
-              {isDropdownOpen && (
-                <ul className={styles.actionsDropdown}>
-                  <li onClick={handleDownloadLogs}>
-                    Download Registration Logs
-                  </li>
-                  <li>Export to Excel</li>
-                  <li>Bulk Update Status</li>
-                </ul>
-              )}
-            </div>
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Search by name or student number..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
-
           <Modal isOpen={isModalOpen} onClose={closeModal}>
-
-
             {selectedStudent && (
               <form className={styles.formContainer} onSubmit={handleUpdate}>
                 <h3>
@@ -317,7 +343,7 @@ const AdminStudentList = () => {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
+                {filteredStudents.map((student) => (
                   <tr key={student.student_number}>
                     <td>{student.student_number}</td>
                     <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>

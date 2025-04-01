@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import styles from "./teacherPage.module.css";
 import Modal from "../components/Modal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function TeacherPage() {
   const [instructors, setInstructors] = useState([]);
@@ -15,6 +16,7 @@ export default function TeacherPage() {
   const [instructorToDelete, setInstructorToDelete] = useState(null);
   const [sortKey, setSortKey] = useState("last_name");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [loading, setLoading] = useState(true);
   const [newInstructor, setNewInstructor] = useState({
     first_name: "",
     last_name: "",
@@ -29,17 +31,27 @@ export default function TeacherPage() {
   }, []);
 
   const fetchInstructors = async () => {
-    const res = await fetch("/api/admin/fetchInstructors", {
-      cache: "no-store",
-    });
+    try {
+      const res = await fetch("/api/admin/fetchInstructors", {
+        cache: "no-store",
+      });
 
-    if (!res.ok) {
-      console.error("Failed to fetch instructors", res.status, res.statusText);
-      return;
+      if (!res.ok) {
+        console.error(
+          "Failed to fetch instructors",
+          res.status,
+          res.statusText
+        );
+        return;
+      }
+
+      const data = await res.json();
+      setInstructors(data);
+    } catch (error) {
+      console.error("Error fetching instructors:", error);
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-    setInstructors(data);
   };
 
   const handleDelete = async (instructor) => {
@@ -208,12 +220,15 @@ export default function TeacherPage() {
     return 0;
   });
 
+  if (loading) return <LoadingSpinner />;
+
   return (
     <div className={styles.pageContainer}>
       <Sidebar />
       <div className={styles.contentContainer}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>Instructors List</h1>
+          {/* <p className={styles.breadcrumb}>Home &gt; Instructor List</p> */}
 
           <Modal isOpen={formVisible} onClose={handleCancel}>
             <form className={styles.formContainer}>
