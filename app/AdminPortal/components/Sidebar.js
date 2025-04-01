@@ -15,6 +15,7 @@ import Link from "next/link";
 import jwt from "jsonwebtoken"; // Ensure this import is present for decoding JWT
 
 export default function Sidebar({ onLogout }) {
+  const [showLogout, setShowLogout] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [employee, setEmployee] = useState(null);
   const router = useRouter();
@@ -29,6 +30,9 @@ export default function Sidebar({ onLogout }) {
       console.log("Received Role:", decoded.role);
       console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
 
+  const handleLogoutClick = () => {
+    setShowLogout(true);
+  };
       setEmployee({
         full_name: decoded.fullName,
         role: decoded.role,
@@ -123,12 +127,50 @@ export default function Sidebar({ onLogout }) {
         },
       ],
     },
-    { title: "Log Out", icon: <FaSignOutAlt />, action: handleLogout },
+
+
+    {
+      title: "Account Setting",
+      icon: <FaCog />,
+      action: handleAccountSettings,
+    },
+
+    {
+      title: "Log Out",
+      icon: <FaSignOutAlt />,
+      action: handleLogoutClick,
+    },
   ];
 
   return (
     <div className="flex fixed h-full">
-      <div className="bg-gray-800 text-white w-72 h-full flex flex-col">
+
+      {/* Logout modal */}
+      {showLogout && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Confirm Logout</h3>
+            <p className="mb-6">Are you sure you want to log out?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowLogout(false)}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-gray-800 text-white w-72 transition-all duration-300">
+
         {/* Sidebar Header */}
         <div className="p-4 bg-gray-900 border-b-2 border-gray-600 flex items-center space-x-3">
           <img
@@ -155,35 +197,39 @@ export default function Sidebar({ onLogout }) {
         )}
 
         {/* Sidebar Menu */}
-        <div className="flex-grow overflow-y-auto">
-          <nav className="p-4 space-y-2">
-            {menuItems.map((item, index) => (
-              <div key={index} className="relative border-b-2 border-gray-600">
-                <div
-                  className="flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer"
-                  onClick={() =>
-                    item.submenu
-                      ? toggleMenu(item.title)
-                      : item.action
-                      ? item.action()
-                      : null
-                  }
-                >
-                  <span className="mr-2">{item.icon}</span>
-                  <span>{item.title}</span>
-                  {item.submenu && (
-                    <span className="ml-auto">
-                      {activeMenu === item.title ? (
-                        <FaChevronDown />
-                      ) : (
-                        <FaChevronRight />
-                      )}
-                    </span>
-                  )}
-                </div>
+        <nav className="p-4 space-y-2">
+          {menuItems.map((item, index) => (
+            <div key={index} className="relative border-b-2 border-gray-600">
+              <div
+                className="flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer"
+                onClick={() =>
+                  item.submenu
+                    ? toggleMenu(item.title)
+                    : item.action
+                    ? item.action()
+                    : null
+                }
+              >
+                <span className="mr-2">{item.icon}</span>
+                <span>{item.title}</span>
+                {item.submenu && (
+                  <span
+                    className={`ml-auto transition-transform duration-300 ${
+                      activeMenu === item.title ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>
+                )}
+              </div>
 
-                {/* Submenu Links */}
-                {item.submenu && activeMenu === item.title && (
+              {/* Submenu Links */}
+              {item.submenu && (
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    activeMenu === item.title ? "max-h-96" : "max-h-0"
+                  }`}
+                >
                   <div className="pl-8 space-y-1">
                     {item.submenu.map((subitem, subindex) => (
                       <Link key={subindex} href={subitem.link}>
@@ -193,11 +239,12 @@ export default function Sidebar({ onLogout }) {
                       </Link>
                     ))}
                   </div>
-                )}
-              </div>
-            ))}
-          </nav>
-        </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
       </div>
     </div>
   );
