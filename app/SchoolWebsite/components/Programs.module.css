@@ -1,3 +1,13 @@
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .body {
   font-family: 'Roboto', sans-serif;
   background-color: #f4f7fa; /* Light background for contrast */
@@ -41,7 +51,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Deeper shadow for more depth */
   margin-bottom: 30px; /* Space between sections */
   padding: 20px; /* Padding within sections */
-  
+
 }
 
 .section:hover {
@@ -62,6 +72,7 @@
   columns: 2;
   column-gap: 2rem;
   padding-left: 1.5rem;
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .curriculum li, .admissionRequirements li, .careerOpportunities li {
@@ -69,6 +80,7 @@
   padding-left: 1rem;
   position: relative;
   break-inside: avoid;
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .curriculum li::before, .admissionRequirements li::before, .careerOpportunities li::before{
@@ -76,13 +88,28 @@
   position: absolute;
   left: -1rem;
   color: #2980b9;
+  animation: slideDownFade 0.8s ease-out;
 }
 
+.curriculum h2, .admissionRequirements h2, .careerOpportunities h2 {
+  animation: slideDownFade 0.8s ease-out;
+}
+.careerOpportunities p {
+  animation: slideDownFade 0.8s ease-out;
+}
+.overview p {
+  animation: slideDownFade 0.8s ease-out;
+}
+
+.overview h2 {
+  animation: slideDownFade 0.8s ease-out;
+}
 /* Contact Section */
 .contact {
   background: #f0f4f8;
   border-left-color: #e74c3c;
   padding: 10px;
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .contact p {
@@ -129,6 +156,7 @@
   font-size: 16px; /* Font size */
   margin: 0 10px; /* Space between buttons */
   transition: background-color 0.3s; /* Smooth transition */
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .applyButton {
@@ -163,6 +191,7 @@
   color: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .courseHeader h1 {
