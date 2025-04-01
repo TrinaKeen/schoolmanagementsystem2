@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  FaChevronDown,
   FaChevronRight,
   FaHome,
   FaUser,
   FaBook,
   FaMoneyBill,
-  FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
