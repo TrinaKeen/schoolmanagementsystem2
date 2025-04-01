@@ -38,6 +38,10 @@ export default function Sidebar() {
     }
   }, []);
 
+  const handleLogoutClick = () => {
+    setShowLogout(true);
+  };
+
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
@@ -123,6 +127,7 @@ export default function Sidebar() {
         },
       ],
     },
+
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,
