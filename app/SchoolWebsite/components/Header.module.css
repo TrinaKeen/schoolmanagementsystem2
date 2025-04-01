@@ -1,4 +1,14 @@
 /* Header Styling */
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .header {
   display: flex;
   justify-content: space-between;
@@ -7,6 +17,7 @@
   padding: 1rem 2rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   position: relative;
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .logo {
@@ -53,6 +64,7 @@
   text-transform: uppercase;
   font-size: 0.9rem;
   transition: color 0.3s ease;
+  position: relative;
 }
 
 .navbar a:hover {
@@ -60,6 +72,21 @@
   transform: translateY(-3px);
 }
 
+.navbar a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: #00b4d8;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar a:hover::after {
+  width: 100%;
+  left: 0;
+}
 /* Dropdown Menu */
 .loginDropdown {
   position: relative;
@@ -84,7 +111,7 @@
 
 /* Dropdown Content */
 .dropdownContent {
-  display: none;
+  display: block;
   position: absolute;
   right: 0;
   background: white;
@@ -93,10 +120,16 @@
   border-radius: 4px;
   overflow: hidden;
   z-index: 1;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  visibility: hidden;
 }
 
 .loginDropdown:hover .dropdownContent {
-  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
 }
 
 .dropdownContent a {
