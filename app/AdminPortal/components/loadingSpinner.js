@@ -4,7 +4,7 @@ const LoadingSpinner = () => {
   return (
     <div className={styles.spinnerContainer}>
       <div className={styles.spinner}></div>
-      <p>Loading students...</p>
+      <p className={styles.word}>Loading students...</p>
     </div>
   );
 };

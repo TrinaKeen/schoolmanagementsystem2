@@ -14,8 +14,7 @@ import { IoPeople } from "react-icons/io5";
 import Link from "next/link";
 import jwt from "jsonwebtoken"; // Ensure this import is present for decoding JWT
 
-export default function Sidebar({ onLogout }) {
-  const [showLogout, setShowLogout] = useState(false);
+export default function Sidebar() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [employee, setEmployee] = useState(null);
   const router = useRouter();
@@ -30,9 +29,6 @@ export default function Sidebar({ onLogout }) {
       console.log("Received Role:", decoded.role);
       console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
 
-  const handleLogoutClick = () => {
-    setShowLogout(true);
-  };
       setEmployee({
         full_name: decoded.fullName,
         role: decoded.role,
@@ -127,50 +123,16 @@ export default function Sidebar({ onLogout }) {
         },
       ],
     },
-
-
-    {
-      title: "Account Setting",
-      icon: <FaCog />,
-      action: handleAccountSettings,
-    },
-
     {
       title: "Log Out",
       icon: <FaSignOutAlt />,
-      action: handleLogoutClick,
+      action: handleLogout,
     },
   ];
 
   return (
     <div className="flex fixed h-full">
-
-      {/* Logout modal */}
-      {showLogout && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">Confirm Logout</h3>
-            <p className="mb-6">Are you sure you want to log out?</p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowLogout(false)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
-              >
-                Log Out
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="bg-gray-800 text-white w-72 transition-all duration-300">
-
         {/* Sidebar Header */}
         <div className="p-4 bg-gray-900 border-b-2 border-gray-600 flex items-center space-x-3">
           <img
@@ -192,7 +154,18 @@ export default function Sidebar({ onLogout }) {
             </div>
             <div className="text-sm">Role: {employee.role}</div>{" "}
             {/* Added role */}
-            <div className="text-sm">Last Login: {employee.loginTimestamp}</div>
+            <div className="text-sm">
+              Last Login:{" "}
+              {employee.loginTimestamp
+                ? new Date(employee.loginTimestamp).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Never"}
+            </div>
           </div>
         )}
 
@@ -244,7 +217,6 @@ export default function Sidebar({ onLogout }) {
             </div>
           ))}
         </nav>
-
       </div>
     </div>
   );
