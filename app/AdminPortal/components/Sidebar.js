@@ -30,9 +30,6 @@ export default function Sidebar({ onLogout }) {
       console.log("Received Role:", decoded.role);
       console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
 
-  const handleLogoutClick = () => {
-    setShowLogout(true);
-  };
       setEmployee({
         full_name: decoded.fullName,
         role: decoded.role,
@@ -41,6 +38,10 @@ export default function Sidebar({ onLogout }) {
       });
     }
   }, []);
+
+  const handleLogoutClick = () => {
+    setShowLogout(true);
+  };
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
@@ -128,7 +129,6 @@ export default function Sidebar({ onLogout }) {
       ],
     },
 
-
     {
       title: "Account Setting",
       icon: <FaCog />,
@@ -144,7 +144,6 @@ export default function Sidebar({ onLogout }) {
 
   return (
     <div className="flex fixed h-full">
-
       {/* Logout modal */}
       {showLogout && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -170,7 +169,6 @@ export default function Sidebar({ onLogout }) {
       )}
 
       <div className="bg-gray-800 text-white w-72 transition-all duration-300">
-
         {/* Sidebar Header */}
         <div className="p-4 bg-gray-900 border-b-2 border-gray-600 flex items-center space-x-3">
           <img
@@ -244,7 +242,6 @@ export default function Sidebar({ onLogout }) {
             </div>
           ))}
         </nav>
-
       </div>
     </div>
   );
