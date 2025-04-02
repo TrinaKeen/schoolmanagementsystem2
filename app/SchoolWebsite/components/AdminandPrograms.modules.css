@@ -7,6 +7,17 @@
   height: 100%;
 }
 
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Styles for desktop screens */
 @media (min-width: 1024px) {
   .body {
@@ -74,7 +85,7 @@ section {
   text-align: center; /* Center text */
   padding: 30px; /* Adjusted padding */
   background-color: white;
-  
+  animation: slideDownFade 0.8s ease-out;
 }
 
 h1 {

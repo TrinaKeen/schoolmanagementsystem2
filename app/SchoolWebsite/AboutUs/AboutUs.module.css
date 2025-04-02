@@ -1,5 +1,14 @@
 /* AboutUs.module.css */
-
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .pageContainer {
   display: flex;
   flex-direction: column;
@@ -8,6 +17,7 @@
   padding: 40px 20px;
   min-height: 100vh;
   background-color: #f9f9f9; /* Light grey background for a soft look */
+  animation: slideDownFade 0.8s ease-out;
 }
 
 .hours {
