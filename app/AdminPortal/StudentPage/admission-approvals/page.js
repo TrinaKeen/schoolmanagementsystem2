@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import jwt from "jsonwebtoken"; // Make sure to import jwt for decoding
-import styles from "../../components/studentpage.module.css"; // Adjust the path if necessary
+import jwt from "jsonwebtoken";
+import styles from "../../components/studentpage.module.css";
 import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -14,22 +14,13 @@ const AdmissionApprovalPage = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [employee, setEmployee] = useState(null); // Store admin details from localStorage
-  const dropdownRef = useRef(null); // For actions dropdown menu
+  const [employee, setEmployee] = useState(null);
+  const dropdownRef = useRef(null);
 
-  // Fetch students data
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/admin/admin-approvals", {
-          method: "GET",
-        });
-
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          throw new Error(errorResponse.error || "Failed to fetch students");
-        }
-
+        const res = await fetch("/api/admin/admin-approvals");
         const data = await res.json();
         setStudents(data);
       } catch (error) {
@@ -43,21 +34,15 @@ const AdmissionApprovalPage = () => {
     fetchStudents();
   }, []);
 
-  // Fetch admin details from localStorage (via JWT)
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
-      const decoded = jwt.decode(token); // Decode token to get user data
-      console.log("Received Employee Name:", decoded.fullName);
-      console.log("Received Role:", decoded.role);
-      console.log("Received Employee Number:", decoded.employeeNumber || "N/A");
-
+      const decoded = jwt.decode(token);
       setEmployee({
         full_name: decoded.fullName,
         role: decoded.role,
         employee_number: decoded.employeeNumber || "N/A",
-        loginTimestamp: new Date().toLocaleString(), // You can replace this with a real login timestamp if needed
+        loginTimestamp: new Date().toLocaleString(),
       });
     }
   }, []);
@@ -70,59 +55,46 @@ const AdmissionApprovalPage = () => {
   const handleUpdate = async (event) => {
     event.preventDefault();
 
-    const updatedData = {
-      student_number: selectedStudent.student_number,
-      approval_status: event.target.approval_status.value,
-      approval_date: new Date().toISOString().split("T")[0],
-      rejection_reason: event.target.rejection_reason.value,
-      approval_comments: event.target.approval_comments.value,
-    };
+    const approvalStatus = event.target.approval_status.value;
 
-    if (
-      (updatedData.approval_status === "Rejected" ||
-        updatedData.approval_status === "Waitlist") &&
-      (!updatedData.rejection_reason || !updatedData.approval_comments)
-    ) {
-      alert(
-        "Rejection Reason and Comments are required for Rejected or Waitlist status."
-      );
+    if (approvalStatus !== "Approved") {
+      alert("Only Approved students will be saved for now.");
       return;
     }
+
+    const payload = {
+      student_number: selectedStudent.student_number,
+      approval_status: approvalStatus,
+      first_name: selectedStudent.first_name,
+      last_name: selectedStudent.last_name,
+      email: selectedStudent.email,
+      dob: selectedStudent.dob,
+      course: selectedStudent.program_name,
+      enrollment_date: new Date().toISOString().split("T")[0],
+      student_status: "Active",
+      academic_year: "2024-2025",
+      admin_id: 1,
+    };
 
     try {
       const response = await fetch("/api/admin/update-approval", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
+        alert("Student approved successfully.");
+        setStudents(prev => prev.filter(s => s.student_number !== selectedStudent.student_number));
         closeModal();
-        const updatedStudent = await response.json();
-        setStudents((prevStudents) =>
-          prevStudents.map((student) =>
-            student.student_number === updatedStudent.student.student_number
-              ? updatedStudent.student
-              : student
-          )
-        );
       } else {
         const errorData = await response.json();
         console.error("API Error:", errorData);
+        alert("Error: " + errorData.error);
       }
-    } catch (error) {
-      if (error && error instanceof Error) {
-        // Log the error message if it's an instance of Error
-        console.error("Error updating approval:", error.message);
-      } else if (error && typeof error === "object" && error.message) {
-        // Handle non-Error objects that have a `message` property
-        console.error("Error updating approval:", error.message);
-      } else {
-        // Fallback for unexpected error types (e.g., string or other object)
-        console.error("Unexpected error updating approval:", error);
-      }
+    } catch (err) {
+      console.error("Update failed:", err.message);
+      alert("Something went wrong. Check console logs.");
     }
   };
 
@@ -131,55 +103,32 @@ const AdmissionApprovalPage = () => {
     setSelectedStudent(null);
   };
 
-  // Download logs function
-  const handleDownloadLogs = () => {
-    window.location.href = "/api/admin/downloadRegistrationLogs";
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("employeeNumber"); // Remove employee ID on logout
+    localStorage.removeItem("employeeNumber");
     localStorage.removeItem("loginTimestamp");
-    // Redirect to the home page or login page
     window.location.href = "/";
   };
-
-  if (loading) {
-    return <p className="loading-message">Loading students...</p>;
-  }
-
-  if (error) {
-    return <p className="error-message">{error}</p>;
-  }
-
-  if (!students.length) {
-    return <p className="no-students-message">No students found.</p>;
-  }
 
   const handleBack = () => {
     window.location.href = "/AdminPortal/admin-dashboard";
   };
 
   const filteredStudents = students.filter((student) => {
-    const fullName =
-      `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
+    const fullName = `${student.first_name} ${student.middle_name} ${student.last_name}`.toLowerCase();
     const studentNumber = String(student.student_number);
     const query = searchQuery.toLowerCase();
-
     return fullName.includes(query) || studentNumber.includes(query);
   });
 
   if (loading) return <LoadingSpinner />;
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div className={styles.pageContainer}>
       <Sidebar />
       <div className={styles.mainContent}>
-        <h1 className={styles.title}>
-          List of Students for Admission Application
-        </h1>
-        {/* <p className={styles.breadcrumb}>Home &gt; Admission Request</p> */}
-
+        <h1 className={styles.title}>List of Students for Admission Application</h1>
         <div className={styles.searchContainer}>
           <input
             className={styles.searchInput}
@@ -212,21 +161,13 @@ const AdmissionApprovalPage = () => {
               <tr key={student.student_number}>
                 <td>{student.student_number}</td>
                 <td>{`${student.first_name} ${student.middle_name} ${student.last_name}`}</td>
-                <td>
-                  {student.dob
-                    ? new Date(student.dob).toLocaleDateString()
-                    : "N/A"}
-                </td>
+                <td>{student.dob ? new Date(student.dob).toLocaleDateString() : "N/A"}</td>
                 <td>{student.gender}</td>
                 <td>{student.email}</td>
                 <td>{student.phone_number}</td>
                 <td>{student.program_name || "N/A"}</td>
                 <td>{student.approval_status || "Pending"}</td>
-                <td>
-                  {student.approval_date
-                    ? new Date(student.approval_date).toLocaleDateString()
-                    : "N/A"}
-                </td>
+                <td>{student.approval_date ? new Date(student.approval_date).toLocaleDateString() : "N/A"}</td>
                 <td>{student.rejection_reason || "N/A"}</td>
                 <td>{student.approval_comments || "N/A"}</td>
                 <td>
@@ -243,12 +184,8 @@ const AdmissionApprovalPage = () => {
                       transition: "background-color 0.3s ease",
                       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                     }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#005f73")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#0a9396")
-                    }
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#005f73")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#0a9396")}
                   >
                     View
                   </button>
@@ -258,117 +195,50 @@ const AdmissionApprovalPage = () => {
           </tbody>
         </table>
 
-        {/* Modal for viewing/updating student details */}
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          {selectedStudent && (
+        {selectedStudent && (
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
             <form onSubmit={handleUpdate}>
               <div>
-                <h3>
-                  <strong>Student Details</strong>
-                </h3>
-                <p>
-                  <strong>Student Number:</strong>{" "}
-                  {selectedStudent.student_number}
-                </p>
-                <p>
-                  <strong>Full Name:</strong>{" "}
-                  {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}
-                </p>
-                <p>
-                  <strong>Date of Birth:</strong>{" "}
-                  {selectedStudent.dob
-                    ? new Date(selectedStudent.dob).toLocaleDateString()
-                    : ""}
-                </p>
-                <p>
-                  <strong>Gender:</strong> {selectedStudent.gender}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedStudent.email}
-                </p>
-                <p>
-                  <strong>Phone Number:</strong> {selectedStudent.phone_number}
-                </p>
-                <p>
-                  <strong>Program:</strong>{" "}
-                  {selectedStudent.program_name || "N/A"}
-                </p>
+                <h3><strong>Student Details</strong></h3>
+                <p><strong>Student Number:</strong> {selectedStudent.student_number}</p>
+                <p><strong>Full Name:</strong> {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}</p>
+                <p><strong>Date of Birth:</strong> {selectedStudent.dob ? new Date(selectedStudent.dob).toLocaleDateString() : ""}</p>
+                <p><strong>Gender:</strong> {selectedStudent.gender}</p>
+                <p><strong>Email:</strong> {selectedStudent.email}</p>
+                <p><strong>Phone Number:</strong> {selectedStudent.phone_number}</p>
+                <p><strong>Program:</strong> {selectedStudent.program_name || "N/A"}</p>
 
-                <h3>
-                  <strong>Approval Details</strong>
-                </h3>
+                <h3><strong>Approval Details</strong></h3>
                 <div>
                   <label>Approval Status:</label>
-                  <select
-                    name="approval_status"
-                    defaultValue={selectedStudent.approval_status}
-                    onChange={(e) => {
-                      const approvalDateInput = document.querySelector(
-                        'input[name="approval_date"]'
-                      );
-                      approvalDateInput.value = new Date()
-                        .toISOString()
-                        .split("T")[0]; // Set current date
-                    }}
-                    required
-                  >
+                  <select name="approval_status" defaultValue={selectedStudent.approval_status || "Pending"} required>
                     <option value="Approved">Approved</option>
                     <option value="Pending">Pending</option>
                     <option value="Rejected">Rejected</option>
                     <option value="Waitlist">Waitlist</option>
                   </select>
                 </div>
+
                 <div>
                   <label>Approval Date:</label>
-                  <input
-                    type="date"
-                    name="approval_date"
-                    defaultValue={selectedStudent.approval_date}
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label>Rejection Reason:</label>
-                  <input
-                    type="text"
-                    name="rejection_reason"
-                    defaultValue={selectedStudent.rejection_reason}
-                    required={
-                      selectedStudent.approval_status === "Rejected" ||
-                      selectedStudent.approval_status === "Waitlist"
-                    }
-                  />
-                </div>
-                <div>
-                  <label>Reviewer Comments:</label>
-                  <input
-                    type="text"
-                    name="approval_comments"
-                    defaultValue={selectedStudent.approval_comments}
-                    required={
-                      selectedStudent.approval_status === "Rejected" ||
-                      selectedStudent.approval_status === "Waitlist"
-                    }
-                  />
+                  <input type="date" name="approval_date" defaultValue={new Date().toISOString().split("T")[0]} readOnly />
                 </div>
 
-                {/* Admin Details */}
                 <div>
-                  <label>Admin: </label>
-                  <span>
-                    {employee
-                      ? `${employee.employee_number} - ${employee.full_name}`
-                      : "Loading admin details..."}
-                  </span>
+                  <label>Rejection Reason:</label>
+                  <input type="text" name="rejection_reason" defaultValue={selectedStudent.rejection_reason} />
+                </div>
+
+                <div>
+                  <label>Reviewer Comments:</label>
+                  <input type="text" name="approval_comments" defaultValue={selectedStudent.approval_comments} />
                 </div>
               </div>
               <button type="submit">Save Changes</button>
-              <button type="button" onClick={closeModal}>
-                Close
-              </button>
+              <button type="button" onClick={closeModal}>Close</button>
             </form>
-          )}
-        </Modal>
+          </Modal>
+        )}
       </div>
     </div>
   );
