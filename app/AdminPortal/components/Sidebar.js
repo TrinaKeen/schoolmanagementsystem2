@@ -71,6 +71,10 @@ export default function Sidebar({ onLogout }) {
           title: "Admission Request",
           link: "/AdminPortal/StudentPage/admission-approvals",
         },
+        {
+          title: "Rejected Students",
+          link: "/AdminPortal/StudentPage/rejected-students",
+        },
       ],
     },
     {
