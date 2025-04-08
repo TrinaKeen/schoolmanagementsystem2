@@ -1,3 +1,16 @@
+// Generated using ChatGPT
+// Build a React (Next.js) admin page called AdmissionApprovalPage that:
+// Fetches a list of student applications from an API,
+// Displays them in a searchable table,
+// Uses a modal to view and edit approval status,
+// Allows approving a student,
+// Removes approved students from the page after submission,
+// Also decodes a JWT stored in localStorage to display admin details
+
+// Create the rejection function
+// Similar to the approval function
+// Rejected students are to be removed upon update of their status
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -7,6 +20,7 @@ import Modal from "../../components/Modal";
 import Sidebar from "../../components/Sidebar";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+// Admin page for managing student admission approvals or rejections
 const AdmissionApprovalPage = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +31,7 @@ const AdmissionApprovalPage = () => {
   const [employee, setEmployee] = useState(null);
   const dropdownRef = useRef(null);
 
+  // Fetch all pending student applications from backend
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -30,10 +45,10 @@ const AdmissionApprovalPage = () => {
         setLoading(false);
       }
     };
-
     fetchStudents();
   }, []);
 
+  // Decode admin info from token
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -52,19 +67,29 @@ const AdmissionApprovalPage = () => {
     setIsModalOpen(true);
   };
 
+  // Approve or reject student and update state
   const handleUpdate = async (event) => {
     event.preventDefault();
-
-    const approvalStatus = event.target.approval_status.value;
-
-    if (approvalStatus !== "Approved") {
-      alert("Only Approved students will be saved for now.");
+  
+    const approval_status = event.target.approval_status.value;
+    const rejection_reason = event.target.rejection_reason.value.trim();
+    const approval_comments = event.target.approval_comments.value.trim();
+  
+    if (approval_status === "Rejected") {
+      if (!rejection_reason || !approval_comments) {
+        alert("Rejection reason and comments are required for rejected status.");
+        return;
+      }
+    }
+  
+    if (approval_status !== "Approved" && approval_status !== "Rejected") {
+      alert("Only Approved or Rejected status is supported right now.");
       return;
     }
-
+  
     const payload = {
       student_number: selectedStudent.student_number,
-      approval_status: approvalStatus,
+      approval_status,
       first_name: selectedStudent.first_name,
       last_name: selectedStudent.last_name,
       email: selectedStudent.email,
@@ -74,18 +99,22 @@ const AdmissionApprovalPage = () => {
       student_status: "Active",
       academic_year: "2024-2025",
       admin_id: 1,
+      rejection_reason,
+      approval_comments
     };
-
+  
     try {
       const response = await fetch("/api/admin/update-approval", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
+  
       if (response.ok) {
-        alert("Student approved successfully.");
-        setStudents(prev => prev.filter(s => s.student_number !== selectedStudent.student_number));
+        alert(`Student ${approval_status.toLowerCase()} successfully.`);
+        setStudents((prev) =>
+          prev.filter((s) => s.student_number !== selectedStudent.student_number)
+        );
         closeModal();
       } else {
         const errorData = await response.json();
@@ -101,17 +130,6 @@ const AdmissionApprovalPage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedStudent(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("employeeNumber");
-    localStorage.removeItem("loginTimestamp");
-    window.location.href = "/";
-  };
-
-  const handleBack = () => {
-    window.location.href = "/AdminPortal/admin-dashboard";
   };
 
   const filteredStudents = students.filter((student) => {
@@ -149,10 +167,7 @@ const AdmissionApprovalPage = () => {
               <th>Email</th>
               <th>Phone Number</th>
               <th>Program</th>
-              <th>Approval Status</th>
-              <th>Approval Date</th>
-              <th>Rejection Reason</th>
-              <th>Comments</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -167,25 +182,10 @@ const AdmissionApprovalPage = () => {
                 <td>{student.phone_number}</td>
                 <td>{student.program_name || "N/A"}</td>
                 <td>{student.approval_status || "Pending"}</td>
-                <td>{student.approval_date ? new Date(student.approval_date).toLocaleDateString() : "N/A"}</td>
-                <td>{student.rejection_reason || "N/A"}</td>
-                <td>{student.approval_comments || "N/A"}</td>
                 <td>
                   <button
                     onClick={() => handleView(student)}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "#0a9396",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "1rem",
-                      transition: "background-color 0.3s ease",
-                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
-                    }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = "#005f73")}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = "#0a9396")}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                   >
                     View
                   </button>
@@ -197,45 +197,35 @@ const AdmissionApprovalPage = () => {
 
         {selectedStudent && (
           <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <form onSubmit={handleUpdate}>
-              <div>
-                <h3><strong>Student Details</strong></h3>
-                <p><strong>Student Number:</strong> {selectedStudent.student_number}</p>
-                <p><strong>Full Name:</strong> {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}</p>
-                <p><strong>Date of Birth:</strong> {selectedStudent.dob ? new Date(selectedStudent.dob).toLocaleDateString() : ""}</p>
-                <p><strong>Gender:</strong> {selectedStudent.gender}</p>
-                <p><strong>Email:</strong> {selectedStudent.email}</p>
-                <p><strong>Phone Number:</strong> {selectedStudent.phone_number}</p>
-                <p><strong>Program:</strong> {selectedStudent.program_name || "N/A"}</p>
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <h3 className="text-lg font-bold">Student Review</h3>
+              <p><strong>Student Number:</strong> {selectedStudent.student_number}</p>
+              <p><strong>Full Name:</strong> {`${selectedStudent.first_name} ${selectedStudent.middle_name} ${selectedStudent.last_name}`}</p>
+              <p><strong>DOB:</strong> {selectedStudent.dob ? new Date(selectedStudent.dob).toLocaleDateString() : "N/A"}</p>
+              <p><strong>Program:</strong> {selectedStudent.program_name || "N/A"}</p>
 
-                <h3><strong>Approval Details</strong></h3>
-                <div>
-                  <label>Approval Status:</label>
-                  <select name="approval_status" defaultValue={selectedStudent.approval_status || "Pending"} required>
-                    <option value="Approved">Approved</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Waitlist">Waitlist</option>
-                  </select>
-                </div>
+              <label>
+                Approval Status:
+                <select name="approval_status" className="block w-full border p-2 rounded" defaultValue={selectedStudent.approval_status || "Pending"} required>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </label>
 
-                <div>
-                  <label>Approval Date:</label>
-                  <input type="date" name="approval_date" defaultValue={new Date().toISOString().split("T")[0]} readOnly />
-                </div>
+              <label>
+                Rejection Reason:
+                <input name="rejection_reason" type="text" className="block w-full border p-2 rounded" placeholder="Reason if rejected" />
+              </label>
 
-                <div>
-                  <label>Rejection Reason:</label>
-                  <input type="text" name="rejection_reason" defaultValue={selectedStudent.rejection_reason} />
-                </div>
+              <label>
+                Reviewer Comments:
+                <input name="approval_comments" type="text" className="block w-full border p-2 rounded" placeholder="Optional comments" />
+              </label>
 
-                <div>
-                  <label>Reviewer Comments:</label>
-                  <input type="text" name="approval_comments" defaultValue={selectedStudent.approval_comments} />
-                </div>
+              <div className="flex justify-end gap-4">
+                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
+                <button type="button" onClick={closeModal} className="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
               </div>
-              <button type="submit">Save Changes</button>
-              <button type="button" onClick={closeModal}>Close</button>
             </form>
           </Modal>
         )}

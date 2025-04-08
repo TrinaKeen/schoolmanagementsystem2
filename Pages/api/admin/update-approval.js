@@ -18,49 +18,84 @@ export default async function handler(req, res) {
     enrollment_date,
     student_status,
     academic_year,
-    admin_id
+    admin_id,
+    rejection_reason,
+    approval_comments,
   } = req.body;
 
-  if (
-    !student_number ||
-    !approval_status ||
-    approval_status !== "Approved"
-  ) {
-    return res.status(400).json({ error: 'Invalid or missing approval status' });
-  }
-
-  if (
-    !first_name || !last_name || !email || !dob || !course ||
-    !enrollment_date || !student_status || !academic_year || !admin_id
-  ) {
-    return res.status(400).json({ error: 'Missing required student fields' });
+  if (!student_number || !approval_status) {
+    return res.status(400).json({ error: 'Missing required fields: student_number or approval_status' });
   }
 
   try {
-    const insertQuery = `
-      INSERT INTO approved_students (
-        student_number, first_name, last_name, email,
-        dob, course, enrollment_date, student_status,
-        academic_year, admin_id
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-      RETURNING *;
-    `;
+    let query = "";
+    let values = [];
 
-    const values = [
-      student_number, first_name, last_name, email,
-      dob, course, enrollment_date, student_status,
-      academic_year, admin_id
-    ];
+    if (approval_status === "Approved") {
+      // Insert into approved_students table
+      query = `
+        INSERT INTO approved_students (
+          student_number, first_name, last_name, email,
+          dob, course, enrollment_date, student_status,
+          academic_year, admin_id
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+        RETURNING *;
+      `;
+      values = [
+        student_number,
+        first_name,
+        last_name,
+        email,
+        dob,
+        course,
+        enrollment_date,
+        student_status,
+        academic_year,
+        admin_id
+      ];
+    } else if (approval_status === "Rejected") {
+      // Insert into rejected_students table
+      if (!rejection_reason || !approval_comments) {
+        return res.status(400).json({ error: 'Rejection reason and comments are required for rejected students.' });
+      }
 
-    const result = await sql(insertQuery, values);
-
-    if (result.length === 0) {
-      return res.status(500).json({ error: 'Failed to insert approved student' });
+      query = `
+        INSERT INTO rejected_students (
+          student_number, first_name, last_name, email,
+          dob, course, enrollment_date, rejection_reason,
+          approval_comments, academic_year, admin_id
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        RETURNING *;
+      `;
+      values = [
+        student_number,
+        first_name,
+        last_name,
+        email,
+        dob,
+        course,
+        enrollment_date,
+        rejection_reason,
+        approval_comments,
+        academic_year,
+        admin_id
+      ];
+    } else {
+      return res.status(400).json({ error: 'Only "Approved" or "Rejected" statuses are supported.' });
     }
 
-    return res.status(200).json({ approvedStudent: result[0] });
+    const result = await sql(query, values);
+
+    if (result.length === 0) {
+      return res.status(500).json({ error: 'Failed to insert student record.' });
+    }
+
+    return res.status(200).json({ success: true, record: result[0] });
+
   } catch (error) {
-    console.error('Insert error:', error);
+    console.error('Database error:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
