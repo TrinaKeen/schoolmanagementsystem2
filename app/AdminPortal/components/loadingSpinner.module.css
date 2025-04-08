@@ -18,6 +18,10 @@
   color: darkblue;
 }
 
+.word {
+  color: darkblue;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
