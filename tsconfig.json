@@ -22,13 +22,20 @@
     }
   },
   "include": [
+    
     "next-env.d.ts",
+   
     "**/*.ts",
+   
     "**/*.tsx",
+   
     ".next/types/**/*.ts",
+   
     "prisma/**/*.ts",
     "prisma/**/*.ts", 
     "src/**/*"
-, "prisma/seed.js"  ],
+, "prisma/seed.js",
+    "app/page.tsx"
+    ],
   "exclude": ["node_modules"]
 }
