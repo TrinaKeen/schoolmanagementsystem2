@@ -70,7 +70,7 @@ export default function ApplyNow() {
   };
 
   return (
-    <div className="bg-white min-h-screen text-gray-800">
+    <div className="bg-white min-h-screen text-gray-800 font-sans">
       <Header />
       <div className="h-[100px] md:h-[120px]" />
 
