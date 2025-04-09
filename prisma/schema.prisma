@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  username     String      @unique
+  email        String      @unique
+  password     String
+  role         String      @default("student") // 'student', 'admin', or 'instructor'
+  createdAt    DateTime    @default(now())
+
+  // Relationships to role-specific models
+  student      Student?    @relation(fields: [studentId], references: [id])
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+  admin        Admin?      @relation(fields: [adminId], references: [id])
+
+  studentId    Int?        @unique
+  instructorId Int?        @unique
+  adminId      Int?        @unique
+
+  // Notifications
+  notifications Notification[]
+}
+
+model Student {
+  id                          Int        @id @default(autoincrement())
+  studentNumber               String     @unique
+  firstName                   String
+  middleName                  String?
+  lastName                    String
+  dob                         DateTime
+  gender                      String
+  age                         Int
+  nationality                 String
+  placeOfBirth                String
+  email                       String     @unique
+  phoneNumber                 String
+  homeAddress                 String
+  emergencyContactName        String
+  emergencyContactPhoneNumber String
+  emergencyContactRelationship String
+  previousSchools             String?
+  yearOfGraduation            Int?
+  gpa                         Float?
+
+  // Relations
+  user                        User?
+  studentApplication          StudentApplication[]
+  studentCourse               StudentCourse[]
+  documentUpload              DocumentUpload[]
+  payments                    Payment[]
+}
+
+model Instructor {
+  id              Int       @id @default(autoincrement())
+  employeeNumber  String    @unique
+  firstName       String
+  middleName      String?
+  lastName        String
+  department      String?
+  email           String    @unique
+  phoneNumber     String
+  dob             DateTime  // Date of birth
+  dateHired       DateTime  // Date hired
+
+  user            User?
+  courses         Course[]
+  schedules       Schedule[]
+}
+
+model Admin {
+  id                  Int        @id @default(autoincrement())
+  employeeNumber      String     @unique
+  firstName           String
+  middleName          String?
+  lastName            String
+  email               String     @unique
+  phoneNumber         String
+  dob                 DateTime  // Date of birth
+  dateHired           DateTime  // Date hired
+
+  user                User?
+  studentApplication  StudentApplication[]
+}
+
+model Program {
+  id                 Int                   @id @default(autoincrement())
+  programCode        String                // Ensure the program code is unique
+  programName        String                // The name of the program (e.g., "Computer Science")
+  programDescription String?               // Description of the program (optional)
+  duration           Int                   // Duration of the program in months or years
+  tuitionFee         Float?                // Tuition fee for the program (optional, can be removed if you use the Fee model)
+
+  studentApplication StudentApplication[]  // List of student applications related to the program
+  courses            Course[]              // List of courses related to the program
+  fees               Fee[]                 // List of fees associated with the program
+}
+
+
+
+model StudentApplication {
+  id               Int       @id @default(autoincrement())
+  studentId        Int
+  programId        Int
+  status           String    @default("pending")
+  submissionDate   DateTime  @default(now())
+  rejectionReason  String?
+  approvalDate     DateTime?
+  adminId          Int?
+
+  student          Student   @relation(fields: [studentId], references: [id])
+  admin            Admin?    @relation(fields: [adminId], references: [id])
+  program          Program   @relation(fields: [programId], references: [id])
+}
+
+model DocumentUpload {
+  id           Int      @id @default(autoincrement())
+  studentId    Int
+  documentType String
+  fileUrl      String
+  uploadDate   DateTime @default(now())
+
+  student      Student  @relation(fields: [studentId], references: [id])
+}
+
+model Course {
+  id                Int              @id @default(autoincrement())
+  courseCode        String           @unique
+  courseName        String
+  courseDescription String?
+  instructorId      Int
+  programId         Int?
+
+  instructor        Instructor       @relation(fields: [instructorId], references: [id])
+  program           Program?         @relation(fields: [programId], references: [id])
+  studentCourse     StudentCourse[]
+  schedules         Schedule[]
+}
+
+model StudentCourse {
+  id         Int      @id @default(autoincrement())
+  studentId  Int
+  courseId   Int
+  finalGrade Float?
+
+  student    Student  @relation(fields: [studentId], references: [id])
+  course     Course   @relation(fields: [courseId], references: [id])
+}
+
+model Schedule {
+  id           Int        @id @default(autoincrement())
+  courseId     Int
+  instructorId Int
+  startTime    DateTime
+  endTime      DateTime
+
+  course       Course     @relation(fields: [courseId], references: [id])
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  message    String
+  timestamp  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  feeId         Int?     // Link payment to a specific fee (optional)
+  amountPaid    Float
+  paymentDate   DateTime @default(now())
+  paymentStatus PaymentStatus @default(PENDING)
+
+  student       Student  @relation(fields: [studentId], references: [id])
+  fee           Fee?     @relation("FeePayments", fields: [feeId], references: [id]) // Explicitly defining the relation name
+}
+
+model Fee {
+  id           Int       @id @default(autoincrement())
+  programId    Int
+  feeType      String    // e.g., "Tuition", "Lab Fee", "Registration"
+  amount       Float
+  description  String?
+
+  program      Program   @relation(fields: [programId], references: [id])
+  
+  // Define the reverse relation
+  payments     Payment[] @relation("FeePayments") // Linking to the Payment model using the same relation name
+}
+
+
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
