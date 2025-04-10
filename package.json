@@ -1,27 +1,26 @@
 {
-  "name": "schoolmanagementsystem2",
-  "version": "0.1.0",
-  "private": true,
+  "name": "sms-eefci",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "node prisma/seed.js"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4",
-    "@types/pdfmake": "^0.2.11",
-    "axios": "^1.7.9",
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.3",
-    "cookie": "^1.0.2",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "@hookform/resolvers": "^5.0.1",
+    "@prisma/client": "^6.6.0",
+    "axios": "^1.8.4",
+    "bcryptjs": "^3.0.2",
     "formidable": "^3.5.2",
-    "jose": "^6.0.8",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+<<<<<<< HEAD
     "multer": "^1.4.5-lts.1",
     "next": "15.0.3",
     "pdfmake": "^0.2.18",
@@ -31,16 +30,33 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "recharts": "^2.10.0"
+=======
+    "multer": "^1.4.5-lts.2",
+    "next": "14.2.5",
+    "next-auth": "^4.24.11",
+    "react": "^18",
+    "react-big-calendar": "^1.13.2",
+    "react-calendar": "^5.0.0",
+    "react-dom": "^18",
+    "react-hook-form": "^7.52.2",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.12.7",
+    "tailwindcss": "^4.1.2",
+    "zod": "^3.24.2"
+>>>>>>> ef7825b4515d9bea2460eb1d1fcdbf14f68f123d
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^22.14.0",
     "@types/react": "^18",
+    "@types/react-big-calendar": "^1.8.9",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "prisma": "^6.6.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   },
-  "type": "module"
+  "description": "First, run the development server:"
 }
