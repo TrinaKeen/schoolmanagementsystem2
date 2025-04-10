@@ -15,6 +15,9 @@ const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const InstructorForm = dynamic(() => import("./forms/instructorForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
@@ -41,7 +44,8 @@ const FormModal = ({
     | "result"
     | "attendance"
     | "event"
-    | "announcement";
+    | "announcement"
+    | "instructor",
   type: "create" | "update" | "delete";
   data?: any;
   id?: number;
