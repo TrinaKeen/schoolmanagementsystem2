@@ -68,10 +68,10 @@ export default function CoursesPage() {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-black">
       <h1 className="text-2xl font-bold mb-4">Courses Dashboard</h1>
 
-      <form onSubmit={handleSubmit} className="mb-6 space-y-3 bg-gray-50 p-4 border rounded-md shadow-sm">
+      <form onSubmit={handleSubmit} className="mb-6 space-y-3 bg-gray-50 p-4 border rounded-md shadow-sm ">
         <div className="flex flex-col gap-2">
           <input
             type="text"
@@ -121,7 +121,7 @@ export default function CoursesPage() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <table className="w-full border text-sm">
+        <table className="w-full border text-sm  text-black">
           <thead className="bg-gray-200 text-left">
             <tr>
               <th className="p-2 border">ID</th>
