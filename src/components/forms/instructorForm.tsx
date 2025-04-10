@@ -79,7 +79,7 @@ const InstructorForm = ({ type, data }: InstructorFormProps) => {
       className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4"
     >
       {Object.entries(formData).map(([key, value]) => (
-        <div key={key} className="flex flex-col">
+        <div key={key} className="flex flex-col text-black">
           <label htmlFor={key} className="capitalize font-medium mb-1">
             {key}
           </label>
@@ -89,7 +89,7 @@ const InstructorForm = ({ type, data }: InstructorFormProps) => {
             name={key}
             value={value}
             onChange={handleChange}
-            className="border rounded px-2 py-1"
+            className="border rounded border-black px-2 py-1"
             required
           />
         </div>
