@@ -8,6 +8,7 @@
 // Uses `instructorFields` imported from a config file
 
 // Include `useEffect`, `useState`, and `FormModal` integration
+// ChatGPT also created accompanying fields and form code skeleton
 
 'use client';
 
@@ -23,6 +24,7 @@ import axios from 'axios';
 import FormModal from '@/components/FormModal';
 import instructorFields from '@/utils/fields/instructorFields';
 
+// Interface for Instructor Type
 interface Instructor {
   id: number;
   employeeNumber: string;
@@ -37,28 +39,31 @@ interface Instructor {
 }
 
 export default function InstructorsPage() {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [instructors, setInstructors] = useState<Instructor[]>([]);  // Holds the array of instructors returned from the backend
+  const [modalOpen, setModalOpen] = useState(false);  // Controls whether the Add Instructor modal is open or closed
 
+  // API fetch form the instructors table
   const fetchInstructors = async () => {
     try {
       const res = await axios.get('/api/instructors');
       setInstructors(res.data);
     } catch (err) {
-      console.error('Failed to fetch instructors:', err);
+      console.error('Failed to fetch instructors:', err); // Error logging
     }
   };
 
+  // Add new instructor function
   const handleAddInstructor = async (values: Record<string, any>) => {
     try {
       await axios.post('/api/instructors', values);
       setModalOpen(false);
-      fetchInstructors();
+      fetchInstructors(); // Reloads the table to show the new instructor
     } catch (err) {
-      console.error('Error adding instructor:', err);
+      console.error('Error adding instructor:', err); // Error logging
     }
   };
 
+  // Fecth instructors on first render only
   useEffect(() => {
     fetchInstructors();
   }, []);
@@ -106,11 +111,11 @@ export default function InstructorsPage() {
       </Table>
 
       <FormModal
-        opened={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleAddInstructor}
-        fields={instructorFields}
-        title="Add New Instructor"
+        opened={modalOpen} // Whether the modal is open
+        onClose={() => setModalOpen(false)} // Function to close it
+        onSubmit={handleAddInstructor} // Function to handle form submit
+        fields={instructorFields} // Field configuration from external file
+        title="Add New Instructor" // Modal title
       />
     </Box>
   );
