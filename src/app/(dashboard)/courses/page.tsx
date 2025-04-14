@@ -11,6 +11,7 @@ import {
 import axios from 'axios';
 import FormModal from '@/components/FormModal';
 import instructorFields from '@/utils/fields/instructorFields';
+import courseFields from '@/utils/fields/courseFields';
 
 // Interface for Courses Type
 interface Course {
@@ -22,22 +23,22 @@ interface Course {
   programId?: number;
 }
 
-export default function InstructorsPage() {
-  const [instructors, setInstructors] = useState<Course[]>([]);  // Holds the array of courses returned from the backend
+export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([]);  // Holds the array of courses returned from the backend
   const [modalOpen, setModalOpen] = useState(false);  // Controls whether the modal is open or closed
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
     try {
       const res = await axios.get('/api/courses');
-      setInstructors(res.data);
+      setCourses(res.data);
     } catch (err) {
       console.error('Failed to fetch courses:', err); // Error logging
     }
   };
 
   // Add new instructor function
-  const handleAddInstructor = async (values: Record<string, any>) => {
+  const handleAddCourses = async (values: Record<string, any>) => {
     try {
       await axios.post('/api/instructors', values);
       setModalOpen(false);
@@ -72,12 +73,12 @@ export default function InstructorsPage() {
           </tr>
         </thead>
         <tbody>
-          {instructors.length === 0 ? (
+          {courses.length === 0 ? (
             <tr>
               <td colSpan={6}>No courses found.</td>
             </tr>
           ) : (
-            instructors.map((c) => (
+            courses.map((c) => (
               <tr key={c.id}>
                 <td>{c.courseCode}</td>
                 <td>{c.courseName}</td>
@@ -93,8 +94,8 @@ export default function InstructorsPage() {
       <FormModal
         opened={modalOpen} // Whether the modal is open
         onClose={() => setModalOpen(false)} // Function to close it
-        onSubmit={handleAddInstructor} // Function to handle form submit
-        fields={instructorFields} // Field configuration from external file
+        onSubmit={handleAddCourses} // Function to handle form submit
+        fields={courseFields} // Field configuration from external file
         title="Add New Course" // Modal title
       />
     </Box>
