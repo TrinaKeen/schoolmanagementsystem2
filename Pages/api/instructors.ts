@@ -1,10 +1,9 @@
-// https://chatgpt.com/c/67f6fc84-8040-8003-8eec-4f4dd66f83fb
-
 import { PrismaClient } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
       const instructors = await prisma.instructor.findMany();
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
       return res.status(201).json(newInstructor);
     } catch (err) {
       console.error('POST /api/instructors error:', err);
-      return res.status(500).json({ error: 'Failed to create instructor' });
+      return res.status(500).json({ error: 'Failed to add instructor' });
     }
   }
 
