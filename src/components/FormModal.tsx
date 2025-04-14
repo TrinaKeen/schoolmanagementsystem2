@@ -1,106 +1,84 @@
-"use client";
+// Created with the help of ChatGPT
+// Create a reusable React component with mmantine ui's modal form.
+// The component should accept props like opened, onClose, onSubmit, fields and title
+// The `fields` prop should be an array of field config objects
+// Use `@mantine/form` to handle form state. 
+// Return the `<Modal>` containing the form and a Submit button
 
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useState } from "react";
+// Use prisma schema
 
-// USE LAZY LOADING
+'use client';
 
-// import TeacherForm from "./forms/TeacherForm";
-// import StudentForm from "./forms/StudentForm";
+import {
+  Button,
+  Group,
+  Modal,
+  Box,
+  TextInput,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+// useForm is a hook that manages form state, validation, and input control
 
-const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const StudentForm = dynamic(() => import("./forms/StudentForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const InstructorForm = dynamic(() => import("./forms/instructorForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
+// Type Definitions
+interface FieldConfig {
+  name: string; // Used as the form field name and key in form state
+  label: string; // Displayed as the field's label in the UI
+  type?: string; // Optional: input type ('text', 'email', 'date', etc.)
+  required?: boolean; // Optional: whether the field is required
+}
 
-const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
-} = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />,
-  instructor: (type, data) => <InstructorForm type={type} data={data} />
-};
+interface FormModalProps {
+  opened: boolean; // Whether the modal is visible
+  onClose: () => void; // Function to call when closing the modal
+  onSubmit: (values: Record<string, any>) => void; // Function called when form is submitted
+  fields: FieldConfig[]; // Array of fields to dynamically render
+  title: string; // Title of the modal
+}
 
-const FormModal = ({
-  table,
-  type,
-  data,
-  id,
-}: {
-  table:
-    | "teacher"
-    | "student"
-    | "parent"
-    | "subject"
-    | "class"
-    | "lesson"
-    | "exam"
-    | "assignment"
-    | "result"
-    | "attendance"
-    | "event"
-    | "announcement"
-    | "instructor",
-  type: "create" | "update" | "delete";
-  data?: any;
-  id?: number;
-}) => {
-  const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-  const bgColor =
-    type === "create"
-      ? "bg-lamaYellow"
-      : type === "update"
-      ? "bg-lamaSky"
-      : "bg-lamaPurple";
+// Component Definition
+// Renders the modal and dynamically builds a form
+// Calls onSubmit
+export default function FormModal({
+  opened,
+  onClose,
+  onSubmit,
+  fields,
+  title,
 
-  const [open, setOpen] = useState(false);
+// Initialize Form State 
+}: FormModalProps) { 
+  const form = useForm({
+    initialValues: fields.reduce((acc, field) => {
+      acc[field.name] = ''; // Set each field to an empty string
+      return acc;
+    }, {} as Record<string, any>),
+  });
 
-  const Form = () => {
-    return type === "delete" && id ? (
-      <form action="" className="p-4 flex flex-col gap-4">
-        <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
-        </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-          Delete
-        </button>
-      </form>
-    ) : type === "create" || type === "update" ? (
-      forms[table](type, data)
-    ) : (
-      "Form not found!"
-    );
+  const handleSubmit = (values: Record<string, any>) => {
+    onSubmit(values); // Call the parent’s submit function
+    form.reset(); // Clears the form
   };
 
+  // Modal Render
+  // This dynamically renders the fields
   return (
-    <>
-      <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
-        onClick={() => setOpen(true)}
-      >
-        <Image src={`/${type}.png`} alt="" width={16} height={16} />
-      </button>
-      {open && (
-        <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
-            <Form />
-            <div
-              className="absolute top-4 right-4 cursor-pointer"
-              onClick={() => setOpen(false)}
-            >
-              <Image src="/close.png" alt="" width={14} height={14} />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
+    <Modal opened={opened} onClose={onClose} title={title} size="lg">
+      <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+        {fields.map((field) => (
+          <TextInput
+            key={field.name} // unique React key
+            label={field.label} // shown in UI
+            type={field.type || 'text'} // default to 'text' if undefined
+            required={field.required} // add red asterisk if true
+            {...form.getInputProps(field.name)} // binds input value and events to form
+            mt="sm"  // top margin between inputs
+          />
+        ))}
 
-export default FormModal;
+        <Group justify="flex-end" mt="md">
+          <Button type="submit">Submit</Button>
+        </Group>
+      </Box>
+    </Modal>
+  );
+}
