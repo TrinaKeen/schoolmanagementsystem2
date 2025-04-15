@@ -24,24 +24,32 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Welcome to your Dashboard</h1>
-      
+      <div>
+      <h1>Welcome to your account {user.name} !</h1>
+      <h2>We're happy you're here!</h2>
+      <h2>This is your home page. From here you can apply for a program, apply for courrses, see your schedule and more.</h2>
+      </div>
+
+      <div>
+        <h1>My Application</h1>
+
+      </div>
+
+    <div>
+      <h1>My Profile</h1>
+      <h2>Name: </h2>
+      <h2>Email: </h2>
+
+    </div>
+
       {/* Display user information */}
       <div>
         <p><strong>User ID:</strong> {user.userId}</p>
+        <p><strong>Name:</strong> {user.name}</p>
         <p><strong>Role:</strong> {user.role}</p>
       </div>
       
-      {/* Optional: Add other dashboard sections like a logout button */}
-      <button
-        onClick={() => {
-          // Clear localStorage and redirect to login
-          localStorage.clear();
-          window.location.href = '/signin';
-        }}
-      >
-        Log Out
-      </button>
+      
     </div>
   );
 };

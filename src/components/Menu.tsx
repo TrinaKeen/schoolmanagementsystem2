@@ -11,7 +11,7 @@ const menuItems = [
     title: "MENU",
     items: [
       { icon: "/home.png", label: "Dashboard", href: "/dashboard", visible: ["admin", "instructor"] },
-      { icon: "/home.png", label: "Dashboard", href: "/student", visible: ["student"] },
+      { icon: "/home.png", label: "My Account", href: "/student", visible: ["student"] },
       { icon: "/subject.png", label: "Apply for Admission", href: "/list/apply-admission", visible: ["student"] },
       { icon: "/subject.png", label: "Application Status", href: "/list/apply-admission2", visible: ["student"] },
       { icon: "/teacher.png", label: "Instructors", href: "/list/instructors", visible: ["admin", "instructor"] },
@@ -23,7 +23,7 @@ const menuItems = [
       { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] },     
       { icon: "/result.png", label: "Fees", href: "/list/fees", visible: ["student"] },
       { icon: "/message.png", label: "Messages", href: "/list/messages", visible: ["admin", "instructor", "student"] },
-      { icon: "/announcement.png", label: "Announcements", href: "/list/announcements", visible: ["admin", "instructor", "student"] },
+      { icon: "/announcement.png", label: "Announcements", href: "/list/announcements", visible: [ ] },
     ],
   },
   {
