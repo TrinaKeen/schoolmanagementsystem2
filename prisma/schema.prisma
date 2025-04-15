@@ -173,6 +173,14 @@ model Notification {
   user       User     @relation(fields: [userId], references: [id])
 }
 
+model Message {
+  id        Int      @id @default(autoincrement())
+  userId Int
+  message     String
+  createdAt DateTime @default(now())
+}
+
+
 model Payment {
   id            Int      @id @default(autoincrement())
   studentId     Int
