@@ -10,7 +10,7 @@ const menuItems = [
   {
     title: "MENU",
     items: [
-      { icon: "/home.png", label: "Dashboard", href: "/dashboard", visible: ["admin", "instructor"] },
+      { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["admin", "instructor"] },
       { icon: "/home.png", label: "My Account", href: "/student", visible: ["student"] },
       { icon: "/subject.png", label: "Apply for Admission", href: "/list/apply-admission", visible: ["student"] },
       { icon: "/subject.png", label: "Application Status", href: "/list/apply-admission2", visible: ["student"] },
