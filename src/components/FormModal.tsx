@@ -20,6 +20,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 // useForm is a hook that manages form state, validation, and input control
 
 // Type Definitions
@@ -64,6 +65,12 @@ FormModalProps) {
       return acc;
     }, {} as Record<string, any>),
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setValues(initialValues);
+    }
+  }, [initialValues]);
 
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values); // Call the parent’s submit function

@@ -1,8 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Group, Table, Box, Text, ActionIcon } from "@mantine/core";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
+import {
+  Box,
+  Button,
+  Center,
+  Group,
+  ScrollArea,
+  Table,
+  Text,
+  TextInput,
+  UnstyledButton,
+  Select,
+  ActionIcon,
+} from "@mantine/core";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconPencil,
+  IconSearch,
+  IconSelector,
+  IconTrash,
+} from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import FormModal from "@/components/FormModal";
 import newUserFields from "@/utils/fields/newUserFields";
@@ -14,36 +34,87 @@ interface User {
   email: string;
 }
 
+interface ThProps {
+  children: React.ReactNode;
+  reversed: boolean;
+  sorted: boolean;
+  onSort: () => void;
+}
+
+function Th({ children, reversed, sorted, onSort }: ThProps) {
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
+  return (
+    <Table.Th style={{ cursor: "pointer", padding: "12px 8px" }}>
+      <UnstyledButton onClick={onSort} style={{ width: "100%" }}>
+        <Group justify="space-between" gap={4}>
+          <Text fw={600} fz="sm">
+            {children}
+          </Text>
+          <Center>
+            <Icon size={16} stroke={1.5} />
+          </Center>
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  );
+}
+
 export default function AddNewUserPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editUser, setEditUser] = useState<User | null>(null);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<keyof User | null>(null);
+  const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [roleFilter, setRoleFilter] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const fetchUsers = async () => {
     try {
       const res = await axios.get("/api/users");
       setUsers(res.data);
     } catch (err) {
-      console.error("Failed to fetch users:", err);
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch users.",
+        color: "red",
+      });
     }
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const handleSaveUser = async (userData: Record<string, any>) => {
     try {
       if (editUser) {
         await axios.put("/api/users", { ...userData, id: editUser.id });
+        notifications.show({
+          title: "Success",
+          message: "User updated successfully!",
+          color: "green",
+        });
       } else {
         await axios.post("/api/users", userData);
+        notifications.show({
+          title: "Success",
+          message: "User added successfully!",
+          color: "green",
+        });
       }
       setModalOpen(false);
       setEditUser(null);
       fetchUsers();
     } catch (err) {
-      console.error("Failed to save user:", err);
+      notifications.show({
+        title: "Error",
+        message: "Failed to save user.",
+        color: "red",
+      });
     }
   };
 
@@ -51,11 +122,68 @@ export default function AddNewUserPage() {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       await axios.delete("/api/users", { data: { id } });
+      notifications.show({
+        title: "Deleted",
+        message: "User deleted successfully!",
+        color: "green",
+      });
       fetchUsers();
     } catch (err) {
-      console.error("Failed to delete user:", err);
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete user.",
+        color: "red",
+      });
     }
   };
+
+  const filteredUsers = users.filter((user) => {
+    const query = search.toLowerCase();
+    const roleMatch = roleFilter ? user.role === roleFilter : true;
+    return (
+      roleMatch &&
+      (user.role.toLowerCase().includes(query) ||
+        user.username.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query))
+    );
+  });
+
+  const sortedUsers = sortBy
+    ? [...filteredUsers].sort((a, b) => {
+        const dir = reverseSortDirection ? -1 : 1;
+        return String(a[sortBy]).localeCompare(String(b[sortBy])) * dir;
+      })
+    : filteredUsers;
+
+  const setSorting = (field: keyof User) => {
+    const reversed = field === sortBy ? !reverseSortDirection : false;
+    setReverseSortDirection(reversed);
+    setSortBy(field);
+  };
+
+  const rows = sortedUsers.map((user) => (
+    <Table.Tr key={user.id}>
+      <Table.Td style={{ padding: "10px 8px" }}>{user.role}</Table.Td>
+      <Table.Td style={{ padding: "10px 8px" }}>{user.username}</Table.Td>
+      <Table.Td style={{ padding: "10px 8px" }}>{user.email}</Table.Td>
+      <Table.Td style={{ padding: "10px 8px" }}>
+        <Group gap="xs">
+          <ActionIcon
+            color="blue"
+            onClick={() => {
+              setEditUser(user);
+              setModalOpen(true);
+            }}
+          >
+            <IconPencil size={16} />
+          </ActionIcon>
+          <ActionIcon color="red" onClick={() => handleDeleteUser(user.id)}>
+            <IconTrash size={16} />
+          </ActionIcon>
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
   return (
     <Box p="md">
@@ -73,50 +201,74 @@ export default function AddNewUserPage() {
         </Button>
       </Group>
 
-      <Table striped highlightOnHover withTableBorder>
-        <thead>
-          <tr>
-            <th>Role</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 ? (
-            <tr>
-              <td colSpan={4}>No users found.</td>
-            </tr>
-          ) : (
-            users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.role}</td>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>
-                  <Group gap="xs">
-                    <ActionIcon
-                      color="blue"
-                      onClick={() => {
-                        setEditUser(user);
-                        setModalOpen(true);
-                      }}
-                    >
-                      <IconPencil size={16} />
-                    </ActionIcon>
-                    <ActionIcon
-                      color="red"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      <IconTrash size={16} />
-                    </ActionIcon>
-                  </Group>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
+      <Group mb="md" gap="md">
+        <TextInput
+          placeholder="Search by role, username or email"
+          leftSection={<IconSearch size={16} stroke={1.5} />}
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
+        />
+
+        <Select
+          placeholder="Filter by role"
+          data={["admin", "instructor", "student"]}
+          clearable
+          value={roleFilter}
+          onChange={setRoleFilter}
+        />
+      </Group>
+
+      <ScrollArea>
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="xs"
+          miw={700}
+          layout="fixed"
+          striped
+          withTableBorder
+          highlightOnHover
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Th
+                sorted={sortBy === "role"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("role")}
+              >
+                Role
+              </Th>
+              <Th
+                sorted={sortBy === "username"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("username")}
+              >
+                Username
+              </Th>
+              <Th
+                sorted={sortBy === "email"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("email")}
+              >
+                Email
+              </Th>
+              <Table.Th style={{ padding: "12px 8px" }}>Actions</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {rows.length > 0 ? (
+              rows
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={4}>
+                  <Text fw={500} ta="center">
+                    No users found.
+                  </Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
 
       <FormModal
         opened={modalOpen}
@@ -128,11 +280,9 @@ export default function AddNewUserPage() {
         fields={newUserFields}
         title={editUser ? "Edit User" : "Add New User"}
         initialValues={
-          editUser ||
-          newUserFields.reduce((acc, field) => {
-            acc[field.name] = "";
-            return acc;
-          }, {} as Record<string, any>)
+          editUser
+            ? { ...editUser, password: "" }
+            : { role: "", username: "", email: "", password: "" }
         }
       />
     </Box>
