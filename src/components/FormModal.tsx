@@ -17,6 +17,7 @@ import {
   TextInput,
   Select,
   PasswordInput,
+  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 // useForm is a hook that manages form state, validation, and input control
@@ -30,6 +31,8 @@ interface FieldConfig {
   options?: { label: string; value: string }[]; // Optional: for select or radio inputs
 }
 
+type ModalType = "create" | "update" | "delete" | null;
+
 interface FormModalProps {
   opened: boolean; // Whether the modal is visible
   onClose: () => void; // Function to call when closing the modal
@@ -37,6 +40,8 @@ interface FormModalProps {
   fields: FieldConfig[]; // Array of fields to dynamically render
   title: string; // Title of the modal
   initialValues?: Record<string, any>; // Optional: initial values for the form fields
+  type?: ModalType;
+  data?: any;
 }
 
 // Component Definition
@@ -48,6 +53,9 @@ export default function FormModal({
   onSubmit,
   fields,
   title,
+  initialValues = {},
+  type = "create",
+  data,
 }: // Initialize Form State
 FormModalProps) {
   const form = useForm({
@@ -66,50 +74,64 @@ FormModalProps) {
   // This dynamically renders the fields
   return (
     <Modal opened={opened} onClose={onClose} title={title} size="lg">
-      <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
-        {fields.map((field) => {
-          if (field.type === "select") {
+      {type === "delete" ? (
+        <Box>
+          <Text mb="md">Are you sure you want to delete this item?</Text>
+          <Group justify="flex-end">
+            <Button variant="default" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={() => onSubmit(data)}>
+              Delete
+            </Button>
+          </Group>
+        </Box>
+      ) : (
+        <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+          {fields.map((field) => {
+            if (field.type === "select") {
+              return (
+                <Select
+                  key={field.name}
+                  label={field.label}
+                  data={field.options || []}
+                  required={field.required}
+                  {...form.getInputProps(field.name)}
+                  mt="sm"
+                  placeholder="Select..."
+                />
+              );
+            }
+
+            if (field.type === "password") {
+              return (
+                <PasswordInput
+                  key={field.name}
+                  label={field.label}
+                  required={field.required}
+                  {...form.getInputProps(field.name)}
+                  mt="sm"
+                />
+              );
+            }
+
             return (
-              <Select
+              <TextInput
                 key={field.name}
                 label={field.label}
-                data={field.options || []}
+                type={field.type || "text"}
                 required={field.required}
                 {...form.getInputProps(field.name)}
                 mt="sm"
-                placeholder="Select..."
               />
             );
-          }
+          })}
 
-          if (field.type === "password") {
-            return (
-              <PasswordInput
-                key={field.name}
-                label={field.label}
-                required={field.required}
-                {...form.getInputProps(field.name)}
-                mt="sm"
-              />
-            );
-          }
-
-          return (
-            <TextInput
-              key={field.name}
-              label={field.label}
-              type={field.type || "text"}
-              required={field.required}
-              {...form.getInputProps(field.name)}
-              mt="sm"
-            />
-          );
-        })}
-
-        <Group justify="flex-end" mt="md">
-          <Button type="submit">Submit</Button>
-        </Group>
-      </Box>
+          <Group justify="flex-end" mt="md">
+            <Button type="submit">Submit</Button>
+          </Group>
+        </Box>
+      )}
     </Modal>
   );
 }
