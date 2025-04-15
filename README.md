@@ -24,4 +24,5 @@ npm install bcrypt
 npm install @mantine/core @mantine/hooks @mantine/form
 
 
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import formidable, { IncomingForm } from 'formidable';
 import { generateStudentNumber } from '../lib/generateStudentNumber';
- 
+
 const prisma = new PrismaClient();
  
 export const config = {
@@ -37,12 +37,13 @@ export default async function handler(req, res) {
           email, phoneNumber, homeAddress, emergencyContactName, emergencyContactPhoneNumber,
           emergencyContactRelationship, previousSchools, yearOfGraduation, gpa, programId
         } = fields;
- 
+
+
         // Look for existing student by email
         let student = await prisma.student.findUnique({
           where: { email: String(email) },
         });
- 
+
         if (!student) {
           const nextStudentNumber = await generateStudentNumber();
  
@@ -77,7 +78,7 @@ export default async function handler(req, res) {
             status: 'pending',
           },
         });
- 
+
         const documentUploads = await Promise.all(
           Object.entries(files).map(async ([docType, fileObj]) => {
             const file = Array.isArray(fileObj) ? fileObj[0] : fileObj;
