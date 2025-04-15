@@ -23,14 +23,22 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid email or password' });
       }
 
-      // Create JWT token
+      // Create JWT token with userId, role, and name
       const token = jwt.sign(
-        { userId: user.id, role: user.role },
+        { userId: user.id, role: user.role, name: user.name }, // Include name in the token
         process.env.JWT_SECRET, // Store this in .env
         { expiresIn: '1h' }
       );
 
-      return res.status(200).json({ token });
+      // Return token along with user info (userId, name, role)
+      return res.status(200).json({
+        token,
+        user: {
+          userId: user.id,
+          name: user.name,
+          role: user.role,
+        }
+      });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
