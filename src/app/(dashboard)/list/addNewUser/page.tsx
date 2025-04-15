@@ -120,7 +120,6 @@ export default function AddNewUserPage() {
   };
 
   const handleDeleteUser = async (id: number, username: string) => {
-    if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       await axios.delete("/api/users", { data: { id } });
       addNotification(`User ${username} has been deleted successfully!`);
