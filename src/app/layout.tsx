@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { MantineProvider, ColorSchemeScript } from '@mantine/core';
-import '@mantine/core/styles.css';
+import { MantineProvider, ColorSchemeScript } from "@mantine/core";
+import "@mantine/core/styles.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +23,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={inter.className}>
-        {/* ✅ TYPE-SAFE WORKAROUND TO FIX TS ISSUE */}
+        {/* TYPE-SAFE WORKAROUND TO FIX TS ISSUE */}
         <MantineProvider
           {...({
             withGlobalStyles: true,
