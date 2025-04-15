@@ -3,10 +3,6 @@ import formidable, { IncomingForm } from 'formidable';
 import fs from 'fs';
 import { generateStudentNumber } from '../lib/generateStudentNumber';
 
-// ✅ ADD: NextAuth session
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]'; // adjust if your path is different
-
 const prisma = new PrismaClient();
 
 export const config = {
@@ -29,15 +25,6 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    // ✅ ADD: Get logged-in session
-    const session = await getServerSession(req, res, authOptions);
-
-    if (!session || !session.user || !session.user.id) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const userId = session.user.id;
-
     const form = new IncomingForm({ multiples: true, uploadDir: './public/uploads', keepExtensions: true });
 
     form.parse(req, async (err, fields, files) => {
@@ -52,15 +39,12 @@ export default async function handler(req, res) {
           emergencyContactRelationship, previousSchools, yearOfGraduation, gpa, programId
         } = fields;
 
-        // ✅ ADD: Check if user already has a student
-        const user = await prisma.user.findUnique({
-          where: { id: userId },
-          include: { student: true },
+        // Look for existing student by email
+        let student = await prisma.student.findUnique({
+          where: { email: String(email) },
         });
 
-        let student;
-
-        if (!user.student) {
+        if (!student) {
           const nextStudentNumber = await generateStudentNumber();
 
           student = await prisma.student.create({
@@ -83,17 +67,8 @@ export default async function handler(req, res) {
               previousSchools: String(previousSchools),
               yearOfGraduation: parseInt(yearOfGraduation, 10),
               gpa: parseFloat(gpa),
-              user: { connect: { id: userId } }, // ✅ Link to user
             },
           });
-
-          // ✅ Optional: update user with studentId (if schema supports it)
-          await prisma.user.update({
-            where: { id: userId },
-            data: { studentId: student.id },
-          });
-        } else {
-          student = user.student;
         }
 
         const newApplication = await prisma.studentApplication.create({
@@ -104,14 +79,13 @@ export default async function handler(req, res) {
           },
         });
 
-        const filesArray = Array.isArray(files) ? files : Object.values(files);
-
         const documentUploads = await Promise.all(
-          filesArray.flat().map(async (file) => {
+          Object.entries(files).map(async ([docType, fileObj]) => {
+            const file = Array.isArray(fileObj) ? fileObj[0] : fileObj;
             return await prisma.documentUpload.create({
               data: {
                 studentId: student.id,
-                documentType: file.originalFilename || 'application_document',
+                documentType: docType,
                 fileUrl: file.filepath.replace('public/', '/'),
               },
             });
