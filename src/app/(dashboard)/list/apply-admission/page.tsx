@@ -2,7 +2,7 @@ import CreateStudentApplicationForm from "@/components/forms/CreateStudentApplic
 
 const CreateStudentApplicationPage = () => {
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 text-black">
       <h1 className="text-xl font-semibold">Create Student Application</h1>
       <CreateStudentApplicationForm />
     </div>
@@ -10,3 +10,4 @@ const CreateStudentApplicationPage = () => {
 };
 
 export default CreateStudentApplicationPage;
+  
