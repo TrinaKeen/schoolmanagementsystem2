@@ -13,6 +13,7 @@ import {
   UnstyledButton,
   Select,
   ActionIcon,
+  Modal,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -26,6 +27,7 @@ import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import FormModal from "@/components/FormModal";
 import newUserFields from "@/utils/fields/newUserFields";
+import { useNotification } from "@/context/notificationContent";
 
 interface User {
   id: number;
@@ -71,10 +73,9 @@ export default function AddNewUserPage() {
   const [sortBy, setSortBy] = useState<keyof User | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { addNotification } = useNotification();
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [deleteUsername, setDeleteUsername] = useState<string>("");
 
   const fetchUsers = async () => {
     try {
@@ -89,22 +90,22 @@ export default function AddNewUserPage() {
     }
   };
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const handleSaveUser = async (userData: Record<string, any>) => {
     try {
       if (editUser) {
         await axios.put("/api/users", { ...userData, id: editUser.id });
-        notifications.show({
-          title: "Success",
-          message: "User updated successfully!",
-          color: "green",
-        });
+        addNotification(
+          `User ${userData.username} has been added successfully!`
+        );
       } else {
         await axios.post("/api/users", userData);
-        notifications.show({
-          title: "Success",
-          message: "User added successfully!",
-          color: "green",
-        });
+        addNotification(
+          `User ${userData.username} has been added successfully!`
+        );
       }
       setModalOpen(false);
       setEditUser(null);
@@ -118,15 +119,11 @@ export default function AddNewUserPage() {
     }
   };
 
-  const handleDeleteUser = async (id: number) => {
+  const handleDeleteUser = async (id: number, username: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       await axios.delete("/api/users", { data: { id } });
-      notifications.show({
-        title: "Deleted",
-        message: "User deleted successfully!",
-        color: "green",
-      });
+      addNotification(`User ${username} has been deleted successfully!`);
       fetchUsers();
     } catch (err) {
       notifications.show({
@@ -175,10 +172,16 @@ export default function AddNewUserPage() {
               setModalOpen(true);
             }}
           >
-            <IconPencil size={16} />
+            <IconPencil size={18} />
           </ActionIcon>
-          <ActionIcon color="red" onClick={() => handleDeleteUser(user.id)}>
-            <IconTrash size={16} />
+          <ActionIcon
+            color="red"
+            onClick={() => {
+              setDeleteUserId(user.id);
+              setDeleteUsername(user.username);
+            }}
+          >
+            <IconTrash size={18} />
           </ActionIcon>
         </Group>
       </Table.Td>
@@ -285,6 +288,33 @@ export default function AddNewUserPage() {
             : { role: "", username: "", email: "", password: "" }
         }
       />
+      <Modal
+        opened={deleteUserId !== null}
+        onClose={() => setDeleteUserId(null)}
+        title="Confirm Deletion"
+        centered
+      >
+        <Text>
+          Are you sure you want to delete <b>{deleteUsername}</b>?
+        </Text>
+
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={() => setDeleteUserId(null)}>
+            Cancel
+          </Button>
+          <Button
+            color="red"
+            onClick={() => {
+              if (deleteUserId !== null) {
+                handleDeleteUser(deleteUserId, deleteUsername);
+                setDeleteUserId(null);
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </Box>
   );
 }

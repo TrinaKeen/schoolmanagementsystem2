@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
+import { NotificationProvider } from "@/context/notificationContent";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import "@mantine/core/styles.css";
 
@@ -23,15 +23,17 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={inter.className}>
-        {/* TYPE-SAFE WORKAROUND TO FIX TS ISSUE */}
-        <MantineProvider
-          {...({
-            withGlobalStyles: true,
-            withNormalizeCSS: true,
-          } as React.ComponentProps<typeof MantineProvider>)}
-        >
-          {children}
-        </MantineProvider>
+        <NotificationProvider>
+          {/* TYPE-SAFE WORKAROUND TO FIX TS ISSUE */}
+          <MantineProvider
+            {...({
+              withGlobalStyles: true,
+              withNormalizeCSS: true,
+            } as React.ComponentProps<typeof MantineProvider>)}
+          >
+            {children}
+          </MantineProvider>
+        </NotificationProvider>
       </body>
     </html>
   );
