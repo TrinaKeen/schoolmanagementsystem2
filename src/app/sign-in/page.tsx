@@ -12,7 +12,7 @@ const SignInPage = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+  
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
@@ -20,20 +20,28 @@ const SignInPage = () => {
       },
       body: JSON.stringify({ email, password }),
     });
-
+  
     const data = await response.json();
-
+  
     if (response.ok) {
-      // Save the token in localStorage
+      // Save the token and user details in localStorage
       localStorage.setItem('token', data.token);
-
+      localStorage.setItem('userId', data.user.userId);
+      localStorage.setItem('name', data.user.username);
+      localStorage.setItem('role', data.user.role);
+  
       // Set success message
       setSuccess('Login successful! Redirecting...');
       setError(''); // Clear any previous error messages
-
+  
+      // Optionally log user details to the console
+      console.log("User ID:", data.user.userId);
+      console.log("User Name:", data.user.username);
+      console.log("User Role:", data.user.role);
+  
       // Redirect to the /admin/dashboard page
       setTimeout(() => {
-        router.push('/admin');
+        router.push('/student');
       }, 2000); // Wait 2 seconds before redirecting
     } else {
       // Handling different error cases based on response
@@ -47,6 +55,7 @@ const SignInPage = () => {
       setSuccess('');  // Clear any previous success message
     }
   };
+  
 
   return (
     <div className={styles['login-form']}>
