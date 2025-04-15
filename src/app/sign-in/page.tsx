@@ -30,21 +30,22 @@ const SignInPage = () => {
       localStorage.setItem('name', data.user.username);
       localStorage.setItem('role', data.user.role);
   
-      // Set success message
+      // Show success message
       setSuccess('Login successful! Redirecting...');
-      setError(''); // Clear any previous error messages
+      setError('');
   
-      // Optionally log user details to the console
-      console.log("User ID:", data.user.userId);
-      console.log("User Name:", data.user.username);
-      console.log("User Role:", data.user.role);
+      // Determine redirect path based on role
+      const role = data.user.role?.toLowerCase(); // safer lowercase comparison
+      const redirectPath = role === 'admin' ? '/admin' : '/student';
   
-      // Redirect to the /admin/dashboard page
+      console.log("Redirecting to:", redirectPath);
+  
+      // Redirect after a short delay
       setTimeout(() => {
-        router.push('/student');
-      }, 2000); // Wait 2 seconds before redirecting
+        router.push(redirectPath);
+      }, 2000);
     } else {
-      // Handling different error cases based on response
+      // Handle error messages
       if (data.error === 'Invalid credentials') {
         setError('Incorrect email or password. Please try again.');
       } else if (data.error === 'Email not registered') {
@@ -52,10 +53,10 @@ const SignInPage = () => {
       } else {
         setError(data.error || 'An error occurred during login.');
       }
-      setSuccess('');  // Clear any previous success message
+      setSuccess('');
     }
   };
-  
+    
 
   return (
     <div className={styles['login-form']}>
