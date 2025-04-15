@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import formidable, { IncomingForm } from 'formidable';
-import fs from 'fs';
 import { generateStudentNumber } from '../lib/generateStudentNumber';
  
 const prisma = new PrismaClient();
