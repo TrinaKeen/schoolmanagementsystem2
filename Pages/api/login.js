@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         token,
         user: {
           userId: user.id,
-          name: user.name,
+          username: user.username,
           role: user.role,
         }
       });
