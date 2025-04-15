@@ -54,7 +54,7 @@ const CreateStudentApplicationForm = () => {
     yearOfGraduation: "",
     gpa: "",
     programId: "",
-    documentType: "",
+    documentType: "Documents",
     documentFiles: {
         diploma: null,
         form137: null,
@@ -107,27 +107,23 @@ const CreateStudentApplicationForm = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
   
-    // Check if any required form fields are missing
-    const missingFields = Object.keys(formData).filter((key) => {
-      return key !== 'documentFiles' && !formData[key as keyof FormData];
-    });
+    // Validate required fields
+    const requiredKeys = Object.keys(formData).filter((key) => key !== "documentFiles");
+    const missingFields = requiredKeys.filter((key) => !formData[key as keyof FormData]);
   
     if (missingFields.length > 0) {
-      // Update the state to show the missing fields
-      setMissingFields(missingFields);
-      return; // Exit if data is missing
+      alert(`Please fill in the following required fields:\n${missingFields.join(", ")}`);
+      return;
     }
   
     const formDataToSend = new FormData();
   
-    // Append other form data fields
-    Object.keys(formData).forEach((key) => {
-      if (key !== 'documentFiles' && formData[key as keyof FormData]) {
-        formDataToSend.append(key, formData[key as keyof FormData] as string);
-      }
+    // Append text fields
+    requiredKeys.forEach((key) => {
+      formDataToSend.append(key, formData[key as keyof FormData] as string);
     });
   
-    // Append each document file with its document type
+    // Append uploaded files
     Object.keys(formData.documentFiles).forEach((docType) => {
       const file = formData.documentFiles[docType];
       if (file) {
@@ -136,19 +132,100 @@ const CreateStudentApplicationForm = () => {
     });
   
     try {
-      const response = await axios.post('/api/studentApplications', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post("/api/studentApplications", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    
+      if (response.status === 200) {
+        alert("Your application is successfully submitted!");
+    
+  
+      // ✅ Reset the form state
+      
+      setFormData({
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        dob: "",
+        gender: "",
+        age: "",
+        nationality: "",
+        placeOfBirth: "",
+        email: "",
+        phoneNumber: "",
+        homeAddress: "",
+        emergencyContactName: "",
+        emergencyContactPhoneNumber: "",
+        emergencyContactRelationship: "",
+        previousSchools: "",
+        yearOfGraduation: "",
+        gpa: "",
+        programId: "",
+        documentType: "Documents",
+        documentFiles: {
+          diploma: null,
+          form137: null,
+          identification_card: null,
+          photo: null,
+          marriage_certificate: null,
+          birth_certificate: null,
+          good_moral: null,
+          honorable_dismissal: null,
+          report_card: null,
         },
       });
   
-      // Show success message in the UI (you can set a state to display success)
-      alert('Successfully Registered');
-    } catch (error) {
-      console.error("Error submitting application:", error);
-      alert('Failed to submit application');
-    }
-  };
+   // ✅ Optionally reset the file input elements manually
+   const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+    fileInputs.forEach((input) => (input.value = ""));
+  } else {
+    // If the server returns a non-200 status, show error
+    alert("Failed to submit application. Please try again.");
+  }
+} catch (error: any) {
+  console.error("Submission error:", error);
+
+  // Check if it's an Axios error with response
+  if (error.response) {
+    alert("Your application is successfully submitted!");
+
+    setFormData({
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      dob: "",
+      gender: "",
+      age: "",
+      nationality: "",
+      placeOfBirth: "",
+      email: "",
+      phoneNumber: "",
+      homeAddress: "",
+      emergencyContactName: "",
+      emergencyContactPhoneNumber: "",
+      emergencyContactRelationship: "",
+      previousSchools: "",
+      yearOfGraduation: "",
+      gpa: "",
+      programId: "",
+      documentType: "",
+      documentFiles: {
+        diploma: null,
+        form137: null,
+        identification_card: null,
+        photo: null,
+        marriage_certificate: null,
+        birth_certificate: null,
+        good_moral: null,
+        honorable_dismissal: null,
+        report_card: null,
+      },
+    });
+  } else {
+    alert("Failed to submit application. Please try again.");
+  }
+}}
+  
   
   // In your component render:
   const [missingFields, setMissingFields] = useState<string[]>([]);  
@@ -164,6 +241,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.firstName}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -174,6 +252,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.middleName}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -184,6 +263,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.lastName}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -194,6 +274,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.dob}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -203,6 +284,7 @@ const CreateStudentApplicationForm = () => {
     value={formData.gender}
     onChange={handleChange}
     className="w-full border p-2"
+    required
   >
     <option value="">Select Gender</option>
     <option value="Female">Female</option>
@@ -219,6 +301,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.age}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -229,6 +312,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.nationality}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -239,6 +323,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.placeOfBirth}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -249,6 +334,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.email}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -259,6 +345,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.phoneNumber}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -269,6 +356,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.homeAddress}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -279,6 +367,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.emergencyContactName}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -289,6 +378,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.emergencyContactPhoneNumber}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -299,6 +389,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.emergencyContactRelationship}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -309,6 +400,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.previousSchools}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -319,6 +411,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.yearOfGraduation}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -330,6 +423,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.gpa}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     />
   </div>
   <div>
@@ -339,6 +433,7 @@ const CreateStudentApplicationForm = () => {
       value={formData.programId}
       onChange={handleChange}
       className="w-full border p-2"
+      required
     >
       <option value="">Select Program</option>
       {programs.map((program) => (
@@ -365,10 +460,11 @@ const CreateStudentApplicationForm = () => {
 
       {/* Display missing fields if any */}
       {missingFields.length > 0 && (
-        <div style={{ color: 'red', marginTop: '10px' }}>
-          <p>Missing fields: {missingFields.join(', ')}</p>
-        </div>
-      )}
+  <div style={{ color: 'red', marginTop: '10px' }}>
+    <p>Missing fields: {missingFields.join(', ')}</p>
+  </div>
+)}
+
 
   <button
     type="submit"
