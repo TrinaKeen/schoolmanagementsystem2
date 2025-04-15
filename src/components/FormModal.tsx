@@ -2,12 +2,12 @@
 // Create a reusable React component with mmantine ui's modal form.
 // The component should accept props like opened, onClose, onSubmit, fields and title
 // The `fields` prop should be an array of field config objects
-// Use `@mantine/form` to handle form state. 
+// Use `@mantine/form` to handle form state.
 // Return the `<Modal>` containing the form and a Submit button
 
 // Use prisma schema
 
-'use client';
+"use client";
 
 import {
   Button,
@@ -15,8 +15,10 @@ import {
   Modal,
   Box,
   TextInput,
-} from '@mantine/core';
-import { useForm } from '@mantine/form';
+  Select,
+  PasswordInput,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
 // useForm is a hook that manages form state, validation, and input control
 
 // Type Definitions
@@ -25,6 +27,7 @@ interface FieldConfig {
   label: string; // Displayed as the field's label in the UI
   type?: string; // Optional: input type ('text', 'email', 'date', etc.)
   required?: boolean; // Optional: whether the field is required
+  options?: { label: string; value: string }[]; // Optional: for select or radio inputs
 }
 
 interface FormModalProps {
@@ -33,6 +36,7 @@ interface FormModalProps {
   onSubmit: (values: Record<string, any>) => void; // Function called when form is submitted
   fields: FieldConfig[]; // Array of fields to dynamically render
   title: string; // Title of the modal
+  initialValues?: Record<string, any>; // Optional: initial values for the form fields
 }
 
 // Component Definition
@@ -44,12 +48,11 @@ export default function FormModal({
   onSubmit,
   fields,
   title,
-
-// Initialize Form State 
-}: FormModalProps) { 
+}: // Initialize Form State
+FormModalProps) {
   const form = useForm({
     initialValues: fields.reduce((acc, field) => {
-      acc[field.name] = ''; // Set each field to an empty string
+      acc[field.name] = ""; // Set each field to an empty string
       return acc;
     }, {} as Record<string, any>),
   });
@@ -64,16 +67,44 @@ export default function FormModal({
   return (
     <Modal opened={opened} onClose={onClose} title={title} size="lg">
       <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
-        {fields.map((field) => (
-          <TextInput
-            key={field.name} // unique React key
-            label={field.label} // shown in UI
-            type={field.type || 'text'} // default to 'text' if undefined
-            required={field.required} // add red asterisk if true
-            {...form.getInputProps(field.name)} // binds input value and events to form
-            mt="sm"  // top margin between inputs
-          />
-        ))}
+        {fields.map((field) => {
+          if (field.type === "select") {
+            return (
+              <Select
+                key={field.name}
+                label={field.label}
+                data={field.options || []}
+                required={field.required}
+                {...form.getInputProps(field.name)}
+                mt="sm"
+                placeholder="Select..."
+              />
+            );
+          }
+
+          if (field.type === "password") {
+            return (
+              <PasswordInput
+                key={field.name}
+                label={field.label}
+                required={field.required}
+                {...form.getInputProps(field.name)}
+                mt="sm"
+              />
+            );
+          }
+
+          return (
+            <TextInput
+              key={field.name}
+              label={field.label}
+              type={field.type || "text"}
+              required={field.required}
+              {...form.getInputProps(field.name)}
+              mt="sm"
+            />
+          );
+        })}
 
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
