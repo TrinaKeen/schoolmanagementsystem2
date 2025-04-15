@@ -24,6 +24,9 @@ npm install axios
 npm install @mantine/core @mantine/hooks @mantine/form
 npm install bcrypt
 npm install @mantine/core @mantine/hooks @mantine/form
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
