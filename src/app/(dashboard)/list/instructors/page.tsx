@@ -10,6 +10,8 @@
 // Include `useEffect`, `useState`, and `FormModal` integration
 // ChatGPT also created accompanying fields and form code skeleton
 
+// Further styling and table functions from mantine ui
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -19,7 +21,12 @@ import {
   Table,
   Box,
   Text,
+  TextInput,
+  UnstyledButton,
+  ScrollArea,
+  Center,
 } from '@mantine/core';
+import { IconSearch, IconSelector, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import axios from 'axios';
 import FormModal from '@/components/FormModal';
 import instructorFields from '@/utils/fields/instructorFields';
@@ -38,9 +45,40 @@ interface Instructor {
   dob?: string;
 }
 
+// Header column type for sortable headers
+interface ThProps {
+  children: React.ReactNode;
+  sorted: boolean;
+  reversed: boolean;
+  onSort: () => void;
+}
+
+// Sortable table header component
+function Th({ children, sorted, reversed, onSort }: ThProps) {
+  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+
+  return (
+    <Table.Th>
+      <UnstyledButton onClick={onSort} style={{ width: '100%' }}>
+        <Group justify="space-between">
+          <Text fw={600} size="sm">
+            {children}
+          </Text>
+          <Center>
+            <Icon size={16} />
+          </Center>
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  );
+}
+
 export default function InstructorsPage() {
   const [instructors, setInstructors] = useState<Instructor[]>([]);  // Holds the array of instructors returned from the backend
   const [modalOpen, setModalOpen] = useState(false);  // Controls whether the Add Instructor modal is open or closed
+  const [sortBy, setSortBy] = useState<keyof Instructor | null>(null);
+  const [reversed, setReversed] = useState(false);
+  const [search, setSearch] = useState('');
 
   // API fetch form the instructors table
   const fetchInstructors = async () => {
@@ -68,6 +106,31 @@ export default function InstructorsPage() {
     fetchInstructors();
   }, []);
 
+  // Search logic
+  const filtered = instructors.filter((ins) =>
+    Object.values(ins)
+      .join(' ')
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+   // Sort logic
+   const sorted = sortBy
+   ? [...filtered].sort((a, b) => {
+       const aValue = a[sortBy] ?? '';
+       const bValue = b[sortBy] ?? '';
+       return reversed
+         ? String(bValue).localeCompare(String(aValue))
+         : String(aValue).localeCompare(String(bValue));
+     })
+   : filtered;
+
+ const setSorting = (field: keyof Instructor) => {
+   const shouldReverse = field === sortBy ? !reversed : false;
+   setReversed(shouldReverse);
+   setSortBy(field);
+ };
+
   return (
     <Box p="md">
       <Group justify="space-between" style={{ marginBottom: '1rem' }}>
@@ -77,38 +140,64 @@ export default function InstructorsPage() {
         <Button onClick={() => setModalOpen(true)}>Add Instructor</Button>
       </Group>
 
-      <Table>
-        <thead>
-          <tr>
-            <th>Employee #</th>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Date Hired</th>
-          </tr>
-        </thead>
-        <tbody>
-          {instructors.length === 0 ? (
-            <tr>
-              <td colSpan={6}>No instructors found.</td>
-            </tr>
+      <TextInput
+        placeholder="Search instructor..."
+        leftSection={<IconSearch size={14} />}
+        mb="md"
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+      />
+
+      <ScrollArea>
+      <Table striped highlightOnHover withColumnBorders>
+        <Table.Thead>
+          <Table.Tr>
+            <Th sorted = {sortBy === 'employeeNumber' } reversed = {reversed} onSort = {() => setSorting('employeeNumber')}>
+              Employee #
+            </Th>
+            <Th sorted={sortBy === 'firstName'} reversed={reversed} onSort={() => setSorting('firstName')}>
+              Name
+            </Th>
+            <Th sorted={sortBy === 'department'} reversed={reversed} onSort={() => setSorting('department')}>
+              Department
+            </Th>
+            <Th sorted={sortBy === 'email'} reversed={reversed} onSort={() => setSorting('email')}>
+              Email
+            </Th>
+            <Th sorted={sortBy === 'phoneNumber'} reversed={reversed} onSort={() => setSorting('phoneNumber')}>
+              Phone
+            </Th>
+            <Th sorted={sortBy === 'dateHired'} reversed={reversed} onSort={() => setSorting('dateHired')}>
+              Date Hired
+            </Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {sorted.length === 0 ? (
+            <Table.Tr>
+              <Table.Td colSpan={6}>
+                <Text ta = "center">
+                No instructors found.
+                </Text>
+              </Table.Td>
+            </Table.Tr>
           ) : (
-            instructors.map((ins) => (
-              <tr key={ins.id}>
-                <td>{ins.employeeNumber}</td>
-                <td>
+            sorted.map((ins) => (
+              <Table.Tr key={ins.id}>
+                <Table.Td>{ins.employeeNumber}</Table.Td>
+                <Table.Td>
                   {ins.firstName} {ins.middleName} {ins.lastName}
-                </td>
-                <td>{ins.department}</td>
-                <td>{ins.email}</td>
-                <td>{ins.phoneNumber}</td>
-                <td>{new Date(ins.dateHired).toLocaleDateString()}</td>
-              </tr>
+                </Table.Td>
+                <Table.Td>{ins.department}</Table.Td>
+                <Table.Td>{ins.email}</Table.Td>
+                <Table.Td>{ins.phoneNumber}</Table.Td>
+                <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
+              </Table.Tr>
             ))
           )}
-        </tbody>
+        </Table.Tbody>
       </Table>
+      </ScrollArea>
 
       <FormModal
         opened={modalOpen} // Whether the modal is open
