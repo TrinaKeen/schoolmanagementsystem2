@@ -5,7 +5,7 @@ import {
   Button,
   Center,
   Group,
-  Modal,
+  Paper,
   ScrollArea,
   Select,
   Table,
@@ -26,11 +26,12 @@ import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
 import { notifications } from "@mantine/notifications";
 import studentApprovalFields from "@/utils/fields/studentApprovalFields";
+import { Label } from "recharts";
 
 interface Application {
   id: number;
   student: {
-    id: number;
+    studentNumber: string;
     firstName: string;
     middleName?: string;
     lastName: string;
@@ -48,6 +49,13 @@ interface Application {
     gpa: string;
     email: string;
     dob: string;
+    documentUpload?: {
+      id: number;
+      studentId: number;
+      documentType: string;
+      fileUrl: string;
+      uploadDate: string;
+    }[];
   };
   program: {
     id: number;
@@ -102,7 +110,7 @@ export default function StudentApprovalPage() {
   const fetchApplications = async () => {
     try {
       const res = await axios.get("/api/studentApproval", {
-        params: statusFilter ? { status: statusFilter } : {},
+        params: statusFilter ? {} : {},
       });
 
       console.log("Fetched applications:", res.data);
@@ -134,9 +142,11 @@ export default function StudentApprovalPage() {
         adminId: 1, // Replace with actual admin id in real setup
       });
 
+      console.log("Selected student ID:", selectedApp?.student?.studentNumber);
+
       if (statusUpdate === "approved") {
         await axios.post("/api/studentApproval?status=approved", {
-          studentId: selectedApp.student.id,
+          studentId: selectedApp.student.studentNumber,
           firstName: selectedApp.student.firstName,
           lastName: selectedApp.student.lastName,
           email: selectedApp.student.email,
@@ -249,12 +259,16 @@ export default function StudentApprovalPage() {
           leftSection={<IconSearch size={16} stroke={1.5} />}
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
-          w="300px"
+          w="500px"
         />
 
         <Select
           placeholder="Filter by status"
-          data={["pending", "approved", "rejected"]}
+          data={[
+            { value: "pending", label: "Pending" },
+            { value: "approved", label: "Approved" },
+            { value: "rejected", label: "Rejected" },
+          ]}
           clearable
           value={statusFilter}
           onChange={setStatusFilter}
@@ -307,11 +321,13 @@ export default function StudentApprovalPage() {
         title="Update Student Application"
         onSubmit={handleUpdateStatus}
         initialValues={{
-          studentId: selectedApp?.student.id,
+          studentId: selectedApp?.student.studentNumber ?? "",
           firstName: selectedApp?.student.firstName,
           middleName: selectedApp?.student.middleName ?? "",
           lastName: selectedApp?.student.lastName,
-          dob: selectedApp?.student.dob,
+          dob: selectedApp?.student.dob
+            ? new Date(selectedApp.student.dob).toISOString().split("T")[0]
+            : "",
           gender: selectedApp?.student.gender,
           age: selectedApp?.student.age,
           nationality: selectedApp?.student.nationality,
@@ -334,7 +350,59 @@ export default function StudentApprovalPage() {
           status: statusUpdate,
           rejectionReason: rejectionReason,
         }}
-      />
+      >
+        {(selectedApp?.student?.documentUpload ?? []).length > 0 && (
+          <Box mt="md">
+            <Text fw={600} mb="xs">
+              Uploaded Documents
+            </Text>
+            {(selectedApp?.student?.documentUpload ?? []).length > 0 && (
+              <Box mt="lg">
+                {selectedApp?.student?.documentUpload?.map((doc) => (
+                  <Paper
+                    key={doc.fileUrl}
+                    shadow="xs"
+                    radius="md"
+                    p="md"
+                    withBorder
+                    mb="sm"
+                  >
+                    <Group justify="space-between">
+                      <Box>
+                        <Text size="sm" fw={500}>
+                          {doc.documentType}
+                        </Text>
+                        <Text size="xs" c="dimmed">
+                          Uploaded on{" "}
+                          {new Date(doc.uploadDate).toLocaleDateString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </Text>
+                      </Box>
+
+                      <Button
+                        size="xs"
+                        variant="light"
+                        component="a"
+                        href={doc.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View
+                      </Button>
+                    </Group>
+                  </Paper>
+                ))}
+              </Box>
+            )}
+          </Box>
+        )}
+      </FormModal>
     </Box>
   );
 }
