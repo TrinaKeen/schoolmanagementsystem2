@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Error logging
       return res.status(201).json(newCourse);
     } catch (err) {
-      console.error('POST /api/instructors error:', err);
+      console.error('POST /api/courses error:', err);
       return res.status(500).json({ error: 'Failed to add course' });
     }
   }
