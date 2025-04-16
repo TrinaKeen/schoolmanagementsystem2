@@ -165,24 +165,29 @@ export default function AddNewUserPage() {
       <Table.Td style={{ padding: "10px 8px" }}>{user.email}</Table.Td>
       <Table.Td style={{ padding: "10px 8px" }}>
         <Group gap="xs">
-          <ActionIcon
-            color="blue"
+          <Button
+            size="xs"
+            variant="light"
+            leftSection={<IconPencil size={14} />}
             onClick={() => {
               setEditUser(user);
               setModalOpen(true);
             }}
           >
-            <IconPencil size={18} />
-          </ActionIcon>
-          <ActionIcon
+            Edit
+          </Button>
+          <Button
+            size="xs"
             color="red"
+            variant="light"
+            leftSection={<IconTrash size={14} />}
             onClick={() => {
               setDeleteUserId(user.id);
               setDeleteUsername(user.username);
             }}
           >
-            <IconTrash size={18} />
-          </ActionIcon>
+            Delete
+          </Button>
         </Group>
       </Table.Td>
     </Table.Tr>
