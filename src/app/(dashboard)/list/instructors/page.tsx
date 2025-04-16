@@ -25,11 +25,22 @@ import {
   UnstyledButton,
   ScrollArea,
   Center,
+  Modal,
 } from '@mantine/core';
-import { IconSearch, IconSelector, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+
+import { 
+  IconChevronDown,
+  IconChevronUp,
+  IconPencil,
+  IconSearch,
+  IconSelector,
+  IconTrash,
+ } from '@tabler/icons-react';
 import axios from 'axios';
 import FormModal from '@/components/FormModal';
 import instructorFields from '@/utils/fields/instructorFields';
+import { useNotification } from '@/context/notificationContent';
+import { notifications } from '@mantine/notifications';
 
 // Interface for Instructor Type
 interface Instructor {
@@ -79,6 +90,10 @@ export default function InstructorsPage() {
   const [sortBy, setSortBy] = useState<keyof Instructor | null>(null);
   const [reversed, setReversed] = useState(false);
   const [search, setSearch] = useState('');
+  const [editInstructor, setEditInstructor ] = useState<Instructor | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const { addNotification } = useNotification();
 
   // API fetch form the instructors table
   const fetchInstructors = async () => {
@@ -86,25 +101,59 @@ export default function InstructorsPage() {
       const res = await axios.get('/api/instructors');
       setInstructors(res.data);
     } catch (err) {
-      console.error('Failed to fetch instructors:', err); // Error logging
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch instructors.",
+        color: "red",
+      });
     }
   };
+
+    // Fecth instructors on first render only
+    useEffect(() => {
+      fetchInstructors();
+    }, []);
 
   // Add new instructor function
+  // Update instructor
   const handleAddInstructor = async (values: Record<string, any>) => {
     try {
-      await axios.post('/api/instructors', values);
+      if (editInstructor) {
+        await axios.put(`/api/instructors?id=${editInstructor.id}`, values);
+        addNotification(`Instructor ${values.firstName} ${values.lastName} updated`);
+      } else {
+        await axios.post("/api/instructors", values);
+        addNotification(`Instructor ${values.firstName} ${values.lastName} added`);
+      }
       setModalOpen(false);
-      fetchInstructors(); // Reloads the table to show the new instructor
-    } catch (err) {
-      console.error('Error adding instructor:', err); // Error logging
+      setEditInstructor(null);
+      fetchInstructors();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to save instructor.",
+        color: "red",
+      });
     }
   };
 
-  // Fecth instructors on first render only
-  useEffect(() => {
-    fetchInstructors();
-  }, []);
+  const handleDelete = async () => {
+    if (!selectedInstructor) return;
+    try {
+      await axios.delete(`/api/instructors?id=${selectedInstructor.id}`);
+      addNotification(`Instructor ${selectedInstructor.firstName} deleted`);
+      setDeleteModal(false);
+      fetchInstructors();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete instructor.",
+        color: "red",
+      });
+    }
+  };
+
+
 
   // Search logic
   const filtered = instructors.filter((ins) =>
@@ -131,28 +180,70 @@ export default function InstructorsPage() {
    setSortBy(field);
  };
 
-  return (
-    <Box p="md">
-      <Group justify="space-between" style={{ marginBottom: '1rem' }}>
-        <Text fw={700} size="xl">
-          Instructors
-        </Text>
-        <Button onClick={() => setModalOpen(true)}>Add Instructor</Button>
-      </Group>
+ const rows = sorted.map((ins) => (
+     <Table.Tr key={ins.id}>
+       <Table.Td>{ins.employeeNumber}</Table.Td>
+          <Table.Td>
+              {ins.firstName} {ins.middleName} {ins.lastName}
+          </Table.Td>
+        <Table.Td>{ins.department}</Table.Td>
+        <Table.Td>{ins.email}</Table.Td>
+        <Table.Td>{ins.phoneNumber}</Table.Td>
+        <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
+       <Table.Td>
+         <Group gap="xs">
+           <Button
+             size="xs"
+             variant="light"
+             leftSection={<IconPencil size={14} />}
+             onClick={() => {
+               setEditInstructor(ins);
+               setModalOpen(true);
+             }}
+           >
+             Edit
+           </Button>
+           <Button
+             size="xs"
+             color="red"
+             variant="light"
+             leftSection={<IconTrash size={14} />}
+             onClick={() => {
+               setSelectedInstructor(ins);
+               setDeleteModal(true);
+             }}
+           >
+             Delete
+           </Button>
+         </Group>
+       </Table.Td>
+     </Table.Tr>
+   ));
+ 
+   return (
+     <Box p="md">
+       <Group justify="space-between" mb="md">
+         <Text fw={700} size="xl">
+           List of Instructors
+         </Text>
+         <Button onClick={() => { setEditInstructor(null), setModalOpen(true)}}>Add Instructor</Button>
+         {/* Clears the modal when clicking on add new instructor */}
 
-      <TextInput
-        placeholder="Search instructor..."
-        leftSection={<IconSearch size={14} />}
-        mb="md"
-        value={search}
-        onChange={(e) => setSearch(e.currentTarget.value)}
-      />
-
-      <ScrollArea>
-      <Table striped highlightOnHover withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Th sorted = {sortBy === 'employeeNumber' } reversed = {reversed} onSort = {() => setSorting('employeeNumber')}>
+       </Group>
+ 
+       <TextInput
+         placeholder="Search by name or email"
+         leftSection={<IconSearch size={16} />}
+         value={search}
+         onChange={(e) => setSearch(e.currentTarget.value)}
+         mb="md"
+       />
+ 
+       <ScrollArea>
+         <Table striped withTableBorder highlightOnHover>
+           <Table.Thead>
+             <Table.Tr>
+             <Th sorted = {sortBy === 'employeeNumber' } reversed = {reversed} onSort = {() => setSorting('employeeNumber')}>
               Employee #
             </Th>
             <Th sorted={sortBy === 'firstName'} reversed={reversed} onSort={() => setSorting('firstName')}>
@@ -169,43 +260,38 @@ export default function InstructorsPage() {
             </Th>
             <Th sorted={sortBy === 'dateHired'} reversed={reversed} onSort={() => setSorting('dateHired')}>
               Date Hired
-            </Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {sorted.length === 0 ? (
-            <Table.Tr>
-              <Table.Td colSpan={6}>
-                <Text ta = "center">
-                No instructors found.
-                </Text>
-              </Table.Td>
-            </Table.Tr>
-          ) : (
-            sorted.map((ins) => (
-              <Table.Tr key={ins.id}>
-                <Table.Td>{ins.employeeNumber}</Table.Td>
-                <Table.Td>
-                  {ins.firstName} {ins.middleName} {ins.lastName}
-                </Table.Td>
-                <Table.Td>{ins.department}</Table.Td>
-                <Table.Td>{ins.email}</Table.Td>
-                <Table.Td>{ins.phoneNumber}</Table.Td>
-                <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
-              </Table.Tr>
-            ))
-          )}
-        </Table.Tbody>
-      </Table>
-      </ScrollArea>
+               </Th>
+               <Table.Th>Actions</Table.Th>
+             </Table.Tr>
+           </Table.Thead>
+           <Table.Tbody>
+             {rows.length ? (
+               rows
+             ) : (
+               <Table.Tr>
+                 <Table.Td colSpan={7}>
+                   <Text ta="center">No instructors found.</Text>
+                 </Table.Td>
+               </Table.Tr>
+             )}
+           </Table.Tbody>
+         </Table>
+       </ScrollArea>
 
       <FormModal
         opened={modalOpen} // Whether the modal is open
         onClose={() => setModalOpen(false)} // Function to close it
         onSubmit={handleAddInstructor} // Function to handle form submit
         fields={instructorFields} // Field configuration from external file
-        title="Add New Instructor" // Modal title
-        initialValues={{
+        title={editInstructor ? "Edit Instructor" : "Add New Instructor"} // Modal title
+        initialValues={
+          editInstructor
+      ? {
+          ...editInstructor,
+          dateHired: new Date(editInstructor.dateHired).toISOString().slice(0, 10),
+          dob: editInstructor.dob ? new Date(editInstructor.dob).toISOString().slice(0, 10) : '',
+        }
+      : {
           employeeNumber: '',
           firstName: '',
           middleName: '',
@@ -217,6 +303,29 @@ export default function InstructorsPage() {
           dob: '',
         }}
       />
+
+      <Modal
+              opened={deleteModal}
+              onClose={() => setDeleteModal(false)}
+              title="Confirm Deletion"
+              centered
+            >
+              <Text>
+                Are you sure you want to delete{" "}
+                <b>
+                  {selectedInstructor?.firstName} {selectedInstructor?.lastName}
+                </b>
+                ?
+              </Text>
+              <Group justify="flex-end" mt="md">
+                <Button variant="default" onClick={() => setDeleteModal(false)}>
+                  Cancel
+                </Button>
+                <Button color="red" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </Group>
+            </Modal>
     </Box>
   );
 }
