@@ -1,43 +1,63 @@
-import { PrismaClient } from '@prisma/client';
-import formidable, { IncomingForm } from 'formidable';
-import { generateStudentNumber } from '../lib/generateStudentNumber';
+import { PrismaClient } from "@prisma/client";
+import formidable, { IncomingForm } from "formidable";
+import { generateStudentNumber } from "../lib/generateStudentNumber";
 
 const prisma = new PrismaClient();
- 
+
 export const config = {
   api: {
     bodyParser: false,
   },
 };
- 
+
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  if (req.method === "GET") {
     try {
       const pendingApplications = await prisma.studentApplication.findMany({
-        where: { status: 'pending' },
+        where: { status: "pending" },
         include: { student: true, program: true },
       });
       return res.status(200).json(pendingApplications);
     } catch (error) {
-      return res.status(500).json({ error: 'Error fetching student applications' });
+      return res
+        .status(500)
+        .json({ error: "Error fetching student applications" });
     }
   }
- 
-  if (req.method === 'POST') {
-    const form = new IncomingForm({ multiples: true, uploadDir: './public/uploads', keepExtensions: true });
- 
+
+  if (req.method === "POST") {
+    const form = new IncomingForm({
+      multiples: true,
+      uploadDir: "./public/uploads",
+      keepExtensions: true,
+    });
+
     form.parse(req, async (err, fields, files) => {
       if (err) {
-        return res.status(500).json({ error: 'Error parsing the form' });
+        return res.status(500).json({ error: "Error parsing the form" });
       }
- 
+
       try {
         const {
-          firstName, middleName, lastName, dob, gender, age, nationality, placeOfBirth,
-          email, phoneNumber, homeAddress, emergencyContactName, emergencyContactPhoneNumber,
-          emergencyContactRelationship, previousSchools, yearOfGraduation, gpa, programId
+          firstName,
+          middleName,
+          lastName,
+          dob,
+          gender,
+          age,
+          nationality,
+          placeOfBirth,
+          email,
+          phoneNumber,
+          homeAddress,
+          emergencyContactName,
+          emergencyContactPhoneNumber,
+          emergencyContactRelationship,
+          previousSchools,
+          yearOfGraduation,
+          gpa,
+          programId,
         } = fields;
-
 
         // Look for existing student by email
         let student = await prisma.student.findUnique({
@@ -46,7 +66,7 @@ export default async function handler(req, res) {
 
         if (!student) {
           const nextStudentNumber = await generateStudentNumber();
- 
+
           student = await prisma.student.create({
             data: {
               studentNumber: nextStudentNumber,
@@ -63,19 +83,21 @@ export default async function handler(req, res) {
               homeAddress: String(homeAddress),
               emergencyContactName: String(emergencyContactName),
               emergencyContactPhoneNumber: String(emergencyContactPhoneNumber),
-              emergencyContactRelationship: String(emergencyContactRelationship),
+              emergencyContactRelationship: String(
+                emergencyContactRelationship
+              ),
               previousSchools: String(previousSchools),
               yearOfGraduation: parseInt(yearOfGraduation, 10),
               gpa: parseFloat(gpa),
             },
           });
         }
- 
+
         const newApplication = await prisma.studentApplication.create({
           data: {
             studentId: student.id,
             programId: parseInt(programId, 10),
-            status: 'pending',
+            status: "pending",
           },
         });
 
@@ -86,12 +108,12 @@ export default async function handler(req, res) {
               data: {
                 studentId: student.id,
                 documentType: docType,
-                fileUrl: file.filepath.replace('public/', '/'),
+                fileUrl: `/uploads/${file.newFilename}`,
               },
             });
           })
         );
- 
+
         return res.status(201).json({
           student,
           application: newApplication,
@@ -99,29 +121,33 @@ export default async function handler(req, res) {
         });
       } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Error creating student application' });
+        return res
+          .status(500)
+          .json({ error: "Error creating student application" });
       }
     });
   }
- 
-  if (req.method === 'PUT') {
+
+  if (req.method === "PUT") {
     try {
       const { id, status, rejectionReason } = req.body;
- 
+
       const updatedApplication = await prisma.studentApplication.update({
         where: { id },
         data: {
           status,
           rejectionReason,
-          approvalDate: status === 'approved' ? new Date() : null,
+          approvalDate: status === "approved" ? new Date() : null,
         },
       });
- 
+
       return res.status(200).json(updatedApplication);
     } catch (error) {
-      return res.status(500).json({ error: 'Error updating application status' });
+      return res
+        .status(500)
+        .json({ error: "Error updating application status" });
     }
   }
- 
-  return res.status(405).json({ error: 'Method Not Allowed' });
-};
+
+  return res.status(405).json({ error: "Method Not Allowed" });
+}

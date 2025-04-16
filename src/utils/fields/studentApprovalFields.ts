@@ -8,7 +8,12 @@ export interface FieldConfig {
 }
 
 const studentApprovalFields: FieldConfig[] = [
-  { name: "studentNumber", label: "Student Number", readonly: true },
+  {
+    name: "studentId",
+    label: "Student ID",
+    type: "text",
+    readonly: true,
+  },
   { name: "firstName", label: "First Name", readonly: true },
   { name: "middleName", label: "Middle Name", readonly: true },
   { name: "lastName", label: "Last Name", readonly: true },

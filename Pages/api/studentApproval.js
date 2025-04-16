@@ -15,7 +15,11 @@ export default async function handler(req, res) {
         const applications = await prisma.studentApplication.findMany({
           where: whereClause,
           include: {
-            student: true,
+            student: {
+              include: {
+                documentUpload: true,
+              },
+            },
             program: true,
             admin: true,
           },

@@ -21,7 +21,7 @@ import {
 } from "@mantine/core";
 import { Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useEffect } from "react";
+import { Children, useEffect } from "react";
 // useForm is a hook that manages form state, validation, and input control
 
 // Type Definitions
@@ -44,6 +44,7 @@ interface FormModalProps {
   initialValues?: Record<string, any>; // Optional: initial values for the form fields
   type?: ModalType;
   data?: any;
+  children?: React.ReactNode; // Optional: children to render inside the modal
 }
 
 // Component Definition
@@ -58,6 +59,7 @@ export default function FormModal({
   initialValues = {},
   type = "create",
   data,
+  children,
 }: // Initialize Form State
 FormModalProps) {
   const form = useForm({
@@ -160,6 +162,8 @@ FormModalProps) {
           <Group justify="flex-end" mt="md">
             <Button type="submit">Submit</Button>
           </Group>
+
+          {children}
         </Box>
       )}
     </Modal>
