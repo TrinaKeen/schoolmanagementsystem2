@@ -10,19 +10,19 @@ const menuItems = [
   {
     title: "MENU",
     items: [
-      { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["admin", "instructor"] },
-      { icon: "/student.png", label: "Students", href: "/list/students", visible: ["admin"] },
+      { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["admin"] },
+      { icon: "/student.png", label: "Students", href: "/list/studentList", visible: ["admin"] },
       { icon: "/subject.png", label: "Application Approval", href: "/list/studentApproval", visible: ["admin"] },
       { icon: "/teacher.png", label: "Instructor", href: "/list/instructors", visible: ["admin"] },
       { icon: "/subject.png", label: "Programs", href: "/programs", visible: ["admin"] },
-      { icon: "/class.png", label: "Courses", href: "/courses", visible: ["admin", "instructor"] },
+      { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["admin"] },
       { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] }, 
 
      
       { icon: "/home.png", label: "My Account", href: "/student", visible: ["student"] },
       { icon: "/subject.png", label: "Apply for Admission", href: "/list/apply-admission", visible: ["student"] },
       { icon: "/subject.png", label: "Application Status", href: "/list/apply-admission2", visible: ["student"] },
-      { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["student", "instructor"] },
+      { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["student"] },
       { icon: "/result.png", label: "Fees", href: "/list/fees", visible: ["student"] },
       
 
