@@ -25,7 +25,7 @@ export default function FeesPage() {
   const [fees, setFees] = useState<Fee[]>([]);  // Holds the array of courses returned from the backend
   const [modalOpen, setModalOpen] = useState(false);  // Controls whether the modal is open or closed
 
-  // API fetch form the instructors table
+  // API fetch form the fees table
   const fetchFees = async () => {
     try {
       const res = await axios.get('/api/fees');
@@ -55,7 +55,7 @@ export default function FeesPage() {
     <Box p="md">
       <Group justify="space-between" style={{ marginBottom: '1rem' }}>
         <Text fw={700} size="xl">
-          Instructors
+          Fees
         </Text>
         <Button onClick={() => setModalOpen(true)}>Add Fee</Button>
       </Group>
@@ -93,6 +93,12 @@ export default function FeesPage() {
         onSubmit={handleAddFees} // Function to handle form submit
         fields={feeFields} // Field configuration from external file
         title="Add New Fee" // Modal title
+        initialValues={{
+          programId: '',
+          feeType: '',
+          amount: '',
+          description: '',
+        }}
       />
     </Box>
   );

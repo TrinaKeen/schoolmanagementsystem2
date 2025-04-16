@@ -10,7 +10,6 @@ import {
 } from '@mantine/core';
 import axios from 'axios';
 import FormModal from '@/components/FormModal';
-import instructorFields from '@/utils/fields/instructorFields';
 import courseFields from '@/utils/fields/courseFields';
 
 // Interface for Courses Type
@@ -48,7 +47,7 @@ export default function CoursesPage() {
     }
   };
 
-  // Fecth instructors on first render only
+  // Fecth courses on first render only
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -57,7 +56,7 @@ export default function CoursesPage() {
     <Box p="md">
       <Group justify="space-between" style={{ marginBottom: '1rem' }}>
         <Text fw={700} size="xl">
-          Instructors
+          Courses
         </Text>
         <Button onClick={() => setModalOpen(true)}>Add Course</Button>
       </Group>
@@ -97,6 +96,13 @@ export default function CoursesPage() {
         onSubmit={handleAddCourses} // Function to handle form submit
         fields={courseFields} // Field configuration from external file
         title="Add New Course" // Modal title
+        initialValues={{
+          courseCode: '',
+          courseName: '',
+          courseDescription: '',
+          instructorId: '',
+          programId: '',
+        }}
       />
     </Box>
   );
