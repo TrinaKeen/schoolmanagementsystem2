@@ -60,5 +60,70 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  // Editing an instructor
+  if (req.method === 'PUT') {
+    const {
+      employeeNumber,
+      firstName,
+      middleName,
+      lastName,
+      department,
+      email,
+      phoneNumber,
+      dateHired,
+      dob,
+    } = req.body;
+
+    const { id } = req.query;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({ error: 'Missing or invalid ID' });
+    }
+
+    try {
+      const updatedInstructor = await prisma.instructor.update({
+        where: { id: Number(id) },
+        data: {
+          employeeNumber,
+          firstName,
+          middleName,
+          lastName,
+          department,
+          email,
+          phoneNumber,
+          dateHired: new Date(dateHired),
+          dob: new Date(dob),
+        },
+      });
+
+      return res.status(200).json(updatedInstructor);
+    } catch (err) {
+      console.error('PUT /api/instructors error:', err);
+      return res.status(500).json({ error: 'Failed to update instructor' });
+    }
+  }
+
+  // Instructor deletion
+  if (req.method === 'DELETE') {
+    const { id } = req.query;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({ error: 'Missing or invalid ID' });
+    }
+
+    try {
+      await prisma.instructor.delete({
+          where: { id: Number(id) },
+      });
+
+      return res.status(200).json({message: 'Instructor deleted'});
+    } catch (err) {
+      console.error('DELETE /api/instructors error:', err);
+      return res.status(500).json({ error: 'Failed to delete instructor' });
+    }
+  }
+
+
   return res.status(405).json({ error: 'Method not allowed' });
 }
+

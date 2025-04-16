@@ -13,7 +13,7 @@ const menuItems = [
       { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["admin"] },
       { icon: "/student.png", label: "Students", href: "/list/studentList", visible: ["admin"] },
       { icon: "/subject.png", label: "Application Approval", href: "/list/studentApproval", visible: ["admin"] },
-      { icon: "/teacher.png", label: "Instructor", href: "/list/instructors", visible: ["admin"] },
+      { icon: "/teacher.png", label: "Instructors", href: "/list/instructors", visible: ["admin"] },
       { icon: "/subject.png", label: "Programs", href: "/programs", visible: ["admin"] },
       { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["admin"] },
       { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] }, 

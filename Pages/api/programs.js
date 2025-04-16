@@ -12,6 +12,8 @@ export default async function handler(req, res) {
           programName: true,
           programCode: true,
           programDescription: true,
+          duration: true,
+          tuitionFee: true,
           
         },
       });
