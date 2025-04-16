@@ -11,26 +11,30 @@ const menuItems = [
     title: "MENU",
     items: [
       { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["admin", "instructor"] },
+      { icon: "/student.png", label: "Students", href: "/list/students", visible: ["admin"] },
+      { icon: "/subject.png", label: "Application Approval", href: "/list/studentApproval", visible: ["admin"] },
+      { icon: "/teacher.png", label: "Instructor", href: "/list/instructors", visible: ["admin"] },
+      { icon: "/subject.png", label: "Programs", href: "/programs", visible: ["admin"] },
+      { icon: "/class.png", label: "Courses", href: "/courses", visible: ["admin", "instructor"] },
+      { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] }, 
+
+     
       { icon: "/home.png", label: "My Account", href: "/student", visible: ["student"] },
       { icon: "/subject.png", label: "Apply for Admission", href: "/list/apply-admission", visible: ["student"] },
       { icon: "/subject.png", label: "Application Status", href: "/list/apply-admission2", visible: ["student"] },
-      { icon: "/teacher.png", label: "Instructor", href: "/list/instructors", visible: ["admin"] },
-      { icon: "/student.png", label: "Students", href: "/list/students", visible: ["admin"] },
-      { icon: "/student.png", label: "Students Approval", href: "/students", visible: ["admin","students"] },
-      { icon: "/subject.png", label: "Programs", href: "/list/programs", visible: ["admin"] },
-      { icon: "/class.png", label: "Courses", href: "/courses", visible: ["admin", "instructor"] },
       { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["student", "instructor"] },
-      { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] },     
       { icon: "/result.png", label: "Fees", href: "/list/fees", visible: ["student"] },
-      { icon: "/message.png", label: "Messages", href: "/list/messages", visible: ["admin", "instructor", "student"] },
-      { icon: "/announcement.png", label: "Announcements", href: "/list/announcements", visible: [ ] },
+      
+
     ],
   },
+
   {
     title: "OTHER",
     items: [
-      { icon: "/profile.png", label: "Profile", href: "/profile", visible: ["admin", "instructor", "student"] },
+      { icon: "/profile.png", label: "Add New Employee", href: "/list/addNewEmployee", visible: ["admin"] },
       { icon: "/setting.png", label: "Add New User", href: "/list/addNewUser", visible: ["admin"] },
+      { icon: "/profile.png", label: "Profile", href: "/profile", visible: ["admin", "instructor", "student"] },
       { icon: "/logout.png", label: "Logout", href: "#", visible: ["admin", "instructor", "student"], onClick: true },
     ],
   },
