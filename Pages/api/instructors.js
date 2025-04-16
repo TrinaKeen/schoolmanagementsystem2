@@ -1,12 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient(); 
 // Instantiate a Prisma client which will be used to send queries to the database.
 // Only one Prisma Client instance will be created pre request
 
 // Main API handler
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const instructors = await prisma.instructor.findMany();
