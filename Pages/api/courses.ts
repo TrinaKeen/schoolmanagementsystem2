@@ -9,13 +9,18 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const courses = await prisma.course.findMany();
-      // Query the `instructor` table and return all records as an array
+      const courses = await prisma.course.findMany({
+        include: {
+          instructor: true, // include the instructor
+          program: true, // include the program
+        }
+      });
+      // Query the `courses` table and return all records as an array
 
       return res.status(200).json(courses);
     } catch (err) {
       console.error('GET /api/courses error:', err);
-      return res.status(500).json({ error: 'Failed to fetch instructors' });
+      return res.status(500).json({ error: 'Failed to fetch courses' });
     }
   }
 
@@ -39,8 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           courseCode,
           courseName,
           courseDescription, 
-          instructorId: Number(instructorId),
-          programId: programId ? Number(programId) : null,
+          instructorId: parseInt(instructorId),
+          programId: parseInt(programId),
         },
       });
 

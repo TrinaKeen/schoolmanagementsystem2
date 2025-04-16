@@ -20,6 +20,14 @@ interface Course {
   courseDescription?: string;
   instructorId: number;
   programId?: number;
+  instructor: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+  };
+  program?: {
+    programName: string;
+  };
 }
 
 export default function CoursesPage() {
@@ -67,8 +75,8 @@ export default function CoursesPage() {
             <th>Code</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Instructor ID</th>
-            <th>Program ID</th>
+            <th>Instructor</th>
+            <th>Program</th>
           </tr>
         </thead>
         <tbody>
@@ -82,8 +90,11 @@ export default function CoursesPage() {
                 <td>{c.courseCode}</td>
                 <td>{c.courseName}</td>
                 <td>{c.courseDescription}</td>
-                <td>{c.instructorId}</td>
-                <td>{c.programId}</td>
+                <td>{c.instructor ? `${c.instructor.firstName} ${c.instructor.middleName} ${c.instructor.lastName}` : '-'}</td>
+                {/* Grabs the instructor name instead of id */}
+                
+                <td>{c.program?.programName || '-'}</td>
+                {/* Grabs the program name instead of id */}
               </tr>
             ))
           )}
