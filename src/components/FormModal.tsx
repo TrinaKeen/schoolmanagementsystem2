@@ -19,6 +19,7 @@ import {
   PasswordInput,
   Text,
 } from "@mantine/core";
+import { Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 // useForm is a hook that manages form state, validation, and input control
@@ -96,6 +97,28 @@ FormModalProps) {
       ) : (
         <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
           {fields.map((field) => {
+            if (
+              field.name === "rejectionReason" &&
+              form.values.status !== "rejected"
+            ) {
+              return null; // Skip rendering if status is not "rejected"
+            }
+
+            if (field.name === "rejectionReason") {
+              return (
+                <Textarea
+                  key={field.name}
+                  label={field.label}
+                  required={field.required}
+                  autosize
+                  minRows={3}
+                  {...form.getInputProps(field.name)}
+                  mt="sm"
+                  placeholder="Please explain the reason for rejection..."
+                />
+              );
+            }
+
             if (field.type === "select") {
               return (
                 <Select

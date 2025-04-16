@@ -4,6 +4,7 @@ export interface FieldConfig {
   type?: string;
   required?: boolean;
   readonly?: boolean;
+  options?: { label: string; value: string }[];
 }
 
 const studentApprovalFields: FieldConfig[] = [
@@ -44,8 +45,21 @@ const studentApprovalFields: FieldConfig[] = [
     type: "date",
     readonly: true,
   },
-  { name: "status", label: "Approval Status", required: true },
-  { name: "rejectionReason", label: "Reason for Rejection" },
+  {
+    name: "status",
+    label: "Approval Status",
+    type: "select",
+    required: true,
+    options: [
+      { label: "Approved", value: "approved" },
+      { label: "Rejected", value: "rejected" },
+    ],
+  },
+  {
+    name: "rejectionReason",
+    label: "Reason for Rejection",
+    required: true,
+  },
 ];
 
 export default studentApprovalFields;
