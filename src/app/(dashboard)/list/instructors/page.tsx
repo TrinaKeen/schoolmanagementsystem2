@@ -205,6 +205,17 @@ export default function InstructorsPage() {
         onSubmit={handleAddInstructor} // Function to handle form submit
         fields={instructorFields} // Field configuration from external file
         title="Add New Instructor" // Modal title
+        initialValues={{
+          employeeNumber: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
+          department: '',
+          email: '',
+          phoneNumber: '',
+          dateHired: '',
+          dob: '',
+        }}
       />
     </Box>
   );

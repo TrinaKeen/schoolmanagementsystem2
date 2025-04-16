@@ -93,6 +93,12 @@ export default function FeesPage() {
         onSubmit={handleAddFees} // Function to handle form submit
         fields={feeFields} // Field configuration from external file
         title="Add New Fee" // Modal title
+        initialValues={{
+          programId: '',
+          feeType: '',
+          amount: '',
+          description: '',
+        }}
       />
     </Box>
   );

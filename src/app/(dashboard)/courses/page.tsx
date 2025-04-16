@@ -97,6 +97,13 @@ export default function CoursesPage() {
         onSubmit={handleAddCourses} // Function to handle form submit
         fields={courseFields} // Field configuration from external file
         title="Add New Course" // Modal title
+        initialValues={{
+          courseCode: '',
+          courseName: '',
+          courseDescription: '',
+          instructorId: '',
+          programId: '',
+        }}
       />
     </Box>
   );
