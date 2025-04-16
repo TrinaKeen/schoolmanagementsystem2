@@ -49,6 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
+      
+
       // Error logging
       return res.status(201).json(newCourse);
     } catch (err) {
@@ -57,5 +59,63 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  // Editing a course
+  if (req.method === 'PUT') {
+    const {
+      courseCode,
+      courseName,
+      courseDescription,
+      instructorId,
+      programId,
+    } = req.body;
+
+    const { id } = req.query;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({ error: 'Missing or invalid ID' });
+    }
+
+    try {
+      const updatedCourse = await prisma.course.update({
+        where: { id: Number(id) },
+        data: {
+          courseCode,
+          courseName,
+          courseDescription, 
+          instructorId: parseInt(instructorId),
+          programId: parseInt(programId),
+        },
+      });
+
+      return res.status(200).json(updatedCourse);
+    } catch (err) {
+      console.error('PUT /api/courses error:', err);
+      return res.status(500).json({ error: 'Failed to update courses' });
+    }
+  }
+
+
+  // Course deletion
+  if (req.method === 'DELETE') {
+    const { id } = req.query;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({ error: 'Missing or invalid ID' });
+    }
+
+    try {
+      await prisma.course.delete({
+          where: { id: Number(id) },
+      });
+
+      return res.status(200).json({message: 'Course deleted'});
+    } catch (err) {
+      console.error('DELETE /api/courses error:', err);
+      return res.status(500).json({ error: 'Failed to delete course' });
+    }
+  }
+
+
   return res.status(405).json({ error: 'Method not allowed' });
 }
+

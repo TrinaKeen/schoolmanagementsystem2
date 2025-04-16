@@ -109,7 +109,7 @@ export default function InstructorsPage() {
     }
   };
 
-    // Fecth instructors on first render only
+    // Fetch instructors on first render only
     useEffect(() => {
       fetchInstructors();
     }, []);
@@ -152,8 +152,6 @@ export default function InstructorsPage() {
       });
     }
   };
-
-
 
   // Search logic
   const filtered = instructors.filter((ins) =>
@@ -232,7 +230,7 @@ export default function InstructorsPage() {
        </Group>
  
        <TextInput
-         placeholder="Search by name or email"
+         placeholder="Search"
          leftSection={<IconSearch size={16} />}
          value={search}
          onChange={(e) => setSearch(e.currentTarget.value)}
