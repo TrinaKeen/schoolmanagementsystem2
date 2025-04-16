@@ -328,7 +328,9 @@ export default function StudentApprovalPage() {
           yearOfGraduation: selectedApp?.student.yearOfGraduation ?? "",
           gpa: selectedApp?.student.gpa ?? "",
           program: selectedApp?.program.programName,
-          submissionDate: selectedApp?.submissionDate,
+          submissionDate: selectedApp?.submissionDate
+            ? new Date(selectedApp.submissionDate).toISOString().split("T")[0]
+            : "",
           status: statusUpdate,
           rejectionReason: rejectionReason,
         }}
