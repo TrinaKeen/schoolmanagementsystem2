@@ -48,7 +48,6 @@ interface Application {
     gpa: string;
     email: string;
     dob: string;
-    submissionDate: string;
   };
   program: {
     id: number;
@@ -56,6 +55,7 @@ interface Application {
   };
   status: string;
   rejectionReason?: string | null;
+  submissionDate: string;
 }
 
 interface ThProps {
