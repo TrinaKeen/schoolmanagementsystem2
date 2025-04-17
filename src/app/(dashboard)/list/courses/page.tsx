@@ -87,6 +87,8 @@ export default function CoursesPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const { addNotification } = useNotification();
+  const [programFilter, setProgramFilter] = useState<string | null>(null); // Filter by program
+  const [instructorFilter, setInstructorFilter] = useState<string | null>(null); // Filter by instructor
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
