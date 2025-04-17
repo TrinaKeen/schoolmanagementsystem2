@@ -111,13 +111,11 @@ export default function FeesPage() {
   }, []);
 
   // Merge programs' tuitionFee as fees
-  const tuitionFeeRows: Fee[] = programs
-    .filter((p) => p.tuitionFee > 0)
-    .map((program) => ({
+  const tuitionFeeRows: Fee[] = programs.filter((p) => p.tuitionFee > 0).map((program) => ({
       id: `tuition-${program.id}`,
       programId: program.id,
       feeType: 'Tuition',
-      amount: program.tuitionFee,
+      amount: program.tuitionFee ?? 0,
       description: 'Tuition Fee',
       isTuition: true,
       program: { programName: program.programName },
@@ -148,7 +146,7 @@ export default function FeesPage() {
 }
 
 const handleDelete = async () => {
-  if (!selectedFee || selectedFee.isTuition) return; // prevent deleting tuitionFeeRow
+  if (!selectedFee || selectedFee.isTuition) return; // prevent deleting virtual fee
   try {
     await axios.delete(`/api/fees?id=${selectedFee.id}`);
     addNotification(`${selectedFee.feeType} fee deleted`);
@@ -209,16 +207,19 @@ const handleDelete = async () => {
     <Table.Td>{f.amount}</Table.Td>
     <Table.Td>{f.description}</Table.Td>
     <Table.Td>
-      {!f.isTuition && (
       <Group gap="xs">
         <Button
           size="xs"
           variant="light"
           leftSection={<IconPencil size={14} />}
           onClick={() => {
+            if (f.isTuition){
+            // Optionally let editing tuition create a new override
             setEditFee(f);
             setModalOpen(true);
+            }
           }}
+          disabled={f.isTuition} // Disable for tuition fees
         >
           Edit
         </Button>
@@ -231,11 +232,11 @@ const handleDelete = async () => {
             setSelectedFee(f);
             setDeleteModal(true);
           }}
+          disabled={f.isTuition}
         >
           Delete
         </Button>
       </Group>
-      )}
     </Table.Td>
   </Table.Tr>
 ));
