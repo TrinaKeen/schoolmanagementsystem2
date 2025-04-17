@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Button,
   Group,
@@ -12,20 +12,20 @@ import {
   ScrollArea,
   Center,
   Modal,
-} from '@mantine/core';
-import { 
+} from "@mantine/core";
+import {
   IconChevronDown,
   IconChevronUp,
   IconPencil,
   IconSearch,
   IconSelector,
   IconTrash,
- } from '@tabler/icons-react';
-import axios from 'axios';
-import FormModal from '@/components/FormModal';
-import courseFields from '@/utils/fields/courseFields';
-import { useNotification } from '@/context/notificationContent';
-import { notifications } from '@mantine/notifications';
+} from "@tabler/icons-react";
+import axios from "axios";
+import FormModal from "@/components/FormModal";
+import courseFields from "@/utils/fields/courseFields";
+import { useNotification } from "@/context/notificationContent";
+import { notifications } from "@mantine/notifications";
 
 // Interface for Courses Type
 interface Course {
@@ -55,11 +55,15 @@ interface ThProps {
 
 // Sortable table header component
 function Th({ children, sorted, reversed, onSort }: ThProps) {
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
 
   return (
     <Table.Th>
-      <UnstyledButton onClick={onSort} style={{ width: '100%' }}>
+      <UnstyledButton onClick={onSort} style={{ width: "100%" }}>
         <Group justify="space-between">
           <Text fw={600} size="sm">
             {children}
@@ -74,20 +78,22 @@ function Th({ children, sorted, reversed, onSort }: ThProps) {
 }
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]);  // Holds the array of courses returned from the backend
-  const [modalOpen, setModalOpen] = useState(false);  // Controls whether the modal is open or closed
+  const [courses, setCourses] = useState<Course[]>([]); // Holds the array of courses returned from the backend
+  const [modalOpen, setModalOpen] = useState(false); // Controls whether the modal is open or closed
   const [sortBy, setSortBy] = useState<keyof Course | null>(null);
   const [reversed, setReversed] = useState(false);
-  const [search, setSearch] = useState('');
-  const [editCourse, setEditCourse ] = useState<Course | null>(null);
+  const [search, setSearch] = useState("");
+  const [editCourse, setEditCourse] = useState<Course | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const { addNotification } = useNotification();
+  const [programFilter, setProgramFilter] = useState<string | null>(null); // Filter by program
+  const [instructorFilter, setInstructorFilter] = useState<string | null>(null); // Filter by instructor
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('/api/courses');
+      const res = await axios.get("/api/courses");
       setCourses(res.data);
     } catch (err) {
       notifications.show({
@@ -107,8 +113,8 @@ export default function CoursesPage() {
   const handleAddCourses = async (values: Record<string, any>) => {
     try {
       if (editCourse) {
-      await axios.put(`/api/courses?id=${editCourse.id}`, values);
-      addNotification(`Course ${values.courseName} updated`)
+        await axios.put(`/api/courses?id=${editCourse.id}`, values);
+        addNotification(`Course ${values.courseName} updated`);
       } else {
         await axios.post("/api/courses", values);
         addNotification(`Course ${values.courseName} added`);
@@ -121,143 +127,169 @@ export default function CoursesPage() {
         title: "Error",
         message: "Failed to save course.",
         color: "red",
-    });
-  }
-};
+      });
+    }
+  };
 
-const handleDelete = async () => {
-  if (!selectedCourse) return;
-  try {
-    await axios.delete(`/api/courses?id=${selectedCourse.id}`);
-    addNotification(`Course ${selectedCourse.courseName} deleted`);
-    setDeleteModal(false);
-    fetchCourses();
-  } catch {
-    notifications.show({
-      title: "Error",
-      message: "Failed to delete Course.",
-      color: "red",
-    });
-  }
-};
+  const handleDelete = async () => {
+    if (!selectedCourse) return;
+    try {
+      await axios.delete(`/api/courses?id=${selectedCourse.id}`);
+      addNotification(`Course ${selectedCourse.courseName} deleted`);
+      setDeleteModal(false);
+      fetchCourses();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete Course.",
+        color: "red",
+      });
+    }
+  };
 
-
-// Search logic
+  // Search logic
   const filtered = courses.filter((c) =>
-    Object.values(c)
-      .join(' ')
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    Object.values(c).join(" ").toLowerCase().includes(search.toLowerCase())
   );
 
-   // Sort logic
-   const sorted = sortBy
-   ? [...filtered].sort((a, b) => {
-       const aValue = a[sortBy] ?? '';
-       const bValue = b[sortBy] ?? '';
-       return reversed
-         ? String(bValue).localeCompare(String(aValue))
-         : String(aValue).localeCompare(String(bValue));
-     })
-   : filtered;
+  // Sort logic
+  const sorted = sortBy
+    ? [...filtered].sort((a, b) => {
+        const aValue = a[sortBy] ?? "";
+        const bValue = b[sortBy] ?? "";
+        return reversed
+          ? String(bValue).localeCompare(String(aValue))
+          : String(aValue).localeCompare(String(bValue));
+      })
+    : filtered;
 
- const setSorting = (field: keyof Course) => {
-   const shouldReverse = field === sortBy ? !reversed : false;
-   setReversed(shouldReverse);
-   setSortBy(field);
- };
+  const setSorting = (field: keyof Course) => {
+    const shouldReverse = field === sortBy ? !reversed : false;
+    setReversed(shouldReverse);
+    setSortBy(field);
+  };
 
- const rows = sorted.map((c) => (
-     <Table.Tr key={c.id}>
-       <Table.Td>{c.courseCode}</Table.Td>
-       <Table.Td>{c.courseName}</Table.Td>
-       <Table.Td>{c.courseDescription}</Table.Td>
-       <Table.Td>{c.instructor ? `${c.instructor.firstName} ${c.instructor.middleName} ${c.instructor.lastName}` : '-'}</Table.Td>
-       <Table.Td>{c.program?.programName || '-'}</Table.Td>
-       <Table.Td>
-         <Group gap="xs">
-           <Button
-             size="xs"
-             variant="light"
-             leftSection={<IconPencil size={14} />}
-             onClick={() => {
-               setEditCourse(c);
-               setModalOpen(true);
-             }}
-           >
-             Edit
-           </Button>
-           <Button
-             size="xs"
-             color="red"
-             variant="light"
-             leftSection={<IconTrash size={14} />}
-             onClick={() => {
-               setSelectedCourse(c);
-               setDeleteModal(true);
-             }}
-           >
-             Delete
-           </Button>
-         </Group>
-       </Table.Td>
-     </Table.Tr>
-   ));
+  const rows = sorted.map((c) => (
+    <Table.Tr key={c.id}>
+      <Table.Td>{c.courseCode}</Table.Td>
+      <Table.Td>{c.courseName}</Table.Td>
+      <Table.Td>{c.courseDescription}</Table.Td>
+      <Table.Td>
+        {c.instructor
+          ? `${c.instructor.firstName} ${c.instructor.middleName} ${c.instructor.lastName}`
+          : "-"}
+      </Table.Td>
+      <Table.Td>{c.program?.programName || "-"}</Table.Td>
+      <Table.Td>
+        <Group gap="xs">
+          <Button
+            size="xs"
+            variant="light"
+            leftSection={<IconPencil size={14} />}
+            onClick={() => {
+              setEditCourse(c);
+              setModalOpen(true);
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            size="xs"
+            color="red"
+            variant="light"
+            leftSection={<IconTrash size={14} />}
+            onClick={() => {
+              setSelectedCourse(c);
+              setDeleteModal(true);
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
-   return (
+  return (
     <Box p="md">
       <Group justify="space-between" mb="md">
         <Text fw={700} size="xl">
           List of Courses
         </Text>
-        <Button onClick={() => { setEditCourse(null), setModalOpen(true)}}>Add Course</Button>
+        <Button
+          onClick={() => {
+            setEditCourse(null), setModalOpen(true);
+          }}
+        >
+          Add Course
+        </Button>
         {/* Clears the modal when clicking on add new course */}
-
       </Group>
 
       <TextInput
-         placeholder="Search"
-         leftSection={<IconSearch size={16} />}
-         value={search}
-         onChange={(e) => setSearch(e.currentTarget.value)}
-         mb="md"
-       />
+        placeholder="Search"
+        leftSection={<IconSearch size={16} />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        mb="md"
+        w="500px"
+      />
 
       <ScrollArea>
-         <Table striped withTableBorder highlightOnHover>
-           <Table.Thead>
-             <Table.Tr>
-             <Th sorted = {sortBy === 'courseCode' } reversed = {reversed} onSort = {() => setSorting('courseCode')}>
-              Course Code
-            </Th>
-            <Th sorted={sortBy === 'courseName'} reversed={reversed} onSort={() => setSorting('courseName')}>
-              Name
-            </Th>
-            <Th sorted={sortBy === 'courseDescription'} reversed={reversed} onSort={() => setSorting('courseDescription')}>
-              Description
-            </Th>
-            <Th sorted={sortBy === 'instructorId'} reversed={reversed} onSort={() => setSorting('instructorId')}>
-              Instructor
-            </Th>
-            <Th sorted={sortBy === 'programId'} reversed={reversed} onSort={() => setSorting('programId')}>
-              Program
-            </Th>
-               <Table.Th>Actions</Table.Th>
-             </Table.Tr>
-           </Table.Thead>
-           <Table.Tbody>
-             {rows.length ? (
-               rows
-             ) : (
-               <Table.Tr>
-                 <Table.Td colSpan={7}>
-                   <Text ta="center">No courses found.</Text>
-                 </Table.Td>
-               </Table.Tr>
-             )}
-           </Table.Tbody>
-         </Table>
-       </ScrollArea>
+        <Table striped withTableBorder highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Th
+                sorted={sortBy === "courseCode"}
+                reversed={reversed}
+                onSort={() => setSorting("courseCode")}
+              >
+                Course Code
+              </Th>
+              <Th
+                sorted={sortBy === "courseName"}
+                reversed={reversed}
+                onSort={() => setSorting("courseName")}
+              >
+                Name
+              </Th>
+              <Th
+                sorted={sortBy === "courseDescription"}
+                reversed={reversed}
+                onSort={() => setSorting("courseDescription")}
+              >
+                Description
+              </Th>
+              <Th
+                sorted={sortBy === "instructorId"}
+                reversed={reversed}
+                onSort={() => setSorting("instructorId")}
+              >
+                Instructor
+              </Th>
+              <Th
+                sorted={sortBy === "programId"}
+                reversed={reversed}
+                onSort={() => setSorting("programId")}
+              >
+                Program
+              </Th>
+              <Table.Th>Actions</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {rows.length ? (
+              rows
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={7}>
+                  <Text ta="center">No courses found.</Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
 
       <FormModal
         opened={modalOpen} // Whether the modal is open
@@ -267,46 +299,45 @@ const handleDelete = async () => {
         title={editCourse ? "Edit Course" : "Add New Course"} // Modal title
         initialValues={
           editCourse
-      ? {
-          // Manually map out the fields necessary - ChatGPT
-          // Was getting errors passing through ...editCourse directtly
-          courseCode: editCourse.courseCode,
-          courseName: editCourse.courseName,
-          courseDescription: editCourse.courseDescription || '',
-          instructorId: String(editCourse.instructorId),
-          programId: editCourse.programId ? String(editCourse.programId) : '',
+            ? {
+                // Manually map out the fields necessary - ChatGPT
+                // Was getting errors passing through ...editCourse directtly
+                courseCode: editCourse.courseCode,
+                courseName: editCourse.courseName,
+                courseDescription: editCourse.courseDescription || "",
+                instructorId: String(editCourse.instructorId),
+                programId: editCourse.programId
+                  ? String(editCourse.programId)
+                  : "",
+              }
+            : {
+                courseCode: "",
+                courseName: "",
+                courseDescription: "",
+                instructorId: "",
+                programId: "",
+              }
         }
-      : {
-          courseCode: '',
-          courseName: '',
-          courseDescription: '',
-          instructorId: '',
-          programId: '',
-        }}
       />
 
       <Modal
-              opened={deleteModal}
-              onClose={() => setDeleteModal(false)}
-              title="Confirm Deletion"
-              centered
-            >
-              <Text>
-                Are you sure you want to delete{" "}
-                <b>
-                  {selectedCourse?.courseName}
-                </b>
-                ?
-              </Text>
-              <Group justify="flex-end" mt="md">
-                <Button variant="default" onClick={() => setDeleteModal(false)}>
-                  Cancel
-                </Button>
-                <Button color="red" onClick={handleDelete}>
-                  Delete
-                </Button>
-              </Group>
-            </Modal>
+        opened={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        title="Confirm Deletion"
+        centered
+      >
+        <Text>
+          Are you sure you want to delete <b>{selectedCourse?.courseName}</b>?
+        </Text>
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={() => setDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </Box>
   );
 }

@@ -1,47 +1,123 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Center,
+  Group,
+  Modal,
+  ScrollArea,
+  Table,
+  Text,
+  TextInput,
+  UnstyledButton,
+} from "@mantine/core";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconPencil,
+  IconSearch,
+  IconSelector,
+  IconTrash,
+} from "@tabler/icons-react";
+import axios from "axios";
+import { notifications } from "@mantine/notifications";
+import FormModal from "@/components/FormModal";
+import { useNotification } from "@/context/notificationContent";
+import scheduleFields from "@/utils/fields/scheduleFields";
 
 interface Schedule {
   id: number;
   courseId: number;
   instructorId: number;
-  startTime:Date;
-  endTime:Date;
+  startTime: Date;
+  endTime: Date;
+}
+
+interface Course {
+  id: number;
+  courseCode: string;
+  courseName: string;
+  courseDescription?: string;
+}
+
+interface Instructor {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+interface ThProps {
+  children: React.ReactNode;
+  reversed: boolean;
+  sorted: boolean;
+  onSort: () => void;
+}
+
+function Th({ children, reversed, sorted, onSort }: ThProps) {
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
+  return (
+    <Table.Th style={{ cursor: "pointer", padding: "12px 8px" }}>
+      <UnstyledButton onClick={onSort} style={{ width: "100%" }}>
+        <Group justify="space-between" gap={4}>
+          <Text fw={600} fz="sm">
+            {children}
+          </Text>
+          <Center>
+            <Icon size={16} stroke={1.5} />
+          </Center>
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  );
 }
 
 export default function SchedulesPage() {
-  const [courses, setSchedules] = useState<Schedule[]>([]);
-  const [error, setError] = useState('');
+  const [schedule, setSchedules] = useState<Schedule[]>([]);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<keyof Schedule>("id");
+  const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { addNotification } = useNotification();
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+    null
+  );
+  const [editSchedule, setEditSchedule] = useState<Schedule | null>(null);
+  const [courseOptions, setCourseOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [instructorOptions, setInstructorOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
-  const [newSchedule, setNewSchedule] = useState({
-    courseId: '',
-    instructorId: '',
-    startTime: '',
-    endTime: '',
-  });
 
   const fetchSchedules = async () => {
-    setLoading(true);
     try {
-      const res = await fetch('/api/schedule');
+      const res = await fetch("/api/schedule");
       const data = await res.json();
+      const parsedData = data.map((item: Schedule) => ({
+        ...item,
+        startTime: new Date(item.startTime),
+        endTime: new Date(item.endTime),
+      }));
 
-      if (Array.isArray(data)) {
-        setSchedules(data);
-        setError('');
-      } else {
-        setError('Unexpected response format');
-      }
+      setSchedules(parsedData);
     } catch (err) {
-      setError('Failed to fetch schedules.');
-    } finally {
-      setLoading(false);
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch schedules.",
+        color: "red",
+      });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchCoursesAndInstructors = async () => {
     try {
       const res = await fetch('/api/schedule', {
         method: 'POST',
@@ -56,13 +132,145 @@ export default function SchedulesPage() {
       setNewSchedule({ courseId: '', instructorId: '',  startTime: '', endTime: '',});
       fetchSchedules();
     } catch {
-      alert('Error adding schedule.');
+      alert('Error adding course.');
     }
   };
 
   useEffect(() => {
     fetchSchedules();
+    fetchCoursesAndInstructors();
   }, []);
+
+  const handleSaveSchedule = async (values: Record<string, any>) => {
+    const schedule = {
+      courseId: parseInt(values.courseId),
+      instructorId: parseInt(values.instructorId),
+      startTime: new Date(values.startTime),
+      endTime: new Date(values.endTime),
+    };
+
+    try {
+      if (editSchedule) {
+        await axios.put(`/api/schedule?id=${editSchedule.id}`, schedule);
+        addNotification(`Schedule updated successfully!`);
+      } else {
+        await axios.post("/api/schedule", schedule);
+        addNotification(`Schedule added successfully!`);
+      }
+      setModalOpen(false);
+      setEditSchedule(null);
+      fetchSchedules();
+    } catch (err) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to save schedule.",
+        color: "red",
+      });
+    }
+  };
+
+  const handleDeleteSchedule = async () => {
+    if (!selectedSchedule) return;
+
+    try {
+      await axios.delete(`/api/schedule?id=${selectedSchedule.id}`);
+      addNotification(`Schedule deleted successfully!`);
+      setDeleteModal(false);
+      fetchSchedules();
+    } catch (err) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete schedule.",
+        color: "red",
+      });
+    }
+  };
+
+  const filteredSchedules = schedule.filter((s) => {
+    const query = search.toLowerCase();
+
+    const courseLabel =
+      courseOptions.find((c) => c.value === s.courseId.toString())?.label || "";
+
+    const instructorLabel =
+      instructorOptions.find((i) => i.value === s.instructorId.toString())
+        ?.label || "";
+
+    return (
+      courseLabel.toLowerCase().includes(query) ||
+      instructorLabel.toLowerCase().includes(query)
+    );
+  });
+
+  const sorted = sortBy
+    ? [...filteredSchedules].sort((a, b) => {
+        const dir = reverseSortDirection ? -1 : 1;
+        return (
+          String(a[sortBy] ?? "").localeCompare(String(b[sortBy] ?? "")) * dir
+        );
+      })
+    : filteredSchedules;
+
+  const setSorting = (field: keyof Schedule) => {
+    const reversed = field === sortBy ? !reverseSortDirection : false;
+    setReverseSortDirection(reversed);
+    setSortBy(field);
+  };
+
+  const rows = sorted.map((schedule) => (
+    <Table.Tr key={schedule.id}>
+      <Table.Td>
+        {courseOptions.find((c) => c.value === schedule.courseId.toString())
+          ?.label || schedule.courseId}
+      </Table.Td>
+      <Table.Td>
+        {instructorOptions.find(
+          (i) => i.value === schedule.instructorId.toString()
+        )?.label || schedule.instructorId}
+      </Table.Td>
+
+      <Table.Td>
+        {schedule.startTime.toLocaleString("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
+      </Table.Td>
+      <Table.Td>
+        {schedule.endTime.toLocaleString("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
+      </Table.Td>
+
+      <Table.Td style={{ textAlign: "right" }}>
+        <Group gap="xs">
+          <Button
+            size="xs"
+            variant="light"
+            leftSection={<IconPencil size={14} />}
+            onClick={() => {
+              setEditSchedule(schedule);
+              setModalOpen(true);
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            size="xs"
+            color="red"
+            variant="light"
+            leftSection={<IconTrash size={14} />}
+            onClick={() => {
+              setSelectedSchedule(schedule);
+              setDeleteModal(true);
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
   return (
     <div className="p-6">
@@ -87,7 +295,7 @@ export default function SchedulesPage() {
             required
           />
           <input
-            type="datetime-local"
+            type="number"
             placeholder="Start Time"
             value={newSchedule.startTime}
             onChange={e => setNewSchedule({ ...newSchedule, startTime: e.target.value })}
@@ -95,7 +303,7 @@ export default function SchedulesPage() {
             required
           />
             <input
-            type="datetime-local"
+            type="number"
             placeholder="End Time"
             value={newSchedule.startTime}
             onChange={e => setNewSchedule({ ...newSchedule, endTime: e.target.value })}
@@ -127,8 +335,6 @@ export default function SchedulesPage() {
                 <td className="p-2 border">{schedule.id}</td>
                 <td className="p-2 border">{schedule.courseId}</td>
                 <td className="p-2 border">{schedule.instructorId}</td>
-                <td className="p-2 border">{new Date(schedule.startTime).toLocaleString()}</td>
-                <td className="p-2 border">{new Date(schedule.endTime).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

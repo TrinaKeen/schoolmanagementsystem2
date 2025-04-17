@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { SessionProvider } from "next-auth/react";
 
-
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
     <SessionProvider>

@@ -4,8 +4,9 @@ import Image from "next/image";
 import { Menu, ScrollArea, Text, Divider } from "@mantine/core";
 import { useNotification } from "@/context/notificationContent";
 
+const Navbar = () => {
+  const { notifications, clearNotifications } = useNotification();
 
-const Navbar: React.FC = () => {
   return (
     <div className="flex items-center justify-between p-4">
       {/* SEARCH BAR */}
@@ -19,9 +20,9 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* ICONS AND USER */}
-      <div className='flex items-center gap-6 justify-end w-full'>
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
-          <Image src="/message.png" alt="" width={20} height={20}/>
+      <div className="flex items-center gap-6 justify-end w-full">
+        <div className="bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer">
+          <Image src="/message.png" alt="" width={20} height={20} />
         </div>
 
         {/* Notification Bell with old Icon but Dropdown from Mantine */}

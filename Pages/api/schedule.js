@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { parse } from "path";
 
 const prisma = new PrismaClient();
 
@@ -25,8 +24,8 @@ export default async function handler(req,res) {
                     courseId: parseInt(courseId),
                     instructorId: parseInt(instructorId),
                     programId: programId ? parseInt(programId) : null,
-                    startTime:  new Date(startTime),
-                    endTime:  new Date(startTime),
+                    startTime,
+                    endTime
                 },
             });
             res.status(201).json(newSchedule);
