@@ -119,30 +119,20 @@ export default function SchedulesPage() {
 
   const fetchCoursesAndInstructors = async () => {
     try {
-      const [courseRes, instructorRes] = await Promise.all([
-        axios.get("/api/courses"),
-        axios.get("/api/instructors"),
-      ]);
-
-      setCourseOptions(
-        courseRes.data.map((course: Course) => ({
-          label: course.courseName,
-          value: course.id.toString(),
-        }))
-      );
-
-      setInstructorOptions(
-        instructorRes.data.map((instructor: Instructor) => ({
-          label: `${instructor.firstName} ${instructor.lastName}`,
-          value: instructor.id.toString(),
-        }))
-      );
-    } catch (err) {
-      notifications.show({
-        title: "Error",
-        message: "Failed to load courses or instructors.",
-        color: "red",
+      const res = await fetch('/api/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newSchedule,
+          instructorId: parseInt(newSchedule.instructorId),
+        }),
       });
+
+      if (!res.ok) throw new Error('Failed to add schedule');
+      setNewSchedule({ courseId: '', instructorId: '',  startTime: '', endTime: '',});
+      fetchSchedules();
+    } catch {
+      alert('Error adding course.');
     }
   };
 
@@ -283,120 +273,73 @@ export default function SchedulesPage() {
   ));
 
   return (
-    <Box p="md">
-      <Group justify="space-between" mb="md">
-        <Text fw={700} size="xl">
-          Schedules List
-        </Text>
-        <Button onClick={() => setModalOpen(true)}>Add Schedule</Button>
-      </Group>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Schedules Dashboard</h1>
 
-      <TextInput
-        placeholder="Search by Course Id or Instructor Id"
-        leftSection={<IconSearch size={14} />}
-        mb="md"
-        value={search}
-        onChange={(e) => setSearch(e.currentTarget.value)}
-        w="500px"
-      />
+      <form onSubmit={handleSubmit} className="mb-6 space-y-3 bg-gray-50 p-4 border rounded-md shadow-sm">
+        <div className="flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder="Course Id"
+            value={newSchedule.courseId}
+            onChange={e => setNewSchedule({ ...newSchedule, courseId: e.target.value })}
+            className="p-2 border rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Instructor ID"
+            value={newSchedule.instructorId}
+            onChange={e => setNewSchedule({ ...newSchedule, instructorId: e.target.value })}
+            className="p-2 border rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Start Time"
+            value={newSchedule.startTime}
+            onChange={e => setNewSchedule({ ...newSchedule, startTime: e.target.value })}
+            className="p-2 border rounded"
+            required
+          />
+            <input
+            type="number"
+            placeholder="End Time"
+            value={newSchedule.startTime}
+            onChange={e => setNewSchedule({ ...newSchedule, endTime: e.target.value })}
+            className="p-2 border rounded"
+            required
+          />
+        </div>
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Add Schedule</button>
+      </form>
 
-      <ScrollArea>
-        <Table striped withTableBorder highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Th
-                sorted={sortBy === "courseId"}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting("courseId")}
-              >
-                Course
-              </Th>
-              <Th
-                sorted={sortBy === "instructorId"}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting("instructorId")}
-              >
-                Instructor
-              </Th>
-              <Th
-                sorted={sortBy === "startTime"}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting("startTime")}
-              >
-                Start Time
-              </Th>
-              <Th
-                sorted={sortBy === "endTime"}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting("endTime")}
-              >
-                End Time
-              </Th>
-              <Table.Th>Actions</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {rows.length > 0 ? (
-              rows
-            ) : (
-              <Table.Tr>
-                <Table.Td colSpan={5}>
-                  <Text ta="center">No schedules found</Text>
-                </Table.Td>
-              </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
-      </ScrollArea>
-
-      <FormModal
-        opened={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setEditSchedule(null);
-        }}
-        onSubmit={handleSaveSchedule}
-        fields={scheduleFields(courseOptions, instructorOptions)}
-        title={editSchedule ? "Edit Schedule" : "Add Schedule"}
-        initialValues={
-          editSchedule
-            ? {
-                courseId: editSchedule.courseId.toString(),
-                instructorId: editSchedule.instructorId.toString(),
-                startTime: new Date(editSchedule.startTime)
-                  .toISOString()
-                  .slice(0, 16),
-                endTime: new Date(editSchedule.endTime)
-                  .toISOString()
-                  .slice(0, 16),
-              }
-            : {
-                courseId: "",
-                instructorId: "",
-                startTime: "",
-                endTime: "",
-              }
-        }
-      />
-
-      <Modal
-        opened={deleteModal}
-        onClose={() => setDeleteModal(false)}
-        title="Confirm Deletion"
-        centered
-      >
-        <Text>
-          Are you sure you want to delete <b>{selectedSchedule?.courseId}</b>?
-        </Text>
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => setDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button color="red" onClick={handleDeleteSchedule}>
-            Delete
-          </Button>
-        </Group>
-      </Modal>
-    </Box>
+      {loading ? (
+        <p>Loading schedules...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <table className="w-full border text-sm">
+          <thead className="bg-gray-200 text-left">
+            <tr>
+              <th className="p-2 border">ID</th>
+              <th className="p-2 border">Course ID</th>
+              <th className="p-2 border">Instructor ID</th>
+              <th className="p-2 border">Start Time</th>
+              <th className="p-2 border">End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map(schedule => (
+              <tr key={schedule.id} className="hover:bg-gray-50">
+                <td className="p-2 border">{schedule.id}</td>
+                <td className="p-2 border">{schedule.courseId}</td>
+                <td className="p-2 border">{schedule.instructorId}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 }
