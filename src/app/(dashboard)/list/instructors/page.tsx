@@ -12,9 +12,9 @@
 
 // Further styling and table functions from mantine ui
 
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Button,
   Group,
@@ -26,21 +26,21 @@ import {
   ScrollArea,
   Center,
   Modal,
-} from '@mantine/core';
+} from "@mantine/core";
 
-import { 
+import {
   IconChevronDown,
   IconChevronUp,
   IconPencil,
   IconSearch,
   IconSelector,
   IconTrash,
- } from '@tabler/icons-react';
-import axios from 'axios';
-import FormModal from '@/components/FormModal';
-import instructorFields from '@/utils/fields/instructorFields';
-import { useNotification } from '@/context/notificationContent';
-import { notifications } from '@mantine/notifications';
+} from "@tabler/icons-react";
+import axios from "axios";
+import FormModal from "@/components/FormModal";
+import instructorFields from "@/utils/fields/instructorFields";
+import { useNotification } from "@/context/notificationContent";
+import { notifications } from "@mantine/notifications";
 
 // Interface for Instructor Type
 interface Instructor {
@@ -66,11 +66,15 @@ interface ThProps {
 
 // Sortable table header component
 function Th({ children, sorted, reversed, onSort }: ThProps) {
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
 
   return (
     <Table.Th>
-      <UnstyledButton onClick={onSort} style={{ width: '100%' }}>
+      <UnstyledButton onClick={onSort} style={{ width: "100%" }}>
         <Group justify="space-between">
           <Text fw={600} size="sm">
             {children}
@@ -85,20 +89,21 @@ function Th({ children, sorted, reversed, onSort }: ThProps) {
 }
 
 export default function InstructorsPage() {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);  // Holds the array of instructors returned from the backend
-  const [modalOpen, setModalOpen] = useState(false);  // Controls whether the Add Instructor modal is open or closed
+  const [instructors, setInstructors] = useState<Instructor[]>([]); // Holds the array of instructors returned from the backend
+  const [modalOpen, setModalOpen] = useState(false); // Controls whether the Add Instructor modal is open or closed
   const [sortBy, setSortBy] = useState<keyof Instructor | null>(null);
   const [reversed, setReversed] = useState(false);
-  const [search, setSearch] = useState('');
-  const [editInstructor, setEditInstructor ] = useState<Instructor | null>(null);
+  const [search, setSearch] = useState("");
+  const [editInstructor, setEditInstructor] = useState<Instructor | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<Instructor | null>(null);
   const { addNotification } = useNotification();
 
   // API fetch form the instructors table
   const fetchInstructors = async () => {
     try {
-      const res = await axios.get('/api/instructors');
+      const res = await axios.get("/api/instructors");
       setInstructors(res.data);
     } catch (err) {
       notifications.show({
@@ -109,10 +114,10 @@ export default function InstructorsPage() {
     }
   };
 
-    // Fetch instructors on first render only
-    useEffect(() => {
-      fetchInstructors();
-    }, []);
+  // Fetch instructors on first render only
+  useEffect(() => {
+    fetchInstructors();
+  }, []);
 
   // Add new instructor function
   // Update instructor
@@ -120,10 +125,14 @@ export default function InstructorsPage() {
     try {
       if (editInstructor) {
         await axios.put(`/api/instructors?id=${editInstructor.id}`, values);
-        addNotification(`Instructor ${values.firstName} ${values.lastName} updated`);
+        addNotification(
+          `Instructor ${values.firstName} ${values.lastName} updated`
+        );
       } else {
         await axios.post("/api/instructors", values);
-        addNotification(`Instructor ${values.firstName} ${values.lastName} added`);
+        addNotification(
+          `Instructor ${values.firstName} ${values.lastName} added`
+        );
       }
       setModalOpen(false);
       setEditInstructor(null);
@@ -155,126 +164,153 @@ export default function InstructorsPage() {
 
   // Search logic
   const filtered = instructors.filter((ins) =>
-    Object.values(ins)
-      .join(' ')
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    Object.values(ins).join(" ").toLowerCase().includes(search.toLowerCase())
   );
 
-   // Sort logic
-   const sorted = sortBy
-   ? [...filtered].sort((a, b) => {
-       const aValue = a[sortBy] ?? '';
-       const bValue = b[sortBy] ?? '';
-       return reversed
-         ? String(bValue).localeCompare(String(aValue))
-         : String(aValue).localeCompare(String(bValue));
-     })
-   : filtered;
+  // Sort logic
+  const sorted = sortBy
+    ? [...filtered].sort((a, b) => {
+        const aValue = a[sortBy] ?? "";
+        const bValue = b[sortBy] ?? "";
+        return reversed
+          ? String(bValue).localeCompare(String(aValue))
+          : String(aValue).localeCompare(String(bValue));
+      })
+    : filtered;
 
- const setSorting = (field: keyof Instructor) => {
-   const shouldReverse = field === sortBy ? !reversed : false;
-   setReversed(shouldReverse);
-   setSortBy(field);
- };
+  const setSorting = (field: keyof Instructor) => {
+    const shouldReverse = field === sortBy ? !reversed : false;
+    setReversed(shouldReverse);
+    setSortBy(field);
+  };
 
- const rows = sorted.map((ins) => (
-     <Table.Tr key={ins.id}>
-       <Table.Td>{ins.employeeNumber}</Table.Td>
-          <Table.Td>
-              {ins.firstName} {ins.middleName} {ins.lastName}
-          </Table.Td>
-        <Table.Td>{ins.department}</Table.Td>
-        <Table.Td>{ins.email}</Table.Td>
-        <Table.Td>{ins.phoneNumber}</Table.Td>
-        <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
-       <Table.Td>
-         <Group gap="xs">
-           <Button
-             size="xs"
-             variant="light"
-             leftSection={<IconPencil size={14} />}
-             onClick={() => {
-               setEditInstructor(ins);
-               setModalOpen(true);
-             }}
-           >
-             Edit
-           </Button>
-           <Button
-             size="xs"
-             color="red"
-             variant="light"
-             leftSection={<IconTrash size={14} />}
-             onClick={() => {
-               setSelectedInstructor(ins);
-               setDeleteModal(true);
-             }}
-           >
-             Delete
-           </Button>
-         </Group>
-       </Table.Td>
-     </Table.Tr>
-   ));
- 
-   return (
-     <Box p="md">
-       <Group justify="space-between" mb="md">
-         <Text fw={700} size="xl">
-           List of Instructors
-         </Text>
-         <Button onClick={() => { setEditInstructor(null), setModalOpen(true)}}>Add Instructor</Button>
-         {/* Clears the modal when clicking on add new instructor */}
+  const rows = sorted.map((ins) => (
+    <Table.Tr key={ins.id}>
+      <Table.Td>{ins.employeeNumber}</Table.Td>
+      <Table.Td>
+        {ins.firstName} {ins.middleName} {ins.lastName}
+      </Table.Td>
+      <Table.Td>{ins.department}</Table.Td>
+      <Table.Td>{ins.email}</Table.Td>
+      <Table.Td>{ins.phoneNumber}</Table.Td>
+      <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
+      <Table.Td>
+        <Group gap="xs">
+          <Button
+            size="xs"
+            variant="light"
+            leftSection={<IconPencil size={14} />}
+            onClick={() => {
+              setEditInstructor(ins);
+              setModalOpen(true);
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            size="xs"
+            color="red"
+            variant="light"
+            leftSection={<IconTrash size={14} />}
+            onClick={() => {
+              setSelectedInstructor(ins);
+              setDeleteModal(true);
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
-       </Group>
- 
-       <TextInput
-         placeholder="Search"
-         leftSection={<IconSearch size={16} />}
-         value={search}
-         onChange={(e) => setSearch(e.currentTarget.value)}
-         mb="md"
-       />
- 
-       <ScrollArea>
-         <Table striped withTableBorder highlightOnHover>
-           <Table.Thead>
-             <Table.Tr>
-             <Th sorted = {sortBy === 'employeeNumber' } reversed = {reversed} onSort = {() => setSorting('employeeNumber')}>
-              Employee #
-            </Th>
-            <Th sorted={sortBy === 'firstName'} reversed={reversed} onSort={() => setSorting('firstName')}>
-              Name
-            </Th>
-            <Th sorted={sortBy === 'department'} reversed={reversed} onSort={() => setSorting('department')}>
-              Department
-            </Th>
-            <Th sorted={sortBy === 'email'} reversed={reversed} onSort={() => setSorting('email')}>
-              Email
-            </Th>
-            <Th sorted={sortBy === 'phoneNumber'} reversed={reversed} onSort={() => setSorting('phoneNumber')}>
-              Phone
-            </Th>
-            <Th sorted={sortBy === 'dateHired'} reversed={reversed} onSort={() => setSorting('dateHired')}>
-              Date Hired
-               </Th>
-               <Table.Th>Actions</Table.Th>
-             </Table.Tr>
-           </Table.Thead>
-           <Table.Tbody>
-             {rows.length ? (
-               rows
-             ) : (
-               <Table.Tr>
-                 <Table.Td colSpan={7}>
-                   <Text ta="center">No instructors found.</Text>
-                 </Table.Td>
-               </Table.Tr>
-             )}
-           </Table.Tbody>
-         </Table>
-       </ScrollArea>
+  return (
+    <Box p="md">
+      <Group justify="space-between" mb="md">
+        <Text fw={700} size="xl">
+          List of Instructors
+        </Text>
+        <Button
+          onClick={() => {
+            setEditInstructor(null), setModalOpen(true);
+          }}
+        >
+          Add Instructor
+        </Button>
+        {/* Clears the modal when clicking on add new instructor */}
+      </Group>
+
+      <TextInput
+        placeholder="Search"
+        leftSection={<IconSearch size={16} />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        mb="md"
+        w="500px"
+      />
+
+      <ScrollArea>
+        <Table striped withTableBorder highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Th
+                sorted={sortBy === "employeeNumber"}
+                reversed={reversed}
+                onSort={() => setSorting("employeeNumber")}
+              >
+                Employee #
+              </Th>
+              <Th
+                sorted={sortBy === "firstName"}
+                reversed={reversed}
+                onSort={() => setSorting("firstName")}
+              >
+                Name
+              </Th>
+              <Th
+                sorted={sortBy === "department"}
+                reversed={reversed}
+                onSort={() => setSorting("department")}
+              >
+                Department
+              </Th>
+              <Th
+                sorted={sortBy === "email"}
+                reversed={reversed}
+                onSort={() => setSorting("email")}
+              >
+                Email
+              </Th>
+              <Th
+                sorted={sortBy === "phoneNumber"}
+                reversed={reversed}
+                onSort={() => setSorting("phoneNumber")}
+              >
+                Phone
+              </Th>
+              <Th
+                sorted={sortBy === "dateHired"}
+                reversed={reversed}
+                onSort={() => setSorting("dateHired")}
+              >
+                Date Hired
+              </Th>
+              <Table.Th>Actions</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {rows.length ? (
+              rows
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={7}>
+                  <Text ta="center">No instructors found.</Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
 
       <FormModal
         opened={modalOpen} // Whether the modal is open
@@ -284,46 +320,51 @@ export default function InstructorsPage() {
         title={editInstructor ? "Edit Instructor" : "Add New Instructor"} // Modal title
         initialValues={
           editInstructor
-      ? {
-          ...editInstructor,
-          dateHired: new Date(editInstructor.dateHired).toISOString().slice(0, 10),
-          dob: editInstructor.dob ? new Date(editInstructor.dob).toISOString().slice(0, 10) : '',
+            ? {
+                ...editInstructor,
+                dateHired: new Date(editInstructor.dateHired)
+                  .toISOString()
+                  .slice(0, 10),
+                dob: editInstructor.dob
+                  ? new Date(editInstructor.dob).toISOString().slice(0, 10)
+                  : "",
+              }
+            : {
+                employeeNumber: "",
+                firstName: "",
+                middleName: "",
+                lastName: "",
+                department: "",
+                email: "",
+                phoneNumber: "",
+                dateHired: "",
+                dob: "",
+              }
         }
-      : {
-          employeeNumber: '',
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          department: '',
-          email: '',
-          phoneNumber: '',
-          dateHired: '',
-          dob: '',
-        }}
       />
 
       <Modal
-              opened={deleteModal}
-              onClose={() => setDeleteModal(false)}
-              title="Confirm Deletion"
-              centered
-            >
-              <Text>
-                Are you sure you want to delete{" "}
-                <b>
-                  {selectedInstructor?.firstName} {selectedInstructor?.lastName}
-                </b>
-                ?
-              </Text>
-              <Group justify="flex-end" mt="md">
-                <Button variant="default" onClick={() => setDeleteModal(false)}>
-                  Cancel
-                </Button>
-                <Button color="red" onClick={handleDelete}>
-                  Delete
-                </Button>
-              </Group>
-            </Modal>
+        opened={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        title="Confirm Deletion"
+        centered
+      >
+        <Text>
+          Are you sure you want to delete{" "}
+          <b>
+            {selectedInstructor?.firstName} {selectedInstructor?.lastName}
+          </b>
+          ?
+        </Text>
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={() => setDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </Box>
   );
 }

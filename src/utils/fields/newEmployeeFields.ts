@@ -4,10 +4,11 @@ export interface FieldConfig {
   type?: string;
   required?: boolean;
   options?: { label: string; value: string }[];
+  readOnly?: boolean;
 }
 
 const newEmployeeFields: FieldConfig[] = [
-  { name: "employeeNumber", label: "Employee Number", required: true },
+  { name: "employeeNumber", label: "Employee Number", readOnly: true },
   { name: "firstName", label: "First Name", required: true },
   { name: "middleName", label: "Middle Name" },
   { name: "lastName", label: "Last Name", required: true },

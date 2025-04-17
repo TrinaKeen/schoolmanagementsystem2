@@ -104,10 +104,14 @@ export default function EmployeePage() {
     try {
       if (editEmployee) {
         await axios.put(`/api/employees?id=${editEmployee.id}`, values);
-        addNotification(`Employee ${values.firstName} updated`);
+        addNotification(
+          `Employee ${values.firstName} ${values.lastName} has been updated!`
+        );
       } else {
         await axios.post("/api/employees", values);
-        addNotification(`Employee ${values.firstName} added`);
+        addNotification(
+          `Employee ${values.firstName} ${values.lastName} has been added!`
+        );
       }
       setModalOpen(false);
       setEditEmployee(null);
@@ -126,7 +130,9 @@ export default function EmployeePage() {
 
     try {
       await axios.delete(`/api/employees?id=${selectedEmployee.id}`);
-      addNotification(`Employee ${selectedEmployee.firstName} deleted`);
+      addNotification(
+        `Employee ${selectedEmployee.firstName} ${selectedEmployee.lastName} has been deleted!`
+      );
       setDeleteModal(false);
       fetchEmployees();
     } catch {
@@ -217,6 +223,7 @@ export default function EmployeePage() {
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
         mb="md"
+        w="500px"
       />
 
       <ScrollArea>
@@ -228,7 +235,7 @@ export default function EmployeePage() {
                 reversed={reverseSortDirection}
                 onSort={() => setSorting("employeeNumber")}
               >
-                Employee #
+                Employee ID
               </Th>
               <Th
                 sorted={sortBy === "lastName"}
@@ -289,7 +296,13 @@ export default function EmployeePage() {
           setEditEmployee(null);
         }}
         onSubmit={handleSaveEmployee}
-        fields={newEmployeeFields}
+        fields={
+          editEmployee
+            ? newEmployeeFields
+            : newEmployeeFields.filter(
+                (field) => field.name !== "employeeNumber"
+              )
+        }
         title={editEmployee ? "Edit Employee" : "Add New Employee"}
         initialValues={
           editEmployee
@@ -299,7 +312,6 @@ export default function EmployeePage() {
                 dateHired: formatDate(editEmployee.dateHired),
               }
             : {
-                employeeNumber: "",
                 firstName: "",
                 middleName: "",
                 lastName: "",
