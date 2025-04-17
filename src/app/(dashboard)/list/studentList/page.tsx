@@ -27,19 +27,17 @@ import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
 
 interface Student {
-    id: number;
-    studentNumber: string;
-    firstName: string;
-    middleName?: string;
-    lastName: string;
-    email: string;
-    dob: string;
-    programs: string; // this is the chosen program
-    application_status: string;
-    studentApplication?: { status: string }[];
-  }
-  
-  
+  id: number;
+  studentNumber: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email: string;
+  dob: string;
+  programs: string; // this is the chosen program
+  application_status: string;
+  studentApplication?: { status: string }[];
+}
 
 interface ThProps {
   children: React.ReactNode;
@@ -140,21 +138,16 @@ export default function StudentPage() {
   const filtered = students.filter((s) => {
     const q = search.toLowerCase();
     const latestAppStatus = s.studentApplication?.[0]?.status;
-  
+
     return (
       latestAppStatus === "approved" &&
-      (
-        (s.firstName?.toLowerCase().includes(q) ?? false) ||
+      ((s.firstName?.toLowerCase().includes(q) ?? false) ||
         (s.lastName?.toLowerCase().includes(q) ?? false) ||
         (s.email?.toLowerCase().includes(q) ?? false) ||
-        (s.programs?.toLowerCase().includes(q) ?? false)
-      )
+        (s.programs?.toLowerCase().includes(q) ?? false))
     );
   });
-  
-  
-  
-  
+
   const sorted = sortBy
     ? [...filtered].sort((a, b) => {
         const dir = reverseSortDirection ? -1 : 1;
@@ -163,8 +156,6 @@ export default function StudentPage() {
         );
       })
     : filtered;
-  
-  
 
   const setSorting = (field: keyof Student) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -179,7 +170,7 @@ export default function StudentPage() {
         {s.firstName} {s.middleName} {s.lastName}
       </Table.Td>
       <Table.Td>{s.email}</Table.Td>
-    <Table.Td>{s.programs}</Table.Td>
+      <Table.Td>{s.programs}</Table.Td>
 
       <Table.Td>{new Date(s.dob).toLocaleDateString()}</Table.Td>
       <Table.Td>{s.application_status}</Table.Td>
@@ -228,6 +219,7 @@ export default function StudentPage() {
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
         mb="md"
+        w="500px"
       />
 
       <ScrollArea>
@@ -294,63 +286,92 @@ export default function StudentPage() {
       </ScrollArea>
 
       <FormModal
-  opened={modalOpen}
-  onClose={() => {
-    setModalOpen(false);
-    setEditStudent(null);
-  }}
-  onSubmit={handleSaveStudent}
-  title={editStudent ? "Edit Student" : "Add New Student"}
-  fields={[
-    { name: "studentNumber", label: "Student Number", type: "text", required: true },
-    { name: "firstName", label: "First Name", type: "text", required: true },
-    { name: "middleName", label: "Middle Name", type: "text" },
-    { name: "lastName", label: "Last Name", type: "text", required: true },
-    { name: "email", label: "Email", type: "email", required: true },
-    { name: "dob", label: "Date of Birth", type: "date", required: true },
-    { name: "gender", label: "Gender", type: "text" },
-    { name: "age", label: "Age", type: "number" },
-    { name: "nationality", label: "Nationality", type: "text" },
-    { name: "placeOfBirth", label: "Place of Birth", type: "text" },
-    { name: "phoneNumber", label: "Phone Number", type: "text" },
-    { name: "homeAddress", label: "Home Address", type: "text" },
-    { name: "emergencyContactName", label: "Emergency Contact Name", type: "text" },
-    { name: "emergencyContactPhoneNumber", label: "Emergency Contact Phone", type: "text" },
-    { name: "emergencyContactRelationship", label: "Emergency Contact Relationship", type: "text" },
-    { name: "previousSchools", label: "Previous Schools", type: "text" },
-    { name: "yearOfGraduation", label: "Year of Graduation", type: "text" },
-    { name: "gpa", label: "GPA", type: "number" },
-  ]}
-  initialValues={
-    editStudent
-      ? {
-          ...editStudent,
-          dob: new Date(editStudent.dob).toISOString().slice(0, 10), // Convert the date
+        opened={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditStudent(null);
+        }}
+        onSubmit={handleSaveStudent}
+        title={editStudent ? "Edit Student" : "Add New Student"}
+        fields={[
+          {
+            name: "studentNumber",
+            label: "Student Number",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "firstName",
+            label: "First Name",
+            type: "text",
+            required: true,
+          },
+          { name: "middleName", label: "Middle Name", type: "text" },
+          {
+            name: "lastName",
+            label: "Last Name",
+            type: "text",
+            required: true,
+          },
+          { name: "email", label: "Email", type: "email", required: true },
+          { name: "dob", label: "Date of Birth", type: "date", required: true },
+          { name: "gender", label: "Gender", type: "text" },
+          { name: "age", label: "Age", type: "number" },
+          { name: "nationality", label: "Nationality", type: "text" },
+          { name: "placeOfBirth", label: "Place of Birth", type: "text" },
+          { name: "phoneNumber", label: "Phone Number", type: "text" },
+          { name: "homeAddress", label: "Home Address", type: "text" },
+          {
+            name: "emergencyContactName",
+            label: "Emergency Contact Name",
+            type: "text",
+          },
+          {
+            name: "emergencyContactPhoneNumber",
+            label: "Emergency Contact Phone",
+            type: "text",
+          },
+          {
+            name: "emergencyContactRelationship",
+            label: "Emergency Contact Relationship",
+            type: "text",
+          },
+          { name: "previousSchools", label: "Previous Schools", type: "text" },
+          {
+            name: "yearOfGraduation",
+            label: "Year of Graduation",
+            type: "text",
+          },
+          { name: "gpa", label: "GPA", type: "number" },
+        ]}
+        initialValues={
+          editStudent
+            ? {
+                ...editStudent,
+                dob: new Date(editStudent.dob).toISOString().slice(0, 10), // Convert the date
+              }
+            : {
+                studentNumber: "",
+                firstName: "",
+                middleName: "",
+                lastName: "",
+                email: "",
+                dob: "",
+                gender: "",
+                age: 0,
+                nationality: "",
+                placeOfBirth: "",
+                phoneNumber: "",
+                homeAddress: "",
+                emergencyContactName: "",
+                emergencyContactPhoneNumber: "",
+                emergencyContactRelationship: "",
+                previousSchools: "",
+                yearOfGraduation: "",
+                gpa: 0,
+              }
         }
-      : {
-          studentNumber: "",
-          firstName: "",
-          middleName: "",
-          lastName: "",
-          email: "",
-          dob: "",
-          gender: "",
-          age: 0,
-          nationality: "",
-          placeOfBirth: "",
-          phoneNumber: "",
-          homeAddress: "",
-          emergencyContactName: "",
-          emergencyContactPhoneNumber: "",
-          emergencyContactRelationship: "",
-          previousSchools: "",
-          yearOfGraduation: "",
-          gpa: 0,
-        }
-  }
-/>
-
-
+      />
 
       <Modal
         opened={deleteModal}
