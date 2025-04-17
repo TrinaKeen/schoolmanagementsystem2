@@ -154,10 +154,13 @@ export default function StudentPage() {
   });
   
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   
   
   
 =======
+=======
+>>>>>>> Stashed changes
 
 >>>>>>> Stashed changes
   const sorted = sortBy
