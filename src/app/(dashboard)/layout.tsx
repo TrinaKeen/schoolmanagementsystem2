@@ -1,3 +1,5 @@
+"use client";
+
 import Menu from "@/components/Menu";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
@@ -9,9 +11,6 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
   return (
     <SessionProvider>
       <div className="h-screen flex">
