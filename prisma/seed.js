@@ -19,6 +19,14 @@ async function main() {
 
   // Log the seeded admin user
   console.log('Admin user seeded:', admin);
+
+  await prisma.fAQ.createMany({
+    data: [
+      { question: "What is your return policy?", answer: "You can return items within 30 days." },
+      { question: "How do I contact support?", answer: "Email us at support@example.com." },
+      { question: "Where are you located?", answer: "We're located in Davao City." },
+    ],
+  });
 }
 
 main()

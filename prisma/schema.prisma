@@ -173,11 +173,10 @@ model Notification {
   user       User     @relation(fields: [userId], references: [id])
 }
 
-model Message {
+model FAQ {
   id        Int      @id @default(autoincrement())
-  userId Int
-  message     String
-  createdAt DateTime @default(now())
+  question  String
+  answer    String
 }
 
 

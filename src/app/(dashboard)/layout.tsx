@@ -1,13 +1,19 @@
+"use client";
 import Menu from "@/components/Menu";
 import Navbar from "@/components/Navbar";
+import FAQChatbox from '@/components/FAQChatbox'
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from 'react'
 
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <div className="h-screen flex">
       {/* LEFT */}
@@ -23,8 +29,9 @@ export default function DashboardLayout({
       </div>
       {/* RIGHT */}
       <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col">
-        <Navbar />
+        <Navbar onChatToggle={() => setIsChatOpen((prev) => !prev)}/>
         {children}
+        <FAQChatbox isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
       </div>
     </div>
   );
