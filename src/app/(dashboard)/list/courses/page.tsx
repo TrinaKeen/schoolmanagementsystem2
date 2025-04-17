@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -12,8 +12,8 @@ import {
   ScrollArea,
   Center,
   Modal,
-} from '@mantine/core';
-import { 
+} from "@mantine/core";
+import {
   IconChevronDown,
   IconChevronUp,
   IconPencil,
@@ -131,29 +131,25 @@ export default function CoursesPage() {
     }
   };
 
-const handleDelete = async () => {
-  if (!selectedCourse) return;
-  try {
-    await axios.delete(`/api/courses?id=${selectedCourse.id}`);
-    addNotification(`Course ${selectedCourse.courseName} deleted`);
-    setDeleteModal(false);
-    fetchCourses();
-  } catch {
-    notifications.show({
-      title: "Error",
-      message: "Failed to delete Course.",
-      color: "red",
-    });
-  }
-};
+  const handleDelete = async () => {
+    if (!selectedCourse) return;
+    try {
+      await axios.delete(`/api/courses?id=${selectedCourse.id}`);
+      addNotification(`Course ${selectedCourse.courseName} deleted`);
+      setDeleteModal(false);
+      fetchCourses();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete Course.",
+        color: "red",
+      });
+    }
+  };
 
-
-// Search logic
+  // Search logic
   const filtered = courses.filter((c) =>
-    Object.values(c)
-      .join(' ')
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    Object.values(c).join(" ").toLowerCase().includes(search.toLowerCase())
   );
 
   // Sort logic
@@ -231,12 +227,13 @@ const handleDelete = async () => {
       </Group>
 
       <TextInput
-         placeholder="Search"
-         leftSection={<IconSearch size={16} />}
-         value={search}
-         onChange={(e) => setSearch(e.currentTarget.value)}
-         mb="md"
-       />
+        placeholder="Search"
+        leftSection={<IconSearch size={16} />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        mb="md"
+        w="500px"
+      />
 
       <ScrollArea>
         <Table striped withTableBorder highlightOnHover>
