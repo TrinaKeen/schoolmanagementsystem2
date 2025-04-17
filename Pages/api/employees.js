@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateEmployeeNumber } from "../lib/generateEmployeeNumber";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,6 @@ export default async function handler(req, res) {
     case "POST":
       try {
         const {
-          employeeNumber,
           firstName,
           middleName,
           lastName,
@@ -27,6 +27,9 @@ export default async function handler(req, res) {
           dob,
           dateHired,
         } = req.body;
+
+        const employeeNumber = await generateEmployeeNumber();
+
         const newEmployee = await prisma.admin.create({
           data: {
             employeeNumber,
