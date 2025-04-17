@@ -37,7 +37,7 @@ const menuItems = [
     items: [
       { icon: "/profile.png", label: "Add New Employee", href: "/list/addNewEmployee", visible: ["admin"] },
       { icon: "/setting.png", label: "Add New User", href: "/list/addNewUser", visible: ["admin"] },
-      { icon: "/profile.png", label: "Profile", href: "/profile", visible: ["admin", "instructor", "student"] },
+      { icon: "/profile.png", label: "Profile", href: "/list/profile", visible: ["admin", "instructor", "student"] },
       { icon: "/logout.png", label: "Logout", href: "#", visible: ["admin", "instructor", "student"], onClick: true },
     ],
   },
