@@ -26,7 +26,6 @@ import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
 import { notifications } from "@mantine/notifications";
 import studentApprovalFields from "@/utils/fields/studentApprovalFields";
-import { Label } from "recharts";
 
 interface Application {
   id: number;
@@ -110,7 +109,7 @@ export default function StudentApprovalPage() {
   const fetchApplications = async () => {
     try {
       const res = await axios.get("/api/studentApproval", {
-        params: statusFilter ? {} : {},
+        params: statusFilter ? { status: statusFilter } : {},
       });
 
       console.log("Fetched applications:", res.data);
@@ -133,43 +132,60 @@ export default function StudentApprovalPage() {
     if (!selectedApp) return;
 
     try {
-      await axios.put("/api/studentApproval", {
+      const response = await axios.put("/api/studentApproval", {
         id: selectedApp.id,
         status: statusUpdate,
         rejectionReason: statusUpdate === "rejected" ? rejectionReason : null,
         approvalDate:
           statusUpdate === "approved" ? new Date().toISOString() : null,
-        adminId: 1, // Replace with actual admin id in real setup
+        adminId: 1, // Replace with actual admin ID
       });
 
-      console.log("Selected student ID:", selectedApp?.student?.studentNumber);
+      const updatedApp = response.data;
 
-      if (statusUpdate === "approved") {
-        await axios.post("/api/studentApproval?status=approved", {
-          studentId: selectedApp.student.studentNumber,
-          firstName: selectedApp.student.firstName,
-          lastName: selectedApp.student.lastName,
-          email: selectedApp.student.email,
-          dob: selectedApp.student.dob,
-          course: selectedApp.program.programName,
-          enrollment_date: new Date(),
-          student_status: "active",
-          academic_year: "2024-2025",
-          admin_id: 1,
-        });
+      if (!updatedApp || updatedApp.status !== statusUpdate) {
+        throw new Error("Server did not update application as expected.");
       }
 
-      addNotification(
-        `Employee ${selectedApp.student.firstName} ${selectedApp.student.lastName} has been updated!`
+      const updatedApplications = applications.map((app) =>
+        app.id === updatedApp.id ? updatedApp : app
       );
+      setApplications(updatedApplications);
+
+      setStatusFilter(statusUpdate);
+      fetchApplications();
 
       setModalOpen(false);
       setSelectedApp(null);
-      fetchApplications();
+      setRejectionReason("");
+
+      if (statusUpdate === "approved") {
+        try {
+          await axios.post("/api/students", {
+            studentId: selectedApp.student.studentNumber,
+            firstName: selectedApp.student.firstName,
+            lastName: selectedApp.student.lastName,
+            email: selectedApp.student.email,
+            programId: selectedApp.program.id,
+            status: "active",
+            enrollmentDate: new Date().toISOString(),
+          });
+        } catch (error) {
+          console.error("Failed to create student record:", error);
+        }
+      }
+
+      addNotification(
+        `Application for ${selectedApp.student.firstName} ${selectedApp.student.lastName} has been ${statusUpdate}!`
+      );
     } catch (err) {
+      console.error("Update failed:", err);
+
       notifications.show({
         title: "Error",
-        message: "Failed to update student application.",
+        message: axios.isAxiosError(err)
+          ? err.response?.data?.error || err.message || "Update failed"
+          : "Update failed",
         color: "red",
       });
     }
@@ -230,7 +246,7 @@ export default function StudentApprovalPage() {
           leftSection={<IconPencil size={14} />}
           onClick={() => {
             setSelectedApp(app);
-            setStatusUpdate(app.status);
+            setStatusUpdate(app.status.toLowerCase());
             setRejectionReason(app.rejectionReason || "");
             setModalOpen(true);
           }}
@@ -245,11 +261,13 @@ export default function StudentApprovalPage() {
     <Box p="md">
       <Group justify="space-between" mb="md">
         <Text fw={700} size="xl">
-          {statusFilter
-            ? `${
-                statusFilter[0].toUpperCase() + statusFilter.slice(1)
-              } Applications`
-            : "All Applications"}
+          <Text fw={700} size="xl">
+            {statusFilter
+              ? `${
+                  statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)
+                } Applications`
+              : "All Applications"}
+          </Text>
         </Text>
       </Group>
 
@@ -264,11 +282,7 @@ export default function StudentApprovalPage() {
 
         <Select
           placeholder="Filter by status"
-          data={[
-            { value: "pending", label: "Pending" },
-            { value: "approved", label: "Approved" },
-            { value: "rejected", label: "Rejected" },
-          ]}
+          data={["pending", "approved", "rejected"]}
           clearable
           value={statusFilter}
           onChange={setStatusFilter}
@@ -349,6 +363,10 @@ export default function StudentApprovalPage() {
             : "",
           status: statusUpdate,
           rejectionReason: rejectionReason,
+        }}
+        onFieldChange={(field, value) => {
+          if (field === "status") setStatusUpdate(value);
+          if (field === "rejectionReason") setRejectionReason(value);
         }}
       >
         {(selectedApp?.student?.documentUpload ?? []).length > 0 && (

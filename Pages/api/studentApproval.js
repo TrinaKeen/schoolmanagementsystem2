@@ -65,6 +65,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Failed to create application!" });
       }
 
+    // pages/api/studentApproval.js
     case "PUT":
       try {
         const { id, status, rejectionReason, approvalDate, adminId } = req.body;
@@ -73,20 +74,45 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: "ID and status are required!" });
         }
 
+        // Validate status value
+        const validStatuses = ["pending", "approved", "rejected"];
+        if (!validStatuses.includes(status)) {
+          return res.status(400).json({ error: "Invalid status value!" });
+        }
+
+        const updateData = {
+          status,
+          rejectionReason: status === "rejected" ? rejectionReason : null,
+          adminId: adminId || 1, // Default admin if not provided
+        };
+
+        // Only set approvalDate if status is approved
+        if (status === "approved") {
+          updateData.approvalDate = approvalDate
+            ? new Date(approvalDate)
+            : new Date();
+        }
+
         const updatedApplication = await prisma.studentApplication.update({
-          where: { id },
-          data: {
-            status,
-            rejectionReason,
-            approvalDate: approvalDate ? new Date(approvalDate) : undefined,
-            adminId,
+          where: { id: Number(id) }, // Ensure id is a number
+          data: updateData,
+          include: {
+            student: {
+              include: {
+                documentUpload: true,
+              },
+            },
+            program: true,
           },
         });
 
         return res.status(200).json(updatedApplication);
       } catch (error) {
         console.error("PUT Error:", error);
-        return res.status(500).json({ error: "Failed to update application!" });
+        return res.status(500).json({
+          error: "Failed to update application!",
+          details: error.message,
+        });
       }
 
     default:
