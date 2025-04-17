@@ -1,3 +1,7 @@
+// Sections generated with ChatGPPT
+// Filtering by program logic created with the help of ChatGPT
+// How do I create a page filter by program?
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,6 +16,7 @@ import {
   ScrollArea,
   Center,
   Modal,
+  Select,
 } from '@mantine/core';
 import { 
   IconChevronDown,
@@ -83,6 +88,7 @@ export default function CoursesPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const { addNotification } = useNotification();
+  const [programFilter, setProgramFilter] = useState<string | null>(null);
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
@@ -139,16 +145,24 @@ const handleDelete = async () => {
       color: "red",
     });
   }
-};
+}; 
 
+   // Dropdown filter options
+   const programOptions = Array.from(new Set(courses.map(c => c.program?.programName)))
+   .filter(Boolean)
+   .map(p => ({ value: p!, label: p! }));
 
-// Search logic
-  const filtered = courses.filter((c) =>
-    Object.values(c)
-      .join(' ')
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+ // Filter logic
+ const filtered = courses.filter((c) => {
+   const searchMatch = Object.values(c)
+     .join(' ')
+     .toLowerCase()
+     .includes(search.toLowerCase());
+
+   const programMatch = !programFilter || c.program?.programName === programFilter;
+
+   return searchMatch && programMatch;
+ });
 
    // Sort logic
    const sorted = sortBy
@@ -215,13 +229,23 @@ const handleDelete = async () => {
 
       </Group>
 
+      <Group>
       <TextInput
-         placeholder="Search"
-         leftSection={<IconSearch size={16} />}
-         value={search}
-         onChange={(e) => setSearch(e.currentTarget.value)}
-         mb="md"
-       />
+        placeholder="Search"
+        leftSection={<IconSearch size={16} />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        />
+
+      <Select
+        placeholder="Filter by Program"
+        data={programOptions}
+        clearable
+        value={programFilter}
+        onChange={setProgramFilter}
+        w={375}
+        />
+        </Group>
 
       <ScrollArea>
          <Table striped withTableBorder highlightOnHover>
