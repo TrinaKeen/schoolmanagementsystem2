@@ -20,6 +20,7 @@ import {
   IconSearch,
   IconSelector,
   IconTrash,
+  IconEye ,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
@@ -152,9 +153,13 @@ export default function StudentPage() {
     );
   });
   
+<<<<<<< Updated upstream
   
   
   
+=======
+
+>>>>>>> Stashed changes
   const sorted = sortBy
     ? [...filtered].sort((a, b) => {
         const dir = reverseSortDirection ? -1 : 1;
@@ -182,7 +187,7 @@ export default function StudentPage() {
     <Table.Td>{s.programs}</Table.Td>
 
       <Table.Td>{new Date(s.dob).toLocaleDateString()}</Table.Td>
-      <Table.Td>{s.application_status}</Table.Td>
+      <Table.Td>Active</Table.Td>
       <Table.Td>
         <Group gap="xs">
           <Button
@@ -207,6 +212,18 @@ export default function StudentPage() {
             }}
           >
             Delete
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
+            color="green"
+            leftSection={<IconEye size={14} />}
+            onClick={() => {
+              setEditStudent(s);
+              setModalOpen(true);
+            }}
+          >
+            View Account
           </Button>
         </Group>
       </Table.Td>
