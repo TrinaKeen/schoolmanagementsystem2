@@ -217,6 +217,7 @@ export default function EmployeePage() {
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
         mb="md"
+        w="500px"
       />
 
       <ScrollArea>
@@ -228,7 +229,7 @@ export default function EmployeePage() {
                 reversed={reverseSortDirection}
                 onSort={() => setSorting("employeeNumber")}
               >
-                Employee #
+                Employee ID
               </Th>
               <Th
                 sorted={sortBy === "lastName"}
