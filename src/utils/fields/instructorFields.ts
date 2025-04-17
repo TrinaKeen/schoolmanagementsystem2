@@ -9,6 +9,7 @@ export interface FieldConfig {
     label: string; // The label shown to the user in the form UI
     type?: string; // Optional for input types
     required?: boolean; // Optional for whether the field must be filled out before submission
+    options?: { value: string; label: string }[]; // For dropdowns if needed
   }
   
   // Instructor fields array
