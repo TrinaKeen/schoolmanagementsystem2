@@ -1,149 +1,312 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  Button,
+  Group,
+  Table,
+  Box,
+  Text,
+  TextInput,
+  UnstyledButton,
+  ScrollArea,
+  Center,
+  Modal,
+} from '@mantine/core';
+import { 
+  IconChevronDown,
+  IconChevronUp,
+  IconPencil,
+  IconSearch,
+  IconSelector,
+  IconTrash,
+ } from '@tabler/icons-react';
+import axios from 'axios';
+import FormModal from '@/components/FormModal';
+import courseFields from '@/utils/fields/courseFields';
+import { useNotification } from '@/context/notificationContent';
+import { notifications } from '@mantine/notifications';
 
+// Interface for Courses Type
 interface Course {
   id: number;
   courseCode: string;
   courseName: string;
-  courseDescription: string;
+  courseDescription?: string;
   instructorId: number;
-  programId: number;
+  programId?: number;
+  instructor: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+  };
+  program?: {
+    programName: string;
+  };
+}
+
+// Header column type for sortable headers
+interface ThProps {
+  children: React.ReactNode;
+  sorted: boolean;
+  reversed: boolean;
+  onSort: () => void;
+}
+
+// Sortable table header component
+function Th({ children, sorted, reversed, onSort }: ThProps) {
+  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+
+  return (
+    <Table.Th>
+      <UnstyledButton onClick={onSort} style={{ width: '100%' }}>
+        <Group justify="space-between">
+          <Text fw={600} size="sm">
+            {children}
+          </Text>
+          <Center>
+            <Icon size={16} />
+          </Center>
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  );
 }
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [newCourse, setNewCourse] = useState({
-    courseCode: '',
-    courseName: '',
-    courseDescription: '',
-    instructorId: '',
-    programId: '',
-  });
+  const [courses, setCourses] = useState<Course[]>([]);  // Holds the array of courses returned from the backend
+  const [modalOpen, setModalOpen] = useState(false);  // Controls whether the modal is open or closed
+  const [sortBy, setSortBy] = useState<keyof Course | null>(null);
+  const [reversed, setReversed] = useState(false);
+  const [search, setSearch] = useState('');
+  const [editCourse, setEditCourse ] = useState<Course | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const { addNotification } = useNotification();
 
+  // API fetch form the instructors table
   const fetchCourses = async () => {
-    setLoading(true);
     try {
-      const res = await fetch('/api/courses');
-      const data = await res.json();
-
-      if (Array.isArray(data)) {
-        setCourses(data);
-        setError('');
-      } else {
-        setError('Unexpected response format');
-      }
+      const res = await axios.get('/api/courses');
+      setCourses(res.data);
     } catch (err) {
-      setError('Failed to fetch courses.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('/api/courses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newCourse,
-          instructorId: parseInt(newCourse.instructorId),
-          programId: parseInt(newCourse.programId),
-        }),
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch instructors.",
+        color: "red",
       });
-
-      if (!res.ok) throw new Error('Failed to add course');
-      setNewCourse({ courseCode: '', courseName: '', courseDescription: '', instructorId: '', programId: '' });
-      fetchCourses();
-    } catch {
-      alert('Error adding course.');
     }
   };
 
+  // Fetch courses on first render only
   useEffect(() => {
     fetchCourses();
   }, []);
 
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Courses Dashboard</h1>
+  // Add new course function
+  const handleAddCourses = async (values: Record<string, any>) => {
+    try {
+      if (editCourse) {
+      await axios.put(`/api/courses?id=${editCourse.id}`, values);
+      addNotification(`Course ${values.courseName} updated`)
+      } else {
+        await axios.post("/api/courses", values);
+        addNotification(`Course ${values.courseName} added`);
+      }
+      setModalOpen(false);
+      setEditCourse(null);
+      fetchCourses(); // Reloads the table to show the new course
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to save course.",
+        color: "red",
+    });
+  }
+};
 
-      <form onSubmit={handleSubmit} className="mb-6 space-y-3 bg-gray-50 p-4 border rounded-md shadow-sm">
-        <div className="flex flex-col gap-2">
-          <input
-            type="text"
-            placeholder="Course Code"
-            value={newCourse.courseCode}
-            onChange={e => setNewCourse({ ...newCourse, courseCode: e.target.value })}
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Course Name"
-            value={newCourse.courseName}
-            onChange={e => setNewCourse({ ...newCourse, courseName: e.target.value })}
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Course Description"
-            value={newCourse.courseDescription}
-            onChange={e => setNewCourse({ ...newCourse, courseDescription: e.target.value })}
-            className="p-2 border rounded"
-          />
-          <input
-            type="number"
-            placeholder="Instructor ID"
-            value={newCourse.instructorId}
-            onChange={e => setNewCourse({ ...newCourse, instructorId: e.target.value })}
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Program ID"
-            value={newCourse.programId}
-            onChange={e => setNewCourse({ ...newCourse, programId: e.target.value })}
-            className="p-2 border rounded"
-            required
-          />
-        </div>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Add Course</button>
-      </form>
+const handleDelete = async () => {
+  if (!selectedCourse) return;
+  try {
+    await axios.delete(`/api/courses?id=${selectedCourse.id}`);
+    addNotification(`Course ${selectedCourse.courseName} deleted`);
+    setDeleteModal(false);
+    fetchCourses();
+  } catch {
+    notifications.show({
+      title: "Error",
+      message: "Failed to delete Course.",
+      color: "red",
+    });
+  }
+};
 
-      {loading ? (
-        <p>Loading courses...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <table className="w-full border text-sm">
-          <thead className="bg-gray-200 text-left">
-            <tr>
-              <th className="p-2 border">ID</th>
-              <th className="p-2 border">Code</th>
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Instructor ID</th>
-              <th className="p-2 border">Program ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map(course => (
-              <tr key={course.id} className="hover:bg-gray-50">
-                <td className="p-2 border">{course.id}</td>
-                <td className="p-2 border">{course.courseCode}</td>
-                <td className="p-2 border">{course.courseName}</td>
-                <td className="p-2 border">{course.instructorId}</td>
-                <td className="p-2 border">{course.programId}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+
+// Search logic
+  const filtered = courses.filter((c) =>
+    Object.values(c)
+      .join(' ')
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+   // Sort logic
+   const sorted = sortBy
+   ? [...filtered].sort((a, b) => {
+       const aValue = a[sortBy] ?? '';
+       const bValue = b[sortBy] ?? '';
+       return reversed
+         ? String(bValue).localeCompare(String(aValue))
+         : String(aValue).localeCompare(String(bValue));
+     })
+   : filtered;
+
+ const setSorting = (field: keyof Course) => {
+   const shouldReverse = field === sortBy ? !reversed : false;
+   setReversed(shouldReverse);
+   setSortBy(field);
+ };
+
+ const rows = sorted.map((c) => (
+     <Table.Tr key={c.id}>
+       <Table.Td>{c.courseCode}</Table.Td>
+       <Table.Td>{c.courseName}</Table.Td>
+       <Table.Td>{c.courseDescription}</Table.Td>
+       <Table.Td>{c.instructor ? `${c.instructor.firstName} ${c.instructor.middleName} ${c.instructor.lastName}` : '-'}</Table.Td>
+       <Table.Td>{c.program?.programName || '-'}</Table.Td>
+       <Table.Td>
+         <Group gap="xs">
+           <Button
+             size="xs"
+             variant="light"
+             leftSection={<IconPencil size={14} />}
+             onClick={() => {
+               setEditCourse(c);
+               setModalOpen(true);
+             }}
+           >
+             Edit
+           </Button>
+           <Button
+             size="xs"
+             color="red"
+             variant="light"
+             leftSection={<IconTrash size={14} />}
+             onClick={() => {
+               setSelectedCourse(c);
+               setDeleteModal(true);
+             }}
+           >
+             Delete
+           </Button>
+         </Group>
+       </Table.Td>
+     </Table.Tr>
+   ));
+
+   return (
+    <Box p="md">
+      <Group justify="space-between" mb="md">
+        <Text fw={700} size="xl">
+          List of Courses
+        </Text>
+        <Button onClick={() => { setEditCourse(null), setModalOpen(true)}}>Add Course</Button>
+        {/* Clears the modal when clicking on add new course */}
+
+      </Group>
+
+      <TextInput
+         placeholder="Search"
+         leftSection={<IconSearch size={16} />}
+         value={search}
+         onChange={(e) => setSearch(e.currentTarget.value)}
+         mb="md"
+       />
+
+      <ScrollArea>
+         <Table striped withTableBorder highlightOnHover>
+           <Table.Thead>
+             <Table.Tr>
+             <Th sorted = {sortBy === 'courseCode' } reversed = {reversed} onSort = {() => setSorting('courseCode')}>
+              Course Code
+            </Th>
+            <Th sorted={sortBy === 'courseName'} reversed={reversed} onSort={() => setSorting('courseName')}>
+              Name
+            </Th>
+            <Th sorted={sortBy === 'courseDescription'} reversed={reversed} onSort={() => setSorting('courseDescription')}>
+              Description
+            </Th>
+            <Th sorted={sortBy === 'instructorId'} reversed={reversed} onSort={() => setSorting('instructorId')}>
+              Instructor
+            </Th>
+            <Th sorted={sortBy === 'programId'} reversed={reversed} onSort={() => setSorting('programId')}>
+              Program
+            </Th>
+               <Table.Th>Actions</Table.Th>
+             </Table.Tr>
+           </Table.Thead>
+           <Table.Tbody>
+             {rows.length ? (
+               rows
+             ) : (
+               <Table.Tr>
+                 <Table.Td colSpan={7}>
+                   <Text ta="center">No courses found.</Text>
+                 </Table.Td>
+               </Table.Tr>
+             )}
+           </Table.Tbody>
+         </Table>
+       </ScrollArea>
+
+      <FormModal
+        opened={modalOpen} // Whether the modal is open
+        onClose={() => setModalOpen(false)} // Function to close it
+        onSubmit={handleAddCourses} // Function to handle form submit
+        fields={courseFields} // Field configuration from external file
+        title={editCourse ? "Edit Course" : "Add New Course"} // Modal title
+        initialValues={
+          editCourse
+      ? {
+          // Manually map out the fields necessary - ChatGPT
+          // Was getting errors passing through ...editCourse directtly
+          courseCode: editCourse.courseCode,
+          courseName: editCourse.courseName,
+          courseDescription: editCourse.courseDescription || '',
+          instructorId: String(editCourse.instructorId),
+          programId: editCourse.programId ? String(editCourse.programId) : '',
+        }
+      : {
+          courseCode: '',
+          courseName: '',
+          courseDescription: '',
+          instructorId: '',
+          programId: '',
+        }}
+      />
+
+      <Modal
+              opened={deleteModal}
+              onClose={() => setDeleteModal(false)}
+              title="Confirm Deletion"
+              centered
+            >
+              <Text>
+                Are you sure you want to delete{" "}
+                <b>
+                  {selectedCourse?.courseName}
+                </b>
+                ?
+              </Text>
+              <Group justify="flex-end" mt="md">
+                <Button variant="default" onClick={() => setDeleteModal(false)}>
+                  Cancel
+                </Button>
+                <Button color="red" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </Group>
+            </Modal>
+    </Box>
   );
 }

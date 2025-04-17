@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "/public/school-logo.png"
+import logo from "/public/school-logo.png";
 
 export default function WebsiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -197,18 +197,11 @@ export default function WebsiteHeader() {
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md z-50">
                     <a
-                      href="/LogIn/AdminLogin"
+                      href="/sign-in"
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setMenuOpen(false)}
                     >
-                      EEFCI Employee
-                    </a>
-                    <a
-                      href="/LogIn/StudentLogin"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      Current Student
+                      Log In
                     </a>
                   </div>
                 )}

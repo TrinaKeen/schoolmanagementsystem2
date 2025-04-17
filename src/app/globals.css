@@ -104,11 +104,10 @@
   background-color: #fdf2fb !important;
 }
 
-.rbc-event-label{
+.rbc-event-label {
   color: gray !important;
   margin-bottom: 5px;
 }
-
 
 * {
   box-sizing: border-box;
@@ -149,4 +148,33 @@ body {
 
 :global(.card) {
   all: initial;
+}
+
+/* Hide double border from react-calendar */
+.react-calendar {
+  border: none;
+}
+
+/* Style active date */
+.react-calendar__tile--active {
+  background: #bae6fd !important; /* light blue */
+  color: black !important;
+  border-radius: 4px;
+}
+
+/* Apply only for month view cells */
+.rbc-month-view .rbc-day-bg.has-event {
+  position: relative;
+}
+
+.rbc-month-view .rbc-day-bg.has-event::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
 }
