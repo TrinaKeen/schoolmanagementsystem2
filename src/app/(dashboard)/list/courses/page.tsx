@@ -88,7 +88,8 @@ export default function CoursesPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const { addNotification } = useNotification();
-  const [programFilter, setProgramFilter] = useState<string | null>(null);
+  const [programFilter, setProgramFilter] = useState<string | null>(null); // Filter by program
+  const [instructorFilter, setInstructorFilter] = useState<string | null>(null); // Filter by instructor
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
@@ -147,10 +148,19 @@ const handleDelete = async () => {
   }
 }; 
 
-   // Dropdown filter options
+   // Drop down filter options
    const programOptions = Array.from(new Set(courses.map(c => c.program?.programName)))
    .filter(Boolean)
    .map(p => ({ value: p!, label: p! }));
+
+   // Drop down filter options
+   const instructorOptions = Array.from(
+    new Set(courses.map(c => `${c.instructor.firstName} ${c.instructor.middleName || ''} ${c.instructor.lastName}`.trim()))
+  ).map(name => ({
+    value: name,
+    label: name,
+  }));
+  
 
  // Filter logic
  const filtered = courses.filter((c) => {
@@ -159,9 +169,11 @@ const handleDelete = async () => {
      .toLowerCase()
      .includes(search.toLowerCase());
 
-   const programMatch = !programFilter || c.program?.programName === programFilter;
-
-   return searchMatch && programMatch;
+     const programMatch = !programFilter || c.program?.programName === programFilter;
+     const instructorName = `${c.instructor.firstName} ${c.instructor.middleName || ''} ${c.instructor.lastName}`.trim();
+     const instructorMatch = !instructorFilter || instructorName === instructorFilter;
+   
+     return searchMatch && programMatch && instructorMatch;
  });
 
    // Sort logic
@@ -229,8 +241,8 @@ const handleDelete = async () => {
 
       </Group>
 
-      <Group>
-      <TextInput
+      <Group mb="md" grow align="flex-end">
+        <TextInput
         placeholder="Search"
         leftSection={<IconSearch size={16} />}
         value={search}
@@ -243,9 +255,17 @@ const handleDelete = async () => {
         clearable
         value={programFilter}
         onChange={setProgramFilter}
-        w={375}
         />
-        </Group>
+
+      <Select
+        placeholder="Filter by Instructor"
+        data={instructorOptions}
+        clearable
+        value={instructorFilter}
+        onChange={setInstructorFilter}
+        />
+      </Group>
+
 
       <ScrollArea>
          <Table striped withTableBorder highlightOnHover>
