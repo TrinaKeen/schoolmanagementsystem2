@@ -26,6 +26,7 @@ import { Children, useEffect } from "react";
 
 // Type Definitions
 interface FieldConfig {
+  readonly?: boolean;
   name: string; // Used as the form field name and key in form state
   label: string; // Displayed as the field's label in the UI
   type?: string; // Optional: input type ('text', 'email', 'date', etc.)
@@ -45,6 +46,7 @@ interface FormModalProps {
   type?: ModalType;
   data?: any;
   children?: React.ReactNode; // Optional: children to render inside the modal
+  onFieldChange?: (field: string, value: any) => void;
 }
 
 // Component Definition
@@ -60,6 +62,7 @@ export default function FormModal({
   type = "create",
   data,
   children,
+  onFieldChange,
 }: // Initialize Form State
 FormModalProps) {
   const form = useForm({
@@ -128,7 +131,12 @@ FormModalProps) {
                   label={field.label}
                   data={field.options || []}
                   required={field.required}
+                  disabled={field.readonly}
                   {...form.getInputProps(field.name)}
+                  onChange={(value) => {
+                    form.setFieldValue(field.name, value);
+                    onFieldChange?.(field.name, value);
+                  }}
                   mt="sm"
                   placeholder="Select..."
                 />
@@ -141,6 +149,7 @@ FormModalProps) {
                   key={field.name}
                   label={field.label}
                   required={field.required}
+                  disabled={field.readonly}
                   {...form.getInputProps(field.name)}
                   mt="sm"
                 />
@@ -153,7 +162,12 @@ FormModalProps) {
                 label={field.label}
                 type={field.type || "text"}
                 required={field.required}
+                disabled={field.readonly}
                 {...form.getInputProps(field.name)}
+                onChange={(e) => {
+                  form.setFieldValue(field.name, e.currentTarget.value);
+                  onFieldChange?.(field.name, e.currentTarget.value);
+                }}
                 mt="sm"
               />
             );
