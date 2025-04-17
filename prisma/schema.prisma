@@ -103,7 +103,6 @@ model Program {
 }
 
 
-
 model StudentApplication {
   id               Int       @id @default(autoincrement())
   studentId        Int

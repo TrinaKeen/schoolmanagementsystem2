@@ -19,23 +19,20 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
-    
     "next-env.d.ts",
-   
     "**/*.ts",
-   
     "**/*.tsx",
-   
     ".next/types/**/*.ts",
-   
     "prisma/**/*.ts",
-    "prisma/**/*.ts", 
-    "src/**/*"
-, "prisma/seed.js",
-    "app/page.tsx"
-    ],
+    "prisma/**/*.ts",
+    "src/**/*",
+    "prisma/seed.js",
+    "app/page.tsx",
+    "Pages/api/users.js"
+, "Pages/api/programs.js"  ],
   "exclude": ["node_modules"]
 }

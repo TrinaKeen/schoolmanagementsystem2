@@ -1,24 +1,57 @@
-import Announcements from "@/components/Announcements";
-import BigCalendar from "@/components/BigCalender";
-import EventCalendar from "@/components/EventCalendar";
+"use client";
+import { useEffect, useState } from 'react';
 
-const StudentPage = () => {
+const Dashboard = () => {
+  const [user, setUser] = useState<{ userId: string | null; name: string | null; role: string | null }>({
+    userId: null,
+    name: null,
+    role: null,
+  });
+
+  // Fetch user details from localStorage
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    const name = localStorage.getItem('name');
+    const role = localStorage.getItem('role');
+
+    if (userId && name && role) {
+      setUser({ userId, name, role });
+    } else {
+      // If no user data found in localStorage, redirect to login
+      window.location.href = '/signin';
+    }
+  }, []);
+
   return (
-    <div className="p-4 flex gap-4 flex-col xl:flex-row">
-      {/* LEFT */}
-      <div className="w-full xl:w-2/3">
-        <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Schedule (4A)</h1>
-          <BigCalendar/>
-        </div>
+    <div>
+      <div>
+      <h1>Welcome to your account {user.name} !</h1>
+      <h2>We're happy you're here!</h2>
+      <h2>This is your home page. From here you can apply for a program, apply for courrses, see your schedule and more.</h2>
       </div>
-      {/* RIGHT */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-8">
-        <EventCalendar />
-        <Announcements />
+
+      <div>
+        <h1>My Application</h1>
+
       </div>
+
+    <div>
+      <h1>My Profile</h1>
+      <h2>Name: </h2>
+      <h2>Email: </h2>
+
+    </div>
+
+      {/* Display user information */}
+      <div>
+        <p><strong>User ID:</strong> {user.userId}</p>
+        <p><strong>Name:</strong> {user.name}</p>
+        <p><strong>Role:</strong> {user.role}</p>
+      </div>
+      
+      
     </div>
   );
 };
 
-export default StudentPage;
+export default Dashboard;

@@ -1,158 +1,49 @@
-// https://chatgpt.com/c/67f6d77e-593c-8003-b651-f54c20610ba9
-// https://chatgpt.com/c/67f7d43f-4c18-8003-bece-9ecaa85fe777
+// Created with the help of ChatGPT
 
-// 'use client';
+// Using React, Next.js (App Router), and Mantine UI, generate a functional `page.tsx` component that does the following:
+// Fetches a list of instructors from `/api/instructors` using `axios`
+// Displays them in a responsive `<Table>`
+// Includes a "Add Instructor" button that opens a `FormModal`
+// Submits data using the `onSubmit` handler to POST `/api/instructors`
+// Uses `instructorFields` imported from a config file
 
-// import React, { useEffect, useState } from 'react';
+// Include `useEffect`, `useState`, and `FormModal` integration
+// ChatGPT also created accompanying fields and form code skeleton
 
-// type Instructor = {
-//   id: number;
-//   employeeNumber: string;
-//   firstName: string;
-//   middleName?: string;
-//   lastName: string;
-//   department?: string;
-//   email: string;
-//   phoneNumber: string;
-//   dateHired: string;
-//   dob: string;
-// };
-
-// export default function InstructorsPage() {
-//   const [instructors, setInstructors] = useState<Instructor[]>([]);
-//   const [formData, setFormData] = useState({
-//     employeeNumber: '',
-//     firstName: '',
-//     middleName: '',
-//     lastName: '',
-//     department: '',
-//     email: '',
-//     phoneNumber: '',
-//     dateHired: '',
-//     dob: '',
-//   });
-
-//   const fetchInstructors = async () => {
-//     try {
-//       const res = await fetch('/api/instructors');
-//       const data: Instructor[] = await res.json();
-//       if (Array.isArray(data)) {
-//         setInstructors(data);
-//       } else {
-//         console.error('Unexpected instructor data:', data);
-//       }
-//     } catch (err) {
-//       console.error('Error fetching instructors:', err);
-//     }
-//   };
-
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
-//     setFormData(prev => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     const res = await fetch('/api/instructors', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(formData),
-//     });
-
-//     if (res.ok) {
-//       setFormData({
-//         employeeNumber: '',
-//         firstName: '',
-//         middleName: '',
-//         lastName: '',
-//         department: '',
-//         email: '',
-//         phoneNumber: '',
-//         dateHired: '',
-//         dob: '',
-//       });
-//       fetchInstructors();
-//     } else {
-//       alert('Error creating instructor');
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchInstructors();
-//   }, []);
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-2xl font-bold mb-4">Instructors Dashboard</h1>
-
-//       <form onSubmit={handleSubmit} className="mb-6 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-//         {[
-//           ['employeeNumber', 'Employee Number'],
-//           ['firstName', 'First Name'],
-//           ['middleName', 'Middle Name'],
-//           ['lastName', 'Last Name'],
-//           ['department', 'Department'],
-//           ['email', 'Email'],
-//           ['phoneNumber', 'Phone Number'],
-//           ['dateHired', 'Date Hired'],
-//           ['dob', 'Date of Birth'],
-//         ].map(([name, label]) => (
-//           <input
-//             key={name}
-//             name={name}
-//             placeholder={label}
-//             value={(formData as any)[name]}
-//             onChange={handleChange}
-//             className="p-2 border rounded"
-//             type={name === 'dateHired' || name === 'dob' ? 'date' : 'text'}
-//             required={name !== 'middleName' && name !== 'department'}
-//           />
-//         ))}
-
-//         <button type="submit" className="col-span-2 bg-blue-600 text-white py-2 rounded">
-//           Add Instructor
-//         </button>
-//       </form>
-
-//       <table className="w-full text-sm border">
-//         <thead className="bg-gray-100 text-left">
-//           <tr>
-//             <th className="p-2 border">ID</th>
-//             <th className="p-2 border">Name</th>
-//             <th className="p-2 border">Email</th>
-//             <th className="p-2 border">Phone</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {instructors.map((instructor) => (
-//             <tr key={instructor.id} className="hover:bg-gray-50">
-//               <td className="p-2 border">{instructor.id}</td>
-//               <td className="p-2 border">{instructor.firstName} {instructor.lastName}</td>
-//               <td className="p-2 border">{instructor.email}</td>
-//               <td className="p-2 border">{instructor.phoneNumber}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// }
-
-// Old functioning code
+// Further styling and table functions from mantine ui
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import Table from '@/components/Table';
-import Pagination from '@/components/Pagination';
-import TableSearch from '@/components/TableSearch';
+import { useEffect, useState } from 'react';
+import {
+  Button,
+  Group,
+  Table,
+  Box,
+  Text,
+  TextInput,
+  UnstyledButton,
+  ScrollArea,
+  Center,
+  Modal,
+} from '@mantine/core';
+
+import { 
+  IconChevronDown,
+  IconChevronUp,
+  IconPencil,
+  IconSearch,
+  IconSelector,
+  IconTrash,
+ } from '@tabler/icons-react';
+import axios from 'axios';
 import FormModal from '@/components/FormModal';
+import instructorFields from '@/utils/fields/instructorFields';
+import { useNotification } from '@/context/notificationContent';
+import { notifications } from '@mantine/notifications';
 
-const role = 'admin'; // You can replace this with dynamic role checking
-
-type Instructor = {
+// Interface for Instructor Type
+interface Instructor {
   id: number;
   employeeNumber: string;
   firstName: string;
@@ -160,162 +51,279 @@ type Instructor = {
   lastName: string;
   department?: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   dateHired: string;
-  dob: string;
-};
+  dob?: string;
+}
 
-const columns = [
-  { header: 'ID', accessor: 'id' },
-  { header: 'Name', accessor: 'name' },
-  { header: 'Email', accessor: 'email', className: 'hidden md:table-cell' },
-  { header: 'Phone', accessor: 'phoneNumber', className: 'hidden lg:table-cell' },
-  { header: 'Actions', accessor: 'actions' },
-];
+// Header column type for sortable headers
+interface ThProps {
+  children: React.ReactNode;
+  sorted: boolean;
+  reversed: boolean;
+  onSort: () => void;
+}
 
-export default function InstructorsPage() {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
-  const [formData, setFormData] = useState({
-    employeeNumber: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    department: '',
-    email: '',
-    phoneNumber: '',
-    dateHired: '',
-    dob: '',
-  });
-
-  const fetchInstructors = async () => {
-    try {
-      const res = await fetch('/api/instructors');
-      const data: Instructor[] = await res.json();
-      if (Array.isArray(data)) {
-        setInstructors(data);
-      } else {
-        console.error('Unexpected instructor data:', data);
-      }
-    } catch (err) {
-      console.error('Error fetching instructors:', err);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = await fetch('/api/instructors', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-
-    if (res.ok) {
-      setFormData({
-        employeeNumber: '',
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        department: '',
-        email: '',
-        phoneNumber: '',
-        dateHired: '',
-        dob: '',
-      });
-      fetchInstructors();
-    } else {
-      alert('Error creating instructor');
-    }
-  };
-
-  useEffect(() => {
-    fetchInstructors();
-  }, []);
-
-  const renderRow = (instructor: Instructor) => (
-    <tr
-      key={instructor.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-blue-50"
-    >
-      <td className="p-4">{instructor.id}</td>
-      <td className="p-4">
-        {instructor.firstName} {instructor.lastName}
-      </td>
-      <td className="hidden md:table-cell p-4">{instructor.email}</td>
-      <td className="hidden lg:table-cell p-4">{instructor.phoneNumber}</td>
-      <td className="p-4">
-        <div className="flex gap-2">
-          <Link href={`/instructors/${instructor.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
-              <Image src="/view.png" alt="View" width={16} height={16} />
-            </button>
-          </Link>
-          {role === 'admin' && (
-            <FormModal table="instructor" type="delete" id={instructor.id} />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+// Sortable table header component
+function Th({ children, sorted, reversed, onSort }: ThProps) {
+  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold">All Instructors</h1>
-        <div className="flex items-center gap-4">
-          <TableSearch />
-          <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-            <Image src="/filter.png" alt="Filter" width={14} height={14} />
-          </button>
-          {role === 'admin' && (
-            <FormModal table="instructor" type="create">
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
-              {[
-                ['employeeNumber', 'Employee Number'],
-                ['firstName', 'First Name'],
-                ['middleName', 'Middle Name'],
-                ['lastName', 'Last Name'],
-                ['department', 'Department'],
-                ['email', 'Email'],
-                ['phoneNumber', 'Phone Number'],
-                ['dateHired', 'Date Hired'],
-                ['dob', 'Date of Birth']
-              ].map(([name, label]) => (
-                <input
-                  key={name}
-                  name={name}
-                  placeholder={label}
-                  value={(formData as any)[name]}
-                  onChange={handleChange}
-                  className="p-2 border rounded"
-                  type={name === 'dateHired' || name === 'dob' ? 'date' : 'text'}
-                  required
-                />
-              ))}
-          
-              <button
-                type="submit"
-                className="sm:col-span-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded"
-              >
-                Create Instructor
-              </button>
-            </form>
-          </FormModal>
-          
-          )}
-        </div>
-      </div>
+    <Table.Th>
+      <UnstyledButton onClick={onSort} style={{ width: '100%' }}>
+        <Group justify="space-between">
+          <Text fw={600} size="sm">
+            {children}
+          </Text>
+          <Center>
+            <Icon size={16} />
+          </Center>
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  );
+}
 
-      {/* Table */}
-      <Table columns={columns} renderRow={renderRow} data={instructors} />
+export default function InstructorsPage() {
+  const [instructors, setInstructors] = useState<Instructor[]>([]);  // Holds the array of instructors returned from the backend
+  const [modalOpen, setModalOpen] = useState(false);  // Controls whether the Add Instructor modal is open or closed
+  const [sortBy, setSortBy] = useState<keyof Instructor | null>(null);
+  const [reversed, setReversed] = useState(false);
+  const [search, setSearch] = useState('');
+  const [editInstructor, setEditInstructor ] = useState<Instructor | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const { addNotification } = useNotification();
 
-      {/* Pagination */}
-      <Pagination />
-    </div>
+  // API fetch form the instructors table
+  const fetchInstructors = async () => {
+    try {
+      const res = await axios.get('/api/instructors');
+      setInstructors(res.data);
+    } catch (err) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch instructors.",
+        color: "red",
+      });
+    }
+  };
+
+    // Fetch instructors on first render only
+    useEffect(() => {
+      fetchInstructors();
+    }, []);
+
+  // Add new instructor function
+  // Update instructor
+  const handleAddInstructor = async (values: Record<string, any>) => {
+    try {
+      if (editInstructor) {
+        await axios.put(`/api/instructors?id=${editInstructor.id}`, values);
+        addNotification(`Instructor ${values.firstName} ${values.lastName} updated`);
+      } else {
+        await axios.post("/api/instructors", values);
+        addNotification(`Instructor ${values.firstName} ${values.lastName} added`);
+      }
+      setModalOpen(false);
+      setEditInstructor(null);
+      fetchInstructors();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to save instructor.",
+        color: "red",
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedInstructor) return;
+    try {
+      await axios.delete(`/api/instructors?id=${selectedInstructor.id}`);
+      addNotification(`Instructor ${selectedInstructor.firstName} deleted`);
+      setDeleteModal(false);
+      fetchInstructors();
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to delete instructor.",
+        color: "red",
+      });
+    }
+  };
+
+  // Search logic
+  const filtered = instructors.filter((ins) =>
+    Object.values(ins)
+      .join(' ')
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+   // Sort logic
+   const sorted = sortBy
+   ? [...filtered].sort((a, b) => {
+       const aValue = a[sortBy] ?? '';
+       const bValue = b[sortBy] ?? '';
+       return reversed
+         ? String(bValue).localeCompare(String(aValue))
+         : String(aValue).localeCompare(String(bValue));
+     })
+   : filtered;
+
+ const setSorting = (field: keyof Instructor) => {
+   const shouldReverse = field === sortBy ? !reversed : false;
+   setReversed(shouldReverse);
+   setSortBy(field);
+ };
+
+ const rows = sorted.map((ins) => (
+     <Table.Tr key={ins.id}>
+       <Table.Td>{ins.employeeNumber}</Table.Td>
+          <Table.Td>
+              {ins.firstName} {ins.middleName} {ins.lastName}
+          </Table.Td>
+        <Table.Td>{ins.department}</Table.Td>
+        <Table.Td>{ins.email}</Table.Td>
+        <Table.Td>{ins.phoneNumber}</Table.Td>
+        <Table.Td>{new Date(ins.dateHired).toLocaleDateString()}</Table.Td>
+       <Table.Td>
+         <Group gap="xs">
+           <Button
+             size="xs"
+             variant="light"
+             leftSection={<IconPencil size={14} />}
+             onClick={() => {
+               setEditInstructor(ins);
+               setModalOpen(true);
+             }}
+           >
+             Edit
+           </Button>
+           <Button
+             size="xs"
+             color="red"
+             variant="light"
+             leftSection={<IconTrash size={14} />}
+             onClick={() => {
+               setSelectedInstructor(ins);
+               setDeleteModal(true);
+             }}
+           >
+             Delete
+           </Button>
+         </Group>
+       </Table.Td>
+     </Table.Tr>
+   ));
+ 
+   return (
+     <Box p="md">
+       <Group justify="space-between" mb="md">
+         <Text fw={700} size="xl">
+           List of Instructors
+         </Text>
+         <Button onClick={() => { setEditInstructor(null), setModalOpen(true)}}>Add Instructor</Button>
+         {/* Clears the modal when clicking on add new instructor */}
+
+       </Group>
+ 
+       <TextInput
+         placeholder="Search"
+         leftSection={<IconSearch size={16} />}
+         value={search}
+         onChange={(e) => setSearch(e.currentTarget.value)}
+         mb="md"
+       />
+ 
+       <ScrollArea>
+         <Table striped withTableBorder highlightOnHover>
+           <Table.Thead>
+             <Table.Tr>
+             <Th sorted = {sortBy === 'employeeNumber' } reversed = {reversed} onSort = {() => setSorting('employeeNumber')}>
+              Employee #
+            </Th>
+            <Th sorted={sortBy === 'firstName'} reversed={reversed} onSort={() => setSorting('firstName')}>
+              Name
+            </Th>
+            <Th sorted={sortBy === 'department'} reversed={reversed} onSort={() => setSorting('department')}>
+              Department
+            </Th>
+            <Th sorted={sortBy === 'email'} reversed={reversed} onSort={() => setSorting('email')}>
+              Email
+            </Th>
+            <Th sorted={sortBy === 'phoneNumber'} reversed={reversed} onSort={() => setSorting('phoneNumber')}>
+              Phone
+            </Th>
+            <Th sorted={sortBy === 'dateHired'} reversed={reversed} onSort={() => setSorting('dateHired')}>
+              Date Hired
+               </Th>
+               <Table.Th>Actions</Table.Th>
+             </Table.Tr>
+           </Table.Thead>
+           <Table.Tbody>
+             {rows.length ? (
+               rows
+             ) : (
+               <Table.Tr>
+                 <Table.Td colSpan={7}>
+                   <Text ta="center">No instructors found.</Text>
+                 </Table.Td>
+               </Table.Tr>
+             )}
+           </Table.Tbody>
+         </Table>
+       </ScrollArea>
+
+      <FormModal
+        opened={modalOpen} // Whether the modal is open
+        onClose={() => setModalOpen(false)} // Function to close it
+        onSubmit={handleAddInstructor} // Function to handle form submit
+        fields={instructorFields} // Field configuration from external file
+        title={editInstructor ? "Edit Instructor" : "Add New Instructor"} // Modal title
+        initialValues={
+          editInstructor
+      ? {
+          ...editInstructor,
+          dateHired: new Date(editInstructor.dateHired).toISOString().slice(0, 10),
+          dob: editInstructor.dob ? new Date(editInstructor.dob).toISOString().slice(0, 10) : '',
+        }
+      : {
+          employeeNumber: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
+          department: '',
+          email: '',
+          phoneNumber: '',
+          dateHired: '',
+          dob: '',
+        }}
+      />
+
+      <Modal
+              opened={deleteModal}
+              onClose={() => setDeleteModal(false)}
+              title="Confirm Deletion"
+              centered
+            >
+              <Text>
+                Are you sure you want to delete{" "}
+                <b>
+                  {selectedInstructor?.firstName} {selectedInstructor?.lastName}
+                </b>
+                ?
+              </Text>
+              <Group justify="flex-end" mt="md">
+                <Button variant="default" onClick={() => setDeleteModal(false)}>
+                  Cancel
+                </Button>
+                <Button color="red" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </Group>
+            </Modal>
+    </Box>
   );
 }
