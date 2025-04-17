@@ -56,7 +56,7 @@ export default function SchedulesPage() {
       setNewSchedule({ courseId: '', instructorId: '',  startTime: '', endTime: '',});
       fetchSchedules();
     } catch {
-      alert('Error adding course.');
+      alert('Error adding schedule.');
     }
   };
 
@@ -87,7 +87,7 @@ export default function SchedulesPage() {
             required
           />
           <input
-            type="number"
+            type="datetime-local"
             placeholder="Start Time"
             value={newSchedule.startTime}
             onChange={e => setNewSchedule({ ...newSchedule, startTime: e.target.value })}
@@ -95,7 +95,7 @@ export default function SchedulesPage() {
             required
           />
             <input
-            type="number"
+            type="datetime-local"
             placeholder="End Time"
             value={newSchedule.startTime}
             onChange={e => setNewSchedule({ ...newSchedule, endTime: e.target.value })}
@@ -127,6 +127,8 @@ export default function SchedulesPage() {
                 <td className="p-2 border">{schedule.id}</td>
                 <td className="p-2 border">{schedule.courseId}</td>
                 <td className="p-2 border">{schedule.instructorId}</td>
+                <td className="p-2 border">{new Date(schedule.startTime).toLocaleString()}</td>
+                <td className="p-2 border">{new Date(schedule.endTime).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

@@ -25,8 +25,8 @@ export default async function handler(req,res) {
                     courseId: parseInt(courseId),
                     instructorId: parseInt(instructorId),
                     programId: programId ? parseInt(programId) : null,
-                    startTime,
-                    endTime
+                    startTime:  new Date(startTime),
+                    endTime:  new Date(startTime),
                 },
             });
             res.status(201).json(newSchedule);

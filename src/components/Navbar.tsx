@@ -1,10 +1,7 @@
 import Image from "next/image"
 
-interface NavbarProps {
-  onChatToggle: () => void;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ onChatToggle }) => {
+const Navbar: React.FC = () => {
   return (
     <div className='flex items-center justify-between p-4'>
       {/* SEARCH BAR */}
@@ -14,9 +11,7 @@ const Navbar: React.FC<NavbarProps> = ({ onChatToggle }) => {
       </div>
       {/* ICONS AND USER */}
       <div className='flex items-center gap-6 justify-end w-full'>
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'
-          onClick={onChatToggle}
-          title="Open FAQ Chat">
+        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
           <Image src="/message.png" alt="" width={20} height={20}/>
         </div>
         <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
