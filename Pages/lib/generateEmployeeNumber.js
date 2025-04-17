@@ -1,20 +1,23 @@
 // lib/generateStudentNumber.js
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function generateEmployeeNumber() {
-  const lastEmployee = await prisma.admin.findFirst({
-    orderBy: {
-        employeeNumber: 'desc',
-    },
-    select: {
-        employeeNumber: true,
-    },
-  });
+export const generateEmployeeNumber = async () => {
+  const prisma = new PrismaClient();
+  let unique = false;
+  let newNumber = "";
 
-  const lastNumber = lastEmployee?.employeeNumber || 'EN-10000000000';
-  const nextNumber = parseInt(lastNumber.replace('EN-', '')) + 1;
+  while (!unique) {
+    const random = Math.floor(100000 + Math.random() * 900000);
+    newNumber = `EMP${random}`;
 
-  return `EN-${nextNumber.toString().padStart(10, '0')}`;
-}
+    const existing = await prisma.admin.findFirst({
+      where: { employeeNumber: newNumber },
+    });
+
+    if (!existing) unique = true;
+  }
+
+  return newNumber;
+};
