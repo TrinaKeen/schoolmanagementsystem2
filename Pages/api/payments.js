@@ -24,11 +24,16 @@ export default async function handler(req, res) {
       const studentFeeMap = approvedStudentsWithFees.map(application => {
         return {
           studentId: application.studentId,
+          studentNumber: application.student.studentNumber, // Add studentNumber
+          firstName: application.student.firstName,         // Add firstName
+          lastName: application.student.lastName,           // Add lastName
           feeIds: application.program.fees.map(fee => fee.id),
         };
       });
+      
+      return res.status(200).json(studentFeeMap); 
 
-      return res.status(200).json(studentFeeMap);  // Send the mapped data to the client
+       // Send the mapped data to the client
     } catch (error) {
       console.error("Error fetching approved students with fees:", error);
       return res.status(500).json({ message: "Error fetching approved students with fees" });
