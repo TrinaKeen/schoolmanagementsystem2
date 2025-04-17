@@ -17,6 +17,8 @@ const menuItems = [
       { icon: "/subject.png", label: "Programs", href: "/programs", visible: ["admin"] },
       { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["admin"] },
       { icon: "/lesson.png", label: "Fees", href: "/fees", visible: ["admin"] }, 
+      { icon: "/lesson.png", label: "Payments", href: "/list/payments", visible: ["admin"] }, 
+      { icon: "/lesson.png", label: "Course Schedule", href: "/list/schedule", visible: ["admin"] }, 
 
      
       { icon: "/home.png", label: "My Account", href: "/student", visible: ["student"] },
@@ -24,6 +26,7 @@ const menuItems = [
       { icon: "/subject.png", label: "Application Status", href: "/list/apply-admission2", visible: ["student"] },
       { icon: "/class.png", label: "Courses", href: "/list/courses", visible: ["student"] },
       { icon: "/result.png", label: "Fees", href: "/list/fees", visible: ["student"] },
+  
       
 
     ],

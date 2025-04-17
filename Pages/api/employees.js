@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateEmployeeNumber } from "../lib/generateStudentNumber";
 
 const prisma = new PrismaClient();
 
@@ -27,6 +28,8 @@ export default async function handler(req, res) {
           dob,
           dateHired,
         } = req.body;
+
+
         const newEmployee = await prisma.admin.create({
           data: {
             employeeNumber,
