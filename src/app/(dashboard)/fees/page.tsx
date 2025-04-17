@@ -23,18 +23,26 @@ import {
  } from '@tabler/icons-react';
 import axios from 'axios';
 import FormModal from '@/components/FormModal';
-import courseFields from '@/utils/fields/courseFields';
 import { useNotification } from '@/context/notificationContent';
 import { notifications } from '@mantine/notifications';
 import feeFields from '@/utils/fields/feesFields';
 
+// For prolgram relation
+interface Program {
+  id: number;
+  programName: string;
+  tuitionFee: number;
+}
+
 // Interface for Courses Type
 interface Fee {
-  id: number;
+  id: number  | string;
   programId: number;
   feeType: string;
   amount: number;
   description?: string;
+  isTuition?: boolean;
+  program?: {programName: string;};
 }
 
 // Header column type for sortable headers
@@ -68,6 +76,7 @@ function Th({ children, sorted, reversed, onSort }: ThProps) {
 export default function FeesPage() {
   const [fees, setFees] = useState<Fee[]>([]);  // Holds the array of courses returned from the backend
   const [modalOpen, setModalOpen] = useState(false);  // Controls whether the modal is open or closed
+  const [programs, setPrograms] = useState<Program[]>([]);
   const [sortBy, setSortBy] = useState<keyof Fee | null>(null);
   const [reversed, setReversed] = useState(false);
   const [search, setSearch] = useState('');
@@ -86,20 +95,43 @@ export default function FeesPage() {
     }
   };
 
+  const fetchPrograms = async () => {
+    try {
+    const res = await axios.get('/api/programs');
+    setPrograms(res.data);
+  } catch (err) {
+    console.error('Failed to fetch programs:', err);
+  }
+};
+
    // Fecth instructors on first render only
    useEffect(() => {
     fetchFees();
+    fetchPrograms();
   }, []);
+
+  // Merge programs' tuitionFee as fees
+  const tuitionFeeRows: Fee[] = programs.filter((p) => p.tuitionFee > 0).map((program) => ({
+      id: `tuition-${program.id}`,
+      programId: program.id,
+      feeType: 'Tuition',
+      amount: program.tuitionFee ?? 0,
+      description: 'Tuition Fee',
+      isTuition: true,
+      program: { programName: program.programName },
+    }));
+
+    const allFees: Fee[] = [...tuitionFeeRows, ...fees];
 
   // Add new instructor function
   const handleAddFees = async (values: Record<string, any>) => {
     try {
       if (editFee){
       await axios.put(`/api/fees?id=${editFee.id}`, values);
-      addNotification(`${values.feeName} fee updated`)
+      addNotification(`${values.feeType} fee updated`)
       } else {
       await axios.post('/api/fees', values);
-      addNotification(`${values.feeName} fee added`);
+      addNotification(`${values.feeType} fee added`);
       }
       setModalOpen(false);
       setEditFee(null);
@@ -114,7 +146,7 @@ export default function FeesPage() {
 }
 
 const handleDelete = async () => {
-  if (!selectedFee) return;
+  if (!selectedFee || selectedFee.isTuition) return; // prevent deleting virtual fee
   try {
     await axios.delete(`/api/fees?id=${selectedFee.id}`);
     addNotification(`${selectedFee.feeType} fee deleted`);
@@ -130,7 +162,7 @@ const handleDelete = async () => {
 };
 
 // Search logic
-  const filtered = fees.filter((f) =>
+  const filtered = allFees.filter((f) =>
     Object.values(f)
       .join(' ')
       .toLowerCase()
@@ -140,8 +172,22 @@ const handleDelete = async () => {
    // Sort logic
    const sorted = sortBy
    ? [...filtered].sort((a, b) => {
-       const aValue = a[sortBy] ?? '';
-       const bValue = b[sortBy] ?? '';
+    let aValue: any = a[sortBy as keyof Fee];
+    let bValue: any = b[sortBy as keyof Fee];
+
+    // Special handling for program
+    if (sortBy === 'program') {
+      aValue = a.program?.programName ?? '';
+      bValue = b.program?.programName ?? '';
+    }
+
+       // Special handling for amount
+       if (sortBy === 'amount') {
+        return reversed
+          ? Number(bValue) - Number(aValue)
+          : Number(aValue) - Number(bValue);
+      }
+
        return reversed
          ? String(bValue).localeCompare(String(aValue))
          : String(aValue).localeCompare(String(bValue));
@@ -156,7 +202,7 @@ const handleDelete = async () => {
 
  const rows = sorted.map((f) => (
   <Table.Tr key={f.id}>
-    <Table.Td>{f.programId}</Table.Td>
+    <Table.Td>{f.program?.programName || f.programId}</Table.Td>
     <Table.Td>{f.feeType}</Table.Td>
     <Table.Td>{f.amount}</Table.Td>
     <Table.Td>{f.description}</Table.Td>
@@ -167,9 +213,13 @@ const handleDelete = async () => {
           variant="light"
           leftSection={<IconPencil size={14} />}
           onClick={() => {
+            if (f.isTuition){
+            // Optionally let editing tuition create a new override
             setEditFee(f);
             setModalOpen(true);
+            }
           }}
+          disabled={f.isTuition} // Disable for tuition fees
         >
           Edit
         </Button>
@@ -182,6 +232,7 @@ const handleDelete = async () => {
             setSelectedFee(f);
             setDeleteModal(true);
           }}
+          disabled={f.isTuition}
         >
           Delete
         </Button>
@@ -208,11 +259,11 @@ const handleDelete = async () => {
          mb="md"
        />
 
-       <ScrollArea>
+              <ScrollArea>
                 <Table striped withTableBorder highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
-                    <Th sorted = {sortBy === 'programId' } reversed = {reversed} onSort = {() => setSorting('programId')}>
+                    <Th sorted = {sortBy === 'program' } reversed = {reversed} onSort = {() => setSorting('program')}>
                      Program
                    </Th>
                    <Th sorted={sortBy === 'feeType'} reversed={reversed} onSort={() => setSorting('feeType')}>
@@ -227,17 +278,7 @@ const handleDelete = async () => {
                       <Table.Th>Actions</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
-                  <Table.Tbody>
-                    {rows.length ? (
-                      rows
-                    ) : (
-                      <Table.Tr>
-                        <Table.Td colSpan={7}>
-                          <Text ta="center">No fees found.</Text>
-                        </Table.Td>
-                      </Table.Tr>
-                    )}
-                  </Table.Tbody>
+                  <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
               </ScrollArea>
 

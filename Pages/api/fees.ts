@@ -9,9 +9,11 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const fees = await prisma.fee.findMany();
-      // Query the `fees` table and return all records as an array
-
+      const fees = await prisma.fee.findMany({ // Query the `fees` table and return all records as an array
+        include: {
+          program: true, // to link with the program tuition
+        }
+      }); 
       return res.status(200).json(fees);
     } catch (err) {
       console.error('GET /api/fees error:', err);
@@ -30,25 +32,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description,
     } = req.body;
 
-    // Insert Into Database
     try {
-      // Prisma function that inserts a new record into the fees table
+      let finalAmount = parseFloat(amount);
+  
+      if (feeType.toLowerCase() === 'tuition') {
+        const program = await prisma.program.findUnique({
+          where: { id: parseInt(programId) },
+        });
+  
+        if (!program || program.tuitionFee == null) {
+          return res.status(400).json({ error: 'Program not found or missing tuitionFee' });
+        }
+  
+        finalAmount = program.tuitionFee;
+      }
+  
       const newFee = await prisma.fee.create({
         data: {
-          programId: Number(programId),
+          programId: parseInt(programId),
           feeType,
-          amount: Number(amount), 
+          amount: finalAmount,
           description,
         },
       });
 
-      // Error logging
       return res.status(201).json(newFee);
-    } catch (err) {
-      console.error('POST /api/fees error:', err);
-      return res.status(500).json({ error: 'Failed to add fee' });
-    }
+  } catch (err) {
+    console.error('POST /api/fees error:', err);
+    return res.status(500).json({ error: 'Failed to add fee' });
   }
+}
+  
+
+    // Insert Into Database
+  //   try {
+  //     // Prisma function that inserts a new record into the fees table
+  //     const newFee = await prisma.fee.create({
+  //       data: {
+  //         programId: parseInt(programId),
+  //         feeType,
+  //         amount: parseInt(amount), 
+  //         description,
+  //       },
+  //     });
+
+  //     // Error logging
+  //     return res.status(201).json(newFee);
+  //   } catch (err) {
+  //     console.error('POST /api/fees error:', err);
+  //     return res.status(500).json({ error: 'Failed to add fee' });
+  //   }
+  // }
 
   // Editing a fee
   if (req.method === 'PUT') {
@@ -93,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      await prisma.course.delete({
+      await prisma.fee.delete({
           where: { id: Number(id) },
       });
 
