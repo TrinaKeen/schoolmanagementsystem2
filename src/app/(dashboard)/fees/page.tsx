@@ -112,6 +112,11 @@ export default function FeesPage() {
     }
   };
 
+  const programOptions = programs.map((p) => ({
+    value: p.id.toString(),
+    label: `${p.programCode} - ${p.programName}`,
+  }));  
+
   // Fecth instructors on first render only
   useEffect(() => {
     fetchFees();
@@ -214,7 +219,7 @@ export default function FeesPage() {
     <Table.Tr key={f.id}>
       <Table.Td>{f.program ? `${f.program.programCode} - ${f.program.programName}` : "-"}</Table.Td>
       <Table.Td>{f.feeType}</Table.Td>
-      <Table.Td>{f.amount}</Table.Td>
+      <Table.Td>{`PHP ${Number(f.amount).toLocaleString()}`}</Table.Td>
       <Table.Td>{f.description}</Table.Td>
       <Table.Td>
         <Group gap="xs">
@@ -319,7 +324,7 @@ export default function FeesPage() {
         opened={modalOpen} // Whether the modal is open
         onClose={() => setModalOpen(false)} // Function to close it
         onSubmit={handleAddFees} // Function to handle form submit
-        fields={feeFields} // Field configuration from external file
+        fields={feeFields(programOptions)} // Field configuration from external file
         title={editFee ? "Edit Fee" : "Add New Fee"} // Modal title
         initialValues={
           editFee

@@ -164,8 +164,8 @@ export default function ProgramsPage() {
       <Table.Td>{p.programCode}</Table.Td>
       <Table.Td>{p.programName}</Table.Td>
       <Table.Td>{p.programDescription}</Table.Td>
-      <Table.Td>{p.duration}</Table.Td>
-      <Table.Td>{p.tuitionFee}</Table.Td>
+      <Table.Td>{`${Number(p.duration).toLocaleString()} Weeks`}</Table.Td>
+      <Table.Td>{`PHP ${Number(p.tuitionFee).toLocaleString()}`}</Table.Td>
       <Table.Td>
         <Group gap="xs">
           <Button
