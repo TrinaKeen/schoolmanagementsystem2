@@ -3,11 +3,7 @@ const courseFields = (
   instructorOptions: { label: string; value: string }[],
   programOptions: { label: string; value: string }[]
 ) => [
-  {
-    name: "courseCode",
-    label: "Course Code",
-    required: true,
-  },
+ 
   {
     name: "courseName",
     label: "Course Name",
