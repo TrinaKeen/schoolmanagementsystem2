@@ -8,6 +8,7 @@ const feeFields: FieldConfig[] = [
     options: [
       {value: 'Tuition', label: 'Tuition'},
       {value: 'Misc', label: 'Misc'},
+      {value: 'Other', label: 'Other'},
     ],
    },
   { name: 'amount', label: 'Amount', type: 'number', required: true },

@@ -30,6 +30,7 @@ import feeFields from "@/utils/fields/feesFields";
 // For prolgram relation
 interface Program {
   id: number;
+  programCode: string;
   programName: string;
   tuitionFee: number;
 }
@@ -42,7 +43,10 @@ interface Fee {
   amount: number;
   description?: string;
   isTuition?: boolean;
-  program?: { programName: string };
+  program?: { 
+    programCode: string;
+    programName: string; 
+  };
 }
 
 // Header column type for sortable headers
@@ -124,8 +128,11 @@ export default function FeesPage() {
       amount: program.tuitionFee ?? 0,
       description: "Tuition Fee",
       isTuition: true,
-      program: { programName: program.programName },
-    }));
+      program: { 
+        programCode: program.programCode, 
+        programName: program.programName 
+      },
+    }))
 
   const allFees: Fee[] = [...tuitionFeeRows, ...fees];
 
@@ -205,7 +212,7 @@ export default function FeesPage() {
 
   const rows = sorted.map((f) => (
     <Table.Tr key={f.id}>
-      <Table.Td>{f.program?.programName || f.programId}</Table.Td>
+      <Table.Td>{f.program ? `${f.program.programCode} - ${f.program.programName}` : "-"}</Table.Td>
       <Table.Td>{f.feeType}</Table.Td>
       <Table.Td>{f.amount}</Table.Td>
       <Table.Td>{f.description}</Table.Td>
