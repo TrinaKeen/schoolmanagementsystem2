@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { generateEmployeeNumber } from "../lib/generateEmployeeNumber";
 
 const prisma = new PrismaClient(); 
 // Instantiate a Prisma client which will be used to send queries to the database.
@@ -23,7 +24,6 @@ export default async function handler(req, res) {
   // Each field match a column in the prisma schema
   if (req.method === 'POST') {
     const {
-      employeeNumber,
       firstName,
       middleName,
       lastName,
@@ -36,6 +36,7 @@ export default async function handler(req, res) {
 
     // Insert Into Database
     try {
+      const employeeNumber = await generateEmployeeNumber(); // auto generate employee number
       // Prisma function that inserts a new record into the instructors table
       const newInstructor = await prisma.instructor.create({
         data: {

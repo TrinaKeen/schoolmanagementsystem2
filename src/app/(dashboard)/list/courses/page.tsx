@@ -307,7 +307,6 @@ export default function CoursesPage() {
                 programId: editCourse.programId ? editCourse.programId.toString() : "",
               }
             : {
-                courseCode: "",
                 courseName: "",
                 courseDescription: "",
                 instructorId: "",

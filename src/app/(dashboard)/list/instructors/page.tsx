@@ -330,7 +330,6 @@ export default function InstructorsPage() {
                   : "",
               }
             : {
-                employeeNumber: "",
                 firstName: "",
                 middleName: "",
                 lastName: "",
