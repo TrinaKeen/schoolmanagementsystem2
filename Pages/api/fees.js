@@ -10,9 +10,13 @@ export default async function handler(req, res) {
     try {
       const fees = await prisma.fee.findMany({ // Query the `fees` table and return all records as an array
         include: {
-          program: true, // to link with the program tuition
-        }
-      }); 
+          program: {
+            select: {
+              programCode: true,
+              programName: true,
+            },
+          },
+    }}); 
       return res.status(200).json(fees);
     } catch (err) {
       console.error('GET /api/fees error:', err);

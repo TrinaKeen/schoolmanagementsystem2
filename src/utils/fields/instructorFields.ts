@@ -10,12 +10,13 @@ export interface FieldConfig {
     type?: string; // Optional for input types
     required?: boolean; // Optional for whether the field must be filled out before submission
     options?: { value: string; label: string }[]; // For dropdowns if needed
+    readOnly?: boolean;
   }
   
   // Instructor fields array
   // This array defines the structure of the form for adding a new instructor
   const instructorFields: FieldConfig[] = [
-    { name: 'employeeNumber', label: 'Employee Number', required: true },
+    { name: 'employeeNumber', label: 'Employee Number', readOnly: true },
     { name: 'firstName', label: 'First Name', required: true },
     { name: 'middleName', label: 'Middle Name', required: false },
     { name: 'lastName', label: 'Last Name', required: true },

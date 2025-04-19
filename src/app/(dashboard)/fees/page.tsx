@@ -30,6 +30,7 @@ import feeFields from "@/utils/fields/feesFields";
 // For prolgram relation
 interface Program {
   id: number;
+  programCode: string;
   programName: string;
   tuitionFee: number;
 }
@@ -42,7 +43,10 @@ interface Fee {
   amount: number;
   description?: string;
   isTuition?: boolean;
-  program?: { programName: string };
+  program?: { 
+    programCode: string;
+    programName: string; 
+  };
 }
 
 // Header column type for sortable headers
@@ -108,6 +112,11 @@ export default function FeesPage() {
     }
   };
 
+  const programOptions = programs.map((p) => ({
+    value: p.id.toString(),
+    label: `${p.programCode} - ${p.programName}`,
+  }));  
+
   // Fecth instructors on first render only
   useEffect(() => {
     fetchFees();
@@ -124,8 +133,11 @@ export default function FeesPage() {
       amount: program.tuitionFee ?? 0,
       description: "Tuition Fee",
       isTuition: true,
-      program: { programName: program.programName },
-    }));
+      program: { 
+        programCode: program.programCode, 
+        programName: program.programName 
+      },
+    }))
 
   const allFees: Fee[] = [...tuitionFeeRows, ...fees];
 
@@ -205,9 +217,9 @@ export default function FeesPage() {
 
   const rows = sorted.map((f) => (
     <Table.Tr key={f.id}>
-      <Table.Td>{f.program?.programName || f.programId}</Table.Td>
+      <Table.Td>{f.program ? `${f.program.programCode} - ${f.program.programName}` : "-"}</Table.Td>
       <Table.Td>{f.feeType}</Table.Td>
-      <Table.Td>{f.amount}</Table.Td>
+      <Table.Td>{`PHP ${Number(f.amount).toLocaleString()}`}</Table.Td>
       <Table.Td>{f.description}</Table.Td>
       <Table.Td>
         <Group gap="xs">
@@ -312,7 +324,7 @@ export default function FeesPage() {
         opened={modalOpen} // Whether the modal is open
         onClose={() => setModalOpen(false)} // Function to close it
         onSubmit={handleAddFees} // Function to handle form submit
-        fields={feeFields} // Field configuration from external file
+        fields={feeFields(programOptions)} // Field configuration from external file
         title={editFee ? "Edit Fee" : "Add New Fee"} // Modal title
         initialValues={
           editFee

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateCourseCode } from "../lib/generateCourseCode";
 
 const prisma = new PrismaClient();
 // Instantiate a Prisma client which will be used to send queries to the database.
@@ -28,7 +29,6 @@ export default async function handler(req, res){
   // Each field match a column in the prisma schema
   if (req.method === "POST") {
     const {
-      courseCode,
       courseName,
       courseDescription,
       instructorId,
@@ -37,6 +37,7 @@ export default async function handler(req, res){
 
     // Insert Into Database
     try {
+      const courseCode = await generateCourseCode(); // Auto generate code
       // Prisma function that inserts a new record into the courses table
       const newCourse = await prisma.course.create({
         data: {
@@ -44,7 +45,7 @@ export default async function handler(req, res){
           courseName,
           courseDescription,
           instructorId: parseInt(instructorId),
-          programId: parseInt(programId),
+          programId: programId? parseInt(programId) : null,
         },
       });
 
@@ -80,7 +81,7 @@ export default async function handler(req, res){
           courseName,
           courseDescription,
           instructorId: parseInt(instructorId),
-          programId: parseInt(programId),
+          programId: programId ? parseInt(programId) : null,
         },
       });
 

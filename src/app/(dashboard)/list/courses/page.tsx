@@ -42,6 +42,7 @@ interface Course {
   };
   program?: {
     programName: string;
+    programCode: string;
   };
 }
 
@@ -87,8 +88,8 @@ export default function CoursesPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const { addNotification } = useNotification();
-  const [programFilter, setProgramFilter] = useState<string | null>(null); // Filter by program
-  const [instructorFilter, setInstructorFilter] = useState<string | null>(null); // Filter by instructor
+  const [instructorOptions, setInstructorOptions] = useState<{ label: string; value: string }[]>([]);
+  const [programOptions, setProgramOptions] = useState<{ label: string; value: string }[]>([]);
 
   // API fetch form the instructors table
   const fetchCourses = async () => {
@@ -104,9 +105,38 @@ export default function CoursesPage() {
     }
   };
 
+  const fetchDropdowns = async () => {
+    try {
+      const [instructorsRes, programsRes] = await Promise.all([
+        axios.get('/api/instructors'),
+        axios.get('/api/programs'),
+      ]);
+
+      const instructors = instructorsRes.data.map((i: any) => ({
+        value: i.id.toString(),
+        label: `${i.firstName} ${i.middleName ?? ''} ${i.lastName}`.trim(),
+      }));
+
+      const programs = programsRes.data.map((p: any) => ({
+        value: p.id.toString(),
+        label: `${p.programCode} - ${p.programName}`,
+      }));
+
+      setInstructorOptions(instructors);
+      setProgramOptions(programs);
+    } catch {
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to fetch dropdown options',
+        color: 'red',
+      });
+    }
+  };
+
   // Fetch courses on first render only
   useEffect(() => {
     fetchCourses();
+    fetchDropdowns();
   }, []);
 
   // Add new course function
@@ -176,10 +206,10 @@ export default function CoursesPage() {
       <Table.Td>{c.courseDescription}</Table.Td>
       <Table.Td>
         {c.instructor
-          ? `${c.instructor.firstName} ${c.instructor.middleName} ${c.instructor.lastName}`
+          ? `${c.instructor.firstName} ${c.instructor.middleName ?? ''} ${c.instructor.lastName}`
           : "-"}
       </Table.Td>
-      <Table.Td>{c.program?.programName || "-"}</Table.Td>
+      <Table.Td>{c.program ? `${c.program.programCode} - ${c.program.programName}` : "-"}</Table.Td>
       <Table.Td>
         <Group gap="xs">
           <Button
@@ -239,50 +269,18 @@ export default function CoursesPage() {
         <Table striped withTableBorder highlightOnHover>
           <Table.Thead>
             <Table.Tr>
-              <Th
-                sorted={sortBy === "courseCode"}
-                reversed={reversed}
-                onSort={() => setSorting("courseCode")}
-              >
-                Course Code
-              </Th>
-              <Th
-                sorted={sortBy === "courseName"}
-                reversed={reversed}
-                onSort={() => setSorting("courseName")}
-              >
-                Name
-              </Th>
-              <Th
-                sorted={sortBy === "courseDescription"}
-                reversed={reversed}
-                onSort={() => setSorting("courseDescription")}
-              >
-                Description
-              </Th>
-              <Th
-                sorted={sortBy === "instructorId"}
-                reversed={reversed}
-                onSort={() => setSorting("instructorId")}
-              >
-                Instructor
-              </Th>
-              <Th
-                sorted={sortBy === "programId"}
-                reversed={reversed}
-                onSort={() => setSorting("programId")}
-              >
-                Program
-              </Th>
+              <Th sorted={sortBy === "courseCode"} reversed={reversed} onSort={() => setSorting("courseCode")}>Course Code</Th>
+              <Th sorted={sortBy === "courseName"} reversed={reversed} onSort={() => setSorting("courseName")}>Name</Th>
+              <Th sorted={sortBy === "courseDescription"} reversed={reversed} onSort={() => setSorting("courseDescription")}>Description</Th>
+              <Th sorted={sortBy === "instructorId"} reversed={reversed} onSort={() => setSorting("instructorId")}>Instructor</Th>
+              <Th sorted={sortBy === "programId"} reversed={reversed} onSort={() => setSorting("programId")}>Program</Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {rows.length ? (
-              rows
-            ) : (
+            {rows.length ? rows : (
               <Table.Tr>
-                <Table.Td colSpan={7}>
+                <Table.Td colSpan={6}>
                   <Text ta="center">No courses found.</Text>
                 </Table.Td>
               </Table.Tr>
@@ -295,7 +293,7 @@ export default function CoursesPage() {
         opened={modalOpen} // Whether the modal is open
         onClose={() => setModalOpen(false)} // Function to close it
         onSubmit={handleAddCourses} // Function to handle form submit
-        fields={courseFields} // Field configuration from external file
+        fields={courseFields(instructorOptions, programOptions)} // Field configuration from external file
         title={editCourse ? "Edit Course" : "Add New Course"} // Modal title
         initialValues={
           editCourse
@@ -305,13 +303,10 @@ export default function CoursesPage() {
                 courseCode: editCourse.courseCode,
                 courseName: editCourse.courseName,
                 courseDescription: editCourse.courseDescription || "",
-                instructorId: String(editCourse.instructorId),
-                programId: editCourse.programId
-                  ? String(editCourse.programId)
-                  : "",
+                instructorId: editCourse.instructorId.toString(),
+                programId: editCourse.programId ? editCourse.programId.toString() : "",
               }
             : {
-                courseCode: "",
                 courseName: "",
                 courseDescription: "",
                 instructorId: "",
