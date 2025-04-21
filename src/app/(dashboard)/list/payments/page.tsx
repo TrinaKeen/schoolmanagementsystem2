@@ -114,7 +114,12 @@ export default function PaymentsPage() {
     fetchStudents();
   }, []);
 
+  useEffect(() => {
+    console.log("studentOptions", studentOptions);
+  }, [students]);
+
   const handleSavePayment = async (values: Record<string, any>) => {
+    console.log("Submitting payment:", values);
     const payment = {
       studentId: parseInt(values.studentId),
       amountPaid: parseFloat(values.amountPaid),
@@ -124,6 +129,8 @@ export default function PaymentsPage() {
 
     try {
       if (editPayment) {
+        console.log("Is editing:", !!editPayment, "Edit ID:", editPayment?.id);
+
         await axios.put(`/api/payments?id=${editPayment.id}`, payment);
         addNotification("Payment updated successfully!");
       } else {
@@ -159,7 +166,7 @@ export default function PaymentsPage() {
   };
 
   const studentOptions = students.map((s) => ({
-    label: `${s.firstName} ${s.lastName}`,
+    label: `${s.studentNumber} | ${s.firstName} ${s.lastName}`,
     value: s.id.toString(),
   }));
 
@@ -189,7 +196,9 @@ export default function PaymentsPage() {
       </Table.Td>
       <Table.Td>{p.amountPaid}</Table.Td>
       <Table.Td>{new Date(p.paymentDate).toLocaleDateString()}</Table.Td>
-      <Table.Td>{p.paymentStatus}</Table.Td>
+      <Table.Td>
+        {p.paymentStatus.charAt(0) + p.paymentStatus.slice(1).toLowerCase()}
+      </Table.Td>
       <Table.Td style={{ textAlign: "right" }}>
         <Group gap="xs">
           <Button
@@ -287,31 +296,33 @@ export default function PaymentsPage() {
         </Table>
       </ScrollArea>
 
-      <FormModal
-        opened={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setEditPayment(null);
-        }}
-        onSubmit={handleSavePayment}
-        fields={paymentFields(studentOptions)}
-        title={editPayment ? "Edit Payment" : "Add Payment"}
-        initialValues={
-          editPayment
-            ? {
-                studentId: editPayment.studentId.toString(),
-                amountPaid: editPayment.amountPaid.toString(),
-                paymentDate: editPayment.paymentDate.slice(0, 10),
-                paymentStatus: editPayment.paymentStatus,
-              }
-            : {
-                studentId: "",
-                amountPaid: "",
-                paymentDate: "",
-                paymentStatus: "",
-              }
-        }
-      />
+      {studentOptions.length > 0 && (
+        <FormModal
+          opened={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setEditPayment(null);
+          }}
+          onSubmit={handleSavePayment}
+          fields={paymentFields(studentOptions)}
+          title={editPayment ? "Edit Payment" : "Add Payment"}
+          initialValues={
+            editPayment
+              ? {
+                  studentId: editPayment.studentId.toString(),
+                  amountPaid: editPayment.amountPaid.toString(),
+                  paymentDate: editPayment.paymentDate.slice(0, 10),
+                  paymentStatus: editPayment.paymentStatus,
+                }
+              : {
+                  studentId: "",
+                  amountPaid: "",
+                  paymentDate: "",
+                  paymentStatus: "",
+                }
+          }
+        />
+      )}
 
       <Modal
         opened={deleteModal}

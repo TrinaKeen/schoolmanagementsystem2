@@ -26,6 +26,7 @@ import { Children, useEffect } from "react";
 
 // Type Definitions
 interface FieldConfig {
+  data: { label: string; value: string }[] | undefined;
   readonly?: boolean;
   name: string; // Used as the form field name and key in form state
   label: string; // Displayed as the field's label in the UI
@@ -129,7 +130,7 @@ FormModalProps) {
                 <Select
                   key={field.name}
                   label={field.label}
-                  data={field.options || []}
+                  data={field.options ?? field.data ?? []}
                   required={field.required}
                   disabled={field.readonly}
                   {...form.getInputProps(field.name)}

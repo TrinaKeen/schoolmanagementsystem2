@@ -7,6 +7,7 @@ export interface FieldConfig {
   required?: boolean;
   options?: { label: string; value: string }[];
   readOnly?: boolean;
+  data?: { label: string; value: string }[];
 }
 
 const scheduleFields = (
@@ -32,12 +33,14 @@ const scheduleFields = (
     label: "Start Time",
     type: "datetime-local",
     required: true,
+    data: [],
   },
   {
     name: "endTime",
     label: "End Time",
     type: "datetime-local",
     required: true,
+    data: [],
   },
 ];
 

@@ -11,12 +11,14 @@ const paymentFields = (studentOptions: { label: string; value: string }[]) => [
     label: "Amount Paid",
     type: "number",
     required: true,
+    data: [],
   },
   {
     name: "paymentDate",
     label: "Payment Date",
     type: "date",
     required: true,
+    data: [],
   },
   {
     name: "paymentStatus",
@@ -24,9 +26,10 @@ const paymentFields = (studentOptions: { label: string; value: string }[]) => [
     type: "select",
     required: true,
     data: [
-      { label: "Paid", value: "paid" },
-      { label: "Unpaid", value: "unpaid" },
-      { label: "Pending", value: "pending" },
+      { label: "Pending", value: "PENDING" },
+      { label: "Completed", value: "COMPLETED" },
+      { label: "Failed", value: "FAILED" },
+      { label: "Cancelled", value: "CANCELLED" },
     ],
   },
 ];
