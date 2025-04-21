@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -33,13 +34,13 @@ interface Payment {
   amountPaid: number;
   paymentDate: string;
   paymentStatus: "paid" | "unpaid" | "pending";
-}
 
 interface Student {
   id: number;
   studentNumber: string;
   firstName: string;
   lastName: string;
+  email: string;
 }
 
 interface ThProps {
@@ -156,6 +157,7 @@ export default function PaymentsPage() {
       addNotification("Payment deleted successfully!");
       setDeleteModal(false);
       fetchPayments();
+
     } catch {
       notifications.show({
         title: "Error",
@@ -200,6 +202,7 @@ export default function PaymentsPage() {
         {p.paymentStatus.charAt(0) + p.paymentStatus.slice(1).toLowerCase()}
       </Table.Td>
       <Table.Td style={{ textAlign: "right" }}>
+
         <Group gap="xs">
           <Button
             size="xs"

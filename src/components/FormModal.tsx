@@ -175,7 +175,7 @@ FormModalProps) {
           })}
 
           <Group justify="flex-end" mt="md">
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Update</Button>
           </Group>
 
           {children}

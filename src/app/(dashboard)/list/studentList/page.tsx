@@ -20,6 +20,7 @@ import {
   IconSearch,
   IconSelector,
   IconTrash,
+  IconEye ,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
@@ -170,10 +171,10 @@ export default function StudentPage() {
         {s.firstName} {s.middleName} {s.lastName}
       </Table.Td>
       <Table.Td>{s.email}</Table.Td>
-      <Table.Td>{s.programs}</Table.Td>
+   
 
       <Table.Td>{new Date(s.dob).toLocaleDateString()}</Table.Td>
-      <Table.Td>{s.application_status}</Table.Td>
+      <Table.Td>Active</Table.Td>
       <Table.Td>
         <Group gap="xs">
           <Button
@@ -198,6 +199,18 @@ export default function StudentPage() {
             }}
           >
             Delete
+          </Button>
+          <Button
+            size="xs"
+            variant="light"
+            color="green"
+            leftSection={<IconEye size={14} />}
+            onClick={() => {
+              setEditStudent(s);
+              setModalOpen(true);
+            }}
+          >
+            View Account
           </Button>
         </Group>
       </Table.Td>
@@ -247,13 +260,7 @@ export default function StudentPage() {
               >
                 Email
               </Th>
-              <Th
-                sorted={sortBy === "programs"}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting("programs")}
-              >
-                Course
-              </Th>
+
               <Th
                 sorted={sortBy === "dob"}
                 reversed={reverseSortDirection}

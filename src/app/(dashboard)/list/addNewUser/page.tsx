@@ -208,7 +208,7 @@ export default function AddNewUserPage() {
         </Button>
       </Group>
 
-      <Group mb="md" gap="md" grow>
+      <Group mb="md" gap="md">
         <TextInput
           placeholder="Search by role, username or email"
           leftSection={<IconSearch size={16} stroke={1.5} />}
