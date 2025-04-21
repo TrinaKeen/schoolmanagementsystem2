@@ -1,109 +1,91 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, PaymentStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  const { method } = req;
+
+  if (method === "GET") {
     try {
-      // Fetch approved students along with their related fees
-      const approvedStudentsWithFees = await prisma.studentApplication.findMany({
-        where: {
-          status: "approved",  // Filter by approved status
-        },
+      const payments = await prisma.payment.findMany({
         include: {
-          student: true,  // Include student details
-          program: {
-            include: {
-              fees: true,  // Include fees related to the program
-            },
-          },
+          student: true,
+          fee: true,
         },
       });
-
-      // Map the approved students to get studentId and feeIds
-      const studentFeeMap = approvedStudentsWithFees.map(application => {
-        return {
-          studentId: application.studentId,
-          studentNumber: application.student.studentNumber, // Add studentNumber
-          firstName: application.student.firstName,         // Add firstName
-          lastName: application.student.lastName,           // Add lastName
-          feeIds: application.program.fees.map(fee => fee.id),
-        };
-      });
-      
-      return res.status(200).json(studentFeeMap); 
-
-       // Send the mapped data to the client
-    } catch (error) {
-      console.error("Error fetching approved students with fees:", error);
-      return res.status(500).json({ message: "Error fetching approved students with fees" });
+      res.status(200).json(payments);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to fetch payments" });
     }
-  }
+  } else if (method === "POST") {
+    const { studentId, amountPaid, paymentDate, paymentStatus } = req.body;
 
-  if (req.method === 'POST') {
-    const { studentId, feeId, amountPaid, paymentStatus } = req.body;
+    console.log("API received:", {
+      studentId,
+      amountPaid,
+      paymentDate,
+      paymentStatus,
+    });
 
     try {
       const newPayment = await prisma.payment.create({
         data: {
-          studentId: Number(studentId),
-          feeId: feeId ? Number(feeId) : null,
+          studentId: parseInt(studentId),
           amountPaid: parseFloat(amountPaid),
-          paymentStatus: paymentStatus || 'PENDING',
+          paymentDate: new Date(paymentDate),
+          paymentStatus: PaymentStatus[paymentStatus.toUpperCase()],
         },
       });
-
-      return res.status(201).json(newPayment);
+      res.status(201).json(newPayment);
     } catch (err) {
-      console.error('POST /api/payments error:', err);
-      return res.status(500).json({ error: 'Failed to add payment' });
+      console.error(err);
+      res.status(500).json({ error: "Failed to create payment" });
     }
-  }
-
-  if (req.method === 'PUT') {
+  } else if (method === "PUT") {
     const { id } = req.query;
-    const { studentId, feeId, amountPaid, paymentStatus } = req.body;
+    const { studentId, amountPaid, paymentDate, paymentStatus } = req.body;
 
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ error: 'Missing or invalid ID' });
-    }
+    console.log("PUT request received for ID:", id, {
+      studentId,
+      amountPaid,
+      paymentDate,
+      paymentStatus,
+    });
+
+    if (!id) return res.status(400).json({ error: "Payment ID is required" });
 
     try {
       const updatedPayment = await prisma.payment.update({
-        where: { id: Number(id) },
+        where: { id: parseInt(id) },
         data: {
-          studentId: Number(studentId),
-          feeId: feeId ? Number(feeId) : null,
+          studentId: parseInt(studentId),
           amountPaid: parseFloat(amountPaid),
-          paymentStatus,
+          paymentDate: new Date(paymentDate),
+          paymentStatus: PaymentStatus[paymentStatus.toUpperCase()],
         },
       });
-
-      return res.status(200).json(updatedPayment);
+      res.status(200).json(updatedPayment);
     } catch (err) {
-      console.error('PUT /api/payments error:', err);
-      return res.status(500).json({ error: 'Failed to update payment' });
+      console.error(err);
+      res.status(500).json({ error: "Failed to update payment" });
     }
-  }
-
-  if (req.method === 'DELETE') {
+  } else if (method === "DELETE") {
     const { id } = req.query;
 
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ error: 'Missing or invalid ID' });
-    }
+    if (!id) return res.status(400).json({ error: "Payment ID is required" });
 
     try {
       await prisma.payment.delete({
-        where: { id: Number(id) },
+        where: { id: parseInt(id) },
       });
-
-      return res.status(200).json({ message: 'Payment deleted' });
+      res.status(200).json({ message: "Payment deleted successfully" });
     } catch (err) {
-      console.error('DELETE /api/payments error:', err);
-      return res.status(500).json({ error: 'Failed to delete payment' });
+      console.error(err);
+      res.status(500).json({ error: "Failed to delete payment" });
     }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
 
-  return res.status(405).json({ error: 'Method not allowed' });
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   Text,
   TextInput,
   UnstyledButton,
-  Loader,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -26,15 +26,14 @@ import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
+import paymentFields from "@/utils/fields/paymentFields";
 
 interface Payment {
   id: number;
-  studentID: number;
-  feeID: number;
-  amountPaid: string;
+  studentId: number;
+  amountPaid: number;
   paymentDate: string;
-  paymentStatus: string;
-}
+  paymentStatus: "paid" | "unpaid" | "pending";
 
 interface Student {
   id: number;
@@ -42,13 +41,6 @@ interface Student {
   firstName: string;
   lastName: string;
   email: string;
-}
-
-interface Fee {
-  id: number;
-  programID: number;
-  feeType: string;
-  amount: number;
 }
 
 interface ThProps {
@@ -59,13 +51,18 @@ interface ThProps {
 }
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
-
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
   return (
-    <Table.Th style={{ cursor: "pointer", padding: "12px 8px" }}>
+    <Table.Th style={{ cursor: "pointer" }}>
       <UnstyledButton onClick={onSort} style={{ width: "100%" }}>
-        <Group justify="space-between" gap={4}>
-          <Text fw={600} fz="sm">{children}</Text>
+        <Group justify="space-between">
+          <Text fw={600} fz="sm">
+            {children}
+          </Text>
           <Center>
             <Icon size={16} stroke={1.5} />
           </Center>
@@ -78,144 +75,141 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
-  const [fees, setFees] = useState<Fee[]>([]);
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<keyof Payment>("id");
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editPayment, setEditPayment] = useState<Payment | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [editPayment, setEditPayment] = useState<Payment | null>(null);
   const { addNotification } = useNotification();
-  const [loading, setLoading] = useState(false); // Loading state
 
-  const fetchAllData = async () => {
-    setLoading(true);
+  const fetchPayments = async () => {
     try {
-      const [paymentsRes, studentsRes, feesRes] = await Promise.all([
-        axios.get("/api/payments"),
-        axios.get("/api/students"),
-        axios.get("/api/fees"),
-      ]);
-      setPayments(paymentsRes.data);
-      setStudents(studentsRes.data);
-      setFees(feesRes.data);
+      const res = await axios.get("/api/payments");
+      setPayments(res.data);
     } catch {
       notifications.show({
         title: "Error",
-        message: "Failed to fetch payments/students/fees.",
+        message: "Failed to fetch payments.",
         color: "red",
       });
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get("/api/students");
+      setStudents(res.data);
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch students.",
+        color: "red",
+      });
     }
   };
 
   useEffect(() => {
-    fetchAllData();
+    fetchPayments();
+    fetchStudents();
   }, []);
 
-  const getStudentDetails = (studentID: number) => {
-    const student = students.find((s) => s.id === studentID);
-    return student ? `${student.firstName} ${student.lastName} (${student.studentNumber})` : "N/A";
-  };
-
-  const getFeeAmount = (feeID: number) => {
-    const amount = fees.find((f) => f.id === feeID)?.amount;
-    return amount !== undefined ? `$${amount.toFixed(2)}` : "N/A";
-  };
-
-  const formatDate = (isoDate: string) => isoDate.slice(0, 10);
+  useEffect(() => {
+    console.log("studentOptions", studentOptions);
+  }, [students]);
 
   const handleSavePayment = async (values: Record<string, any>) => {
+    console.log("Submitting payment:", values);
+    const payment = {
+      studentId: parseInt(values.studentId),
+      amountPaid: parseFloat(values.amountPaid),
+      paymentDate: values.paymentDate,
+      paymentStatus: values.paymentStatus,
+    };
+
     try {
-      setLoading(true);
       if (editPayment) {
-        await axios.put(`/api/payments?id=${editPayment.id}`, values);
-        addNotification(`Payment updated`);
+        console.log("Is editing:", !!editPayment, "Edit ID:", editPayment?.id);
+
+        await axios.put(`/api/payments?id=${editPayment.id}`, payment);
+        addNotification("Payment updated successfully!");
       } else {
-        await axios.post("/api/payments", values);
-        addNotification(`Payment added`);
+        await axios.post("/api/payments", payment);
+        addNotification("Payment added successfully!");
       }
       setModalOpen(false);
       setEditPayment(null);
-      fetchAllData();
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Failed to save payment.";
+      fetchPayments();
+    } catch {
       notifications.show({
         title: "Error",
-        message: errorMessage,
+        message: "Failed to save payment.",
         color: "red",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleDelete = async () => {
+  const handleDeletePayment = async () => {
     if (!selectedPayment) return;
     try {
-      setLoading(true);
       await axios.delete(`/api/payments?id=${selectedPayment.id}`);
-      addNotification(`Payment deleted`);
+      addNotification("Payment deleted successfully!");
       setDeleteModal(false);
-      fetchAllData();
+      fetchPayments();
+
     } catch {
       notifications.show({
         title: "Error",
         message: "Failed to delete payment.",
         color: "red",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  const filtered = payments.filter((pay) => {
-    const studentDetails = getStudentDetails(pay.studentID).toLowerCase();
-    return (
-      studentDetails.includes(search.toLowerCase()) ||
-      pay.paymentStatus.toLowerCase().includes(search.toLowerCase())
-    );
+  const studentOptions = students.map((s) => ({
+    label: `${s.studentNumber} | ${s.firstName} ${s.lastName}`,
+    value: s.id.toString(),
+  }));
+
+  const filtered = payments.filter((p) => {
+    const student =
+      studentOptions.find((s) => s.value === p.studentId.toString())?.label ||
+      "";
+    return student.toLowerCase().includes(search.toLowerCase());
   });
 
-  const sorted = sortBy
-    ? [...filtered].sort((a, b) => {
-        const dir = reverseSortDirection ? -1 : 1;
-        const aValue = sortBy === "studentDetails"
-          ? getStudentDetails(a.studentID)
-          : sortBy === "amount"
-          ? getFeeAmount(a.feeID)
-          : (a as any)[sortBy];
-        const bValue = sortBy === "studentDetails"
-          ? getStudentDetails(b.studentID)
-          : sortBy === "amount"
-          ? getFeeAmount(b.feeID)
-          : (b as any)[sortBy];
-        return String(aValue).localeCompare(String(bValue)) * dir;
-      })
-    : filtered;
+  const sorted = [...filtered].sort((a, b) => {
+    const dir = reverseSortDirection ? -1 : 1;
+    return String(a[sortBy]).localeCompare(String(b[sortBy])) * dir;
+  });
 
-  const setSorting = (field: string) => {
+  const setSorting = (field: keyof Payment) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
   };
 
-  const rows = sorted.map((pay) => (
-    <Table.Tr key={pay.id}>
-      <Table.Td>{getStudentDetails(pay.studentID)}</Table.Td>
-      <Table.Td>{getFeeAmount(pay.feeID)}</Table.Td>
-      <Table.Td>{new Date(pay.paymentDate).toLocaleDateString()}</Table.Td>
-      <Table.Td>{pay.paymentStatus}</Table.Td>
+  const rows = sorted.map((p) => (
+    <Table.Tr key={p.id}>
       <Table.Td>
+        {studentOptions.find((s) => s.value === p.studentId.toString())
+          ?.label || p.studentId}
+      </Table.Td>
+      <Table.Td>{p.amountPaid}</Table.Td>
+      <Table.Td>{new Date(p.paymentDate).toLocaleDateString()}</Table.Td>
+      <Table.Td>
+        {p.paymentStatus.charAt(0) + p.paymentStatus.slice(1).toLowerCase()}
+      </Table.Td>
+      <Table.Td style={{ textAlign: "right" }}>
+
         <Group gap="xs">
           <Button
             size="xs"
             variant="light"
             leftSection={<IconPencil size={14} />}
             onClick={() => {
-              setEditPayment(pay);
+              setEditPayment(p);
               setModalOpen(true);
             }}
           >
@@ -227,7 +221,7 @@ export default function PaymentsPage() {
             variant="light"
             leftSection={<IconTrash size={14} />}
             onClick={() => {
-              setSelectedPayment(pay);
+              setSelectedPayment(p);
               setDeleteModal(true);
             }}
           >
@@ -241,44 +235,63 @@ export default function PaymentsPage() {
   return (
     <Box p="md">
       <Group justify="space-between" mb="md">
-        <Text fw={700} size="xl">Payments</Text>
-        <Button onClick={() => setModalOpen(true)} loading={loading}>Add Payment</Button>
+        <Text fw={700} size="xl">
+          Payments List
+        </Text>
+        <Button onClick={() => setModalOpen(true)}>Add Payment</Button>
       </Group>
 
       <TextInput
-        placeholder="Search by student details or status"
-        leftSection={<IconSearch size={16} />}
+        placeholder="Search by student name"
+        leftSection={<IconSearch size={14} />}
+        mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        mb="md"
         w="500px"
-        aria-label="Search payments"
       />
 
       <ScrollArea>
         <Table striped withTableBorder highlightOnHover>
           <Table.Thead>
             <Table.Tr>
-              <Th sorted={sortBy === "studentDetails"} reversed={reverseSortDirection} onSort={() => setSorting("studentDetails")}>
+              <Th
+                sorted={sortBy === "studentId"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("studentId")}
+              >
                 Student
               </Th>
-              <Th sorted={sortBy === "amount"} reversed={reverseSortDirection} onSort={() => setSorting("amount")}>
+              <Th
+                sorted={sortBy === "amountPaid"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("amountPaid")}
+              >
                 Amount
               </Th>
-              <Th sorted={sortBy === "paymentDate"} reversed={reverseSortDirection} onSort={() => setSorting("paymentDate")}>
+              <Th
+                sorted={sortBy === "paymentDate"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("paymentDate")}
+              >
                 Date
               </Th>
-              <Th sorted={sortBy === "paymentStatus"} reversed={reverseSortDirection} onSort={() => setSorting("paymentStatus")}>
+              <Th
+                sorted={sortBy === "paymentStatus"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("paymentStatus")}
+              >
                 Status
               </Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {rows.length ? rows : (
+            {rows.length > 0 ? (
+              rows
+            ) : (
               <Table.Tr>
-                <Table.Td colSpan={6}>
-                  <Text ta="center">No payments found.</Text>
+                <Table.Td colSpan={5}>
+                  <Text ta="center">No payments found</Text>
                 </Table.Td>
               </Table.Tr>
             )}
@@ -286,51 +299,33 @@ export default function PaymentsPage() {
         </Table>
       </ScrollArea>
 
-      <FormModal
-        opened={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setEditPayment(null);
-        }}
-        onSubmit={handleSavePayment}
-        fields={[
-          {
-            name: "studentID",
-            label: "Student ID",
-            type: "number",
-            required: true,
-          },
-          {
-            name: "feeID",
-            label: "Fee ID",
-            type: "number",
-            required: true,
-          },
-          {
-            name: "paymentDate",
-            label: "Payment Date",
-            type: "date",
-            required: true,
-          },
-          {
-            name: "paymentStatus",
-            label: "Payment Status",
-            type: "text",
-            required: true,
-          },
-        ]}
-        title={editPayment ? "Edit Payment" : "Add New Payment"}
-        initialValues={
-          editPayment
-            ? { ...editPayment, paymentDate: formatDate(editPayment.paymentDate) }
-            : {
-                studentID: "",
-                feeID: "",
-                paymentDate: "",
-                paymentStatus: "",
-              }
-        }
-      />
+      {studentOptions.length > 0 && (
+        <FormModal
+          opened={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setEditPayment(null);
+          }}
+          onSubmit={handleSavePayment}
+          fields={paymentFields(studentOptions)}
+          title={editPayment ? "Edit Payment" : "Add Payment"}
+          initialValues={
+            editPayment
+              ? {
+                  studentId: editPayment.studentId.toString(),
+                  amountPaid: editPayment.amountPaid.toString(),
+                  paymentDate: editPayment.paymentDate.slice(0, 10),
+                  paymentStatus: editPayment.paymentStatus,
+                }
+              : {
+                  studentId: "",
+                  amountPaid: "",
+                  paymentDate: "",
+                  paymentStatus: "",
+                }
+          }
+        />
+      )}
 
       <Modal
         opened={deleteModal}
@@ -338,13 +333,14 @@ export default function PaymentsPage() {
         title="Confirm Deletion"
         centered
       >
-        <Text>
-          Are you sure you want to delete the payment from{" "}
-          <b>{selectedPayment && getStudentDetails(selectedPayment.studentID)}</b>?
-        </Text>
+        <Text>Are you sure you want to delete this payment?</Text>
         <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => setDeleteModal(false)}>Cancel</Button>
-          <Button color="red" onClick={handleDelete} loading={loading}>Delete</Button>
+          <Button variant="default" onClick={() => setDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleDeletePayment}>
+            Delete
+          </Button>
         </Group>
       </Modal>
     </Box>

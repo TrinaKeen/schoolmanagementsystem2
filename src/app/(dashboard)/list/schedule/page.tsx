@@ -98,6 +98,7 @@ export default function SchedulesPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchSchedules = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/schedule");
       const data = await res.json();
