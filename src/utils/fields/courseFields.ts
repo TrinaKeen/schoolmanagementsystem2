@@ -7,15 +7,18 @@ const courseFields = (
     name: "courseCode",
     label: "Course Code",
     required: true,
+    data: [],
   },
   {
     name: "courseName",
     label: "Course Name",
     required: true,
+    data: [],
   },
   {
     name: "courseDescription",
     label: "Description",
+    data: [],
   },
   {
     name: "instructorId",
