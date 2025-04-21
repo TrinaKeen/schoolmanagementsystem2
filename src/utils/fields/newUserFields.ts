@@ -4,6 +4,7 @@ export interface FieldConfig {
   type?: string;
   required?: boolean;
   options?: { label: string; value: string }[];
+  data: any[]; // Optional for additional data related to the field
 }
 
 const newUserFields: FieldConfig[] = [
@@ -17,10 +18,17 @@ const newUserFields: FieldConfig[] = [
       { label: "Instructor", value: "instructor" },
       { label: "Student", value: "student" },
     ],
+    data: [],
   },
-  { name: "username", label: "Username", required: true },
-  { name: "email", label: "Email", type: "email", required: true },
-  { name: "password", label: "Password", type: "password", required: true },
+  { name: "username", label: "Username", required: true, data: [] },
+  { name: "email", label: "Email", type: "email", required: true, data: [] },
+  {
+    name: "password",
+    label: "Password",
+    type: "password",
+    required: true,
+    data: [],
+  },
 ];
 
 export default newUserFields;
