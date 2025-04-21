@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "/public/school-logo.png";
+import FAQChatbox from '@/components/FAQChatbox';
 
 export default function WebsiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function WebsiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [programsMenuOpen, setProgramsMenuOpen] = useState(false);
   const programsMenuRef = useRef(null);
+  const [isFAQOpen, setIsFAQOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 100);
@@ -203,6 +205,17 @@ export default function WebsiteHeader() {
                     >
                       Log In
                     </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsFAQOpen(true);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      FAQs
+                    </a>
                   </div>
                 )}
               </div>
@@ -210,6 +223,7 @@ export default function WebsiteHeader() {
           </div>
         )}
       </header>
+      <FAQChatbox isOpen={isFAQOpen} setIsOpen={setIsFAQOpen} />
     </>
   );
 }
