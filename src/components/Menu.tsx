@@ -93,7 +93,7 @@ const menuItems = [
         icon: <Banknote size={18} />,
         label: "Fees",
         href: "/list/fees",
-        visible: ["student"],
+        visible: [""],
       },
     ],
   },
