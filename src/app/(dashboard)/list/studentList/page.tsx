@@ -20,12 +20,13 @@ import {
   IconSearch,
   IconSelector,
   IconTrash,
-  IconEye ,
+  IconEye,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
+import studentFields from "@/utils/fields/studentListFields";
 
 interface Student {
   id: number;
@@ -171,7 +172,6 @@ export default function StudentPage() {
         {s.firstName} {s.middleName} {s.lastName}
       </Table.Td>
       <Table.Td>{s.email}</Table.Td>
-   
 
       <Table.Td>{new Date(s.dob).toLocaleDateString()}</Table.Td>
       <Table.Td>Active</Table.Td>
@@ -300,57 +300,7 @@ export default function StudentPage() {
         }}
         onSubmit={handleSaveStudent}
         title={editStudent ? "Edit Student" : "Add New Student"}
-        fields={[
-          {
-            name: "studentNumber",
-            label: "Student Number",
-            type: "text",
-            required: true,
-          },
-          {
-            name: "firstName",
-            label: "First Name",
-            type: "text",
-            required: true,
-          },
-          { name: "middleName", label: "Middle Name", type: "text" },
-          {
-            name: "lastName",
-            label: "Last Name",
-            type: "text",
-            required: true,
-          },
-          { name: "email", label: "Email", type: "email", required: true },
-          { name: "dob", label: "Date of Birth", type: "date", required: true },
-          { name: "gender", label: "Gender", type: "text" },
-          { name: "age", label: "Age", type: "number" },
-          { name: "nationality", label: "Nationality", type: "text" },
-          { name: "placeOfBirth", label: "Place of Birth", type: "text" },
-          { name: "phoneNumber", label: "Phone Number", type: "text" },
-          { name: "homeAddress", label: "Home Address", type: "text" },
-          {
-            name: "emergencyContactName",
-            label: "Emergency Contact Name",
-            type: "text",
-          },
-          {
-            name: "emergencyContactPhoneNumber",
-            label: "Emergency Contact Phone",
-            type: "text",
-          },
-          {
-            name: "emergencyContactRelationship",
-            label: "Emergency Contact Relationship",
-            type: "text",
-          },
-          { name: "previousSchools", label: "Previous Schools", type: "text" },
-          {
-            name: "yearOfGraduation",
-            label: "Year of Graduation",
-            type: "text",
-          },
-          { name: "gpa", label: "GPA", type: "number" },
-        ]}
+        fields={studentFields}
         initialValues={
           editStudent
             ? {

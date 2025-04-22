@@ -322,6 +322,7 @@ export default function PaymentsPage() {
                   paymentStatus: "",
                 }
           }
+          type={editPayment ? "update" : "create"}
         />
       )}
 
