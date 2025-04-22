@@ -48,6 +48,12 @@ interface ThProps {
   onSort: () => void;
 }
 
+export enum ModalMode {
+  Create = "create",
+  Update = "update",
+  Delete = "delete",
+}
+
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const Icon = sorted
     ? reversed
@@ -80,6 +86,7 @@ export default function StudentPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const { addNotification } = useNotification();
+  const [viewOnly, setViewOnly] = useState(false);
 
   const fetchStudents = async () => {
     try {
@@ -184,6 +191,7 @@ export default function StudentPage() {
             onClick={() => {
               setEditStudent(s);
               setModalOpen(true);
+              setViewOnly(false);
             }}
           >
             Edit
@@ -208,6 +216,7 @@ export default function StudentPage() {
             onClick={() => {
               setEditStudent(s);
               setModalOpen(true);
+              setViewOnly(true);
             }}
           >
             View Account
@@ -223,7 +232,14 @@ export default function StudentPage() {
         <Text fw={700} size="xl">
           List of Students
         </Text>
-        <Button onClick={() => setModalOpen(true)}>Add Student</Button>
+        <Button
+          onClick={() => {
+            setViewOnly(false);
+            setModalOpen(true);
+          }}
+        >
+          Add Student
+        </Button>
       </Group>
 
       <TextInput
@@ -299,7 +315,13 @@ export default function StudentPage() {
           setEditStudent(null);
         }}
         onSubmit={handleSaveStudent}
-        title={editStudent ? "Edit Student" : "Add New Student"}
+        title={
+          viewOnly
+            ? "Student Details"
+            : editStudent
+            ? "Edit Student"
+            : "Add New Student"
+        }
         fields={studentFields}
         initialValues={
           editStudent
@@ -328,6 +350,8 @@ export default function StudentPage() {
                 gpa: 0,
               }
         }
+        type={editStudent ? ModalMode.Update : ModalMode.Create}
+        readonly={viewOnly}
       />
 
       <Modal
