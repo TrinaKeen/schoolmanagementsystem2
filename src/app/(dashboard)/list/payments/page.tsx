@@ -195,7 +195,7 @@ export default function PaymentsPage() {
         {studentOptions.find((s) => s.value === p.studentId.toString())
           ?.label || p.studentId}
       </Table.Td>
-      <Table.Td>{p.amountPaid}</Table.Td>
+      <Table.Td>{`PHP ${p.amountPaid}`}</Table.Td>
       <Table.Td>{new Date(p.paymentDate).toLocaleDateString()}</Table.Td>
       <Table.Td>
         {p.paymentStatus.charAt(0) + p.paymentStatus.slice(1).toLowerCase()}
