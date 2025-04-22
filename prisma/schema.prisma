@@ -16,7 +16,7 @@ model User {
   createdAt    DateTime    @default(now())
 
   // Relationships to role-specific models
-  student      Student?    @relation(fields: [studentId], references: [id])
+   student      Student?    @relation("UserToStudent")
   instructor   Instructor? @relation(fields: [instructorId], references: [id])
   admin        Admin?      @relation(fields: [adminId], references: [id])
 
@@ -49,13 +49,17 @@ model Student {
   yearOfGraduation            Int?
   gpa                         Float?
 
+  // Foreign Key to User model
+  userId                      Int?       @unique  // Add @unique to make this field unique
+  user                        User?      @relation("UserToStudent", fields: [userId], references: [id]) // Define relation here
+
   // Relations
-  user                        User?
   studentApplication          StudentApplication[]
   studentCourse               StudentCourse[]
   documentUpload              DocumentUpload[]
   payments                    Payment[]
 }
+
 
 model Instructor {
   id              Int       @id @default(autoincrement())

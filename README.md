@@ -25,5 +25,8 @@ npm install @mantine/notifications
 npm install @mantine/form
 npm install @mantine/core @mantine/hooks @mantine/form
 npm install @@types/react-icons
+yarn add lucide-react
+npm install react-icons
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

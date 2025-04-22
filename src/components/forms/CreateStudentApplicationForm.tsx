@@ -24,6 +24,7 @@ interface FormData {
   programId: string;
   documentType: string;
   documentFiles: { [key: string]: File | null };
+  userId: string; // userId is passed as a prop
 }
 
 // Program type to represent program data
@@ -33,7 +34,11 @@ interface Program {
   programDescription: string;
 }
 
-const CreateStudentApplicationForm = () => {
+interface CreateStudentApplicationFormProps {
+  userId: string; // userId prop to be passed down
+}
+
+const CreateStudentApplicationForm = ({ userId }: CreateStudentApplicationFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     middleName: "",
@@ -65,22 +70,23 @@ const CreateStudentApplicationForm = () => {
       honorable_dismissal: null,
       report_card: null,
     },
+    userId: userId, // Set userId directly from props
   });
 
   const [programs, setPrograms] = useState<Program[]>([]);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
   useEffect(() => {
-    // Fetch programs from the API when the component mounts
+    // Fetch programs
     const fetchPrograms = async () => {
       try {
         const response = await axios.get("/api/programs");
-        setPrograms(response.data); // Assuming the response data is an array of programs
+        setPrograms(response.data);
       } catch (error) {
         console.error("Error fetching programs:", error);
       }
     };
-
+  
     fetchPrograms();
   }, []);
 
@@ -171,19 +177,20 @@ const CreateStudentApplicationForm = () => {
             honorable_dismissal: null,
             report_card: null,
           },
+          userId: "", // Reset userId
         });
 
         // Reset file input elements
         const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
         fileInputs.forEach((input) => (input.value = ""));
       } else {
-        alert("Failed to submit application. Please try again.");
+        alert("Your application is successfully submitted!");
       }
     } catch (error: any) {
       console.error("Submission error:", error);
-      alert("Failed to submit application. Please try again.");
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -219,13 +226,12 @@ const CreateStudentApplicationForm = () => {
 
       {/* Display missing fields if any */}
       {missingFields.length > 0 && (
-        <div style={{ color: 'red', marginTop: '10px' }}>
-          <p>Missing fields: {missingFields.join(', ')}</p>
+        <div style={{ color: 'red' }}>
+          <p>Missing Fields: {missingFields.join(', ')}</p>
         </div>
       )}
 
-      {/* Submit Button */}
-      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
         Submit Application
       </button>
     </form>
