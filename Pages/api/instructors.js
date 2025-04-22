@@ -104,26 +104,33 @@ export default async function handler(req, res) {
   }
 
   // Instructor deletion
-  if (req.method === 'DELETE') {
-    const { id } = req.query;
+  // Instructor deletion
+if (req.method === 'DELETE') {
+  const { id } = req.query;
 
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ error: 'Missing or invalid ID' });
-    }
-
-    try {
-      await prisma.instructor.delete({
-          where: { id: Number(id) },
-      });
-
-      return res.status(200).json({message: 'Instructor deleted'});
-    } catch (err) {
-      console.error('DELETE /api/instructors error:', err);
-      return res.status(500).json({ error: 'Failed to delete instructor' });
-    }
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: 'Missing or invalid ID' });
   }
 
+  try {
+    await prisma.instructor.delete({
+      where: { id: Number(id) },
+    });
 
-  return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(200).json({ message: 'Instructor deleted' });
+
+  } catch (err) {
+    console.error('DELETE /api/instructors error:', err);
+
+    // 👇 Check for Prisma foreign key constraint violation (P2003)
+    if (err.code === 'P2003') {
+      return res.status(400).json({
+        error: 'Foreign key constraint failed – instructor is still linked to a course or schedule.',
+      });
+    }
+
+    return res.status(500).json({ error: 'Failed to delete instructor' });
+  }
+}
 }
 
