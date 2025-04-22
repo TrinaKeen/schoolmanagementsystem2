@@ -15,14 +15,9 @@ model User {
   role         String      @default("student") // 'student', 'admin', or 'instructor'
   createdAt    DateTime    @default(now())
 
-  // Relationships to role-specific models
-  student      Student?    @relation(fields: [studentId], references: [id])
-  instructor   Instructor? @relation(fields: [instructorId], references: [id])
-  admin        Admin?      @relation(fields: [adminId], references: [id])
-
-  studentId    Int?        @unique
-  instructorId Int?        @unique
-  adminId      Int?        @unique
+  student     Student?    @relation("UserToStudent")
+  instructor  Instructor? @relation("UserToInstructor")
+  admin       Admin?      @relation("UserToAdmin")
 
   // Notifications
   notifications Notification[]
@@ -49,8 +44,12 @@ model Student {
   yearOfGraduation            Int?
   gpa                         Float?
 
+
+  // Foreign key to User
+  userId                        Int?       @unique
+  user                          User?      @relation("UserToStudent", fields: [userId], references: [id])
+
   // Relations
-  user                        User?
   studentApplication          StudentApplication[]
   studentCourse               StudentCourse[]
   documentUpload              DocumentUpload[]
@@ -69,7 +68,10 @@ model Instructor {
   dob             DateTime  // Date of birth
   dateHired       DateTime  // Date hired
 
-  user            User?
+ // Foreign key to User
+  userId    Int?    @unique
+  user      User?   @relation("UserToInstructor", fields: [userId], references: [id])
+
   courses         Course[]
   schedules       Schedule[]
 }
@@ -85,7 +87,9 @@ model Admin {
   dob                 DateTime  // Date of birth
   dateHired           DateTime  // Date hired
 
-  user                User?
+ // Foreign key to User
+  userId    Int?    @unique
+  user      User?   @relation("UserToAdmin", fields: [userId], references: [id])
   studentApplication  StudentApplication[]
 }
 

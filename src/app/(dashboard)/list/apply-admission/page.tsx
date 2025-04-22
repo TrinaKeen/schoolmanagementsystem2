@@ -4,14 +4,25 @@ import CreateStudentApplicationForm from "@/components/forms/CreateStudentApplic
 
 const CreateStudentApplicationPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Get userId from localStorage (assuming user is logged in)
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserId(storedUserId);
+    try {
+      const storedUserId = localStorage.getItem("userId");
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // or a spinner
+  }
 
   return (
     <div className="container mx-auto py-6 text-black">
