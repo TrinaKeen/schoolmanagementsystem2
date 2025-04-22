@@ -61,6 +61,26 @@ export default async function handler(req, res) {
   }
 
   // Editing an instructor
+  // Instructors API - PUT and DELETE protection
+if (req.method === 'PUT' || req.method === 'DELETE') {
+  const { id } = req.query;
+
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: 'Missing or invalid ID' });
+  }
+
+  // Fetch the instructor by ID
+  const instructor = await prisma.instructor.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (instructor?.employeeNumber === 'UNASSIGNED') {
+    return res
+      .status(403)
+      .json({ error: 'This placeholder instructor cannot be modified or deleted.' });
+  }
+}
+
   if (req.method === 'PUT') {
     const {
       employeeNumber,
@@ -105,7 +125,28 @@ export default async function handler(req, res) {
 
   // Instructor deletion
   // Instructor deletion
-if (req.method === 'DELETE') {
+// Instructors API - PUT and DELETE protection
+if (req.method === 'PUT' || req.method === 'DELETE') {
+  const { id } = req.query;
+
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: 'Missing or invalid ID' });
+  }
+
+  // Fetch the instructor by ID
+  const instructor = await prisma.instructor.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (instructor?.employeeNumber === 'UNASSIGNED') {
+    return res
+      .status(403)
+      .json({ error: 'This placeholder instructor cannot be modified or deleted.' });
+  }
+}
+
+
+  if (req.method === 'DELETE') {
   const { id } = req.query;
 
   if (!id || Array.isArray(id)) {
