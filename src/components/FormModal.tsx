@@ -25,6 +25,8 @@ import {
 import { useForm } from "@mantine/form";
 import axios from "axios";
 import { Children, useEffect, useState } from "react";
+import { read } from "fs";
+
 // useForm is a hook that manages form state, validation, and input control
 
 // Type Definitions
@@ -52,6 +54,7 @@ interface FormModalProps {
   data?: any;
   children?: React.ReactNode; // Optional: children to render inside the modal
   onFieldChange?: (field: string, value: any) => void;
+  readonly?: boolean; // Optional: whether the form is read-only
 }
 
 // Component Definition
@@ -68,6 +71,7 @@ export default function FormModal({
   data,
   children,
   onFieldChange,
+  readonly = false, // Default to false if not provided
 }: // Initialize Form State
 FormModalProps) {
   const form = useForm({
@@ -261,7 +265,7 @@ FormModalProps) {
                   label={field.label}
                   type={field.type || "text"}
                   required={field.required}
-                  disabled={field.readonly}
+                  disabled={readonly || field.readonly}
                   {...form.getInputProps(field.name)}
                   onChange={(e) => {
                     form.setFieldValue(field.name, e.currentTarget.value);
@@ -270,16 +274,49 @@ FormModalProps) {
                   mt="sm"
                 />
               );
-            })}
-  
+            }
+
+            if (field.type === "password") {
+              return (
+                <PasswordInput
+                  key={field.name}
+                  label={field.label}
+                  required={field.required}
+                  disabled={field.readonly}
+                  {...form.getInputProps(field.name)}
+                  mt="sm"
+                />
+              );
+            }
+
+            return (
+              <TextInput
+                key={field.name}
+                label={field.label}
+                type={field.type || "text"}
+                required={field.required}
+                disabled={readonly || field.readonly}
+                {...form.getInputProps(field.name)}
+                onChange={(e) => {
+                  form.setFieldValue(field.name, e.currentTarget.value);
+                  onFieldChange?.(field.name, e.currentTarget.value);
+                }}
+                mt="sm"
+              />
+            );
+          })}
+          {!readonly && (
             <Group justify="flex-end" mt="md">
-              <Button type="submit">Submit</Button>
+              <Button type="submit">
+                {type === "update" ? "Update" : "Add"}
+              </Button>
             </Group>
-  
-            {children}
-          </Box>
-        )}
-      </Modal>
-    );
-  }
-  
+          )}
+
+          {children}
+        </Box>
+      )}
+    </Modal>
+  );
+}
+

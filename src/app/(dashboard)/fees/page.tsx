@@ -43,9 +43,9 @@ interface Fee {
   amount: number;
   description?: string;
   isTuition?: boolean;
-  program?: { 
+  program?: {
     programCode: string;
-    programName: string; 
+    programName: string;
   };
 }
 
@@ -115,7 +115,7 @@ export default function FeesPage() {
   const programOptions = programs.map((p) => ({
     value: p.id.toString(),
     label: `${p.programCode} - ${p.programName}`,
-  }));  
+  }));
 
   // Fecth instructors on first render only
   useEffect(() => {
@@ -133,11 +133,11 @@ export default function FeesPage() {
       amount: program.tuitionFee ?? 0,
       description: "Tuition Fee",
       isTuition: true,
-      program: { 
-        programCode: program.programCode, 
-        programName: program.programName 
+      program: {
+        programCode: program.programCode,
+        programName: program.programName,
       },
-    }))
+    }));
 
   const allFees: Fee[] = [...tuitionFeeRows, ...fees];
 
@@ -217,7 +217,11 @@ export default function FeesPage() {
 
   const rows = sorted.map((f) => (
     <Table.Tr key={f.id}>
-      <Table.Td>{f.program ? `${f.program.programCode} - ${f.program.programName}` : "-"}</Table.Td>
+      <Table.Td>
+        {f.program
+          ? `${f.program.programCode} - ${f.program.programName}`
+          : "-"}
+      </Table.Td>
       <Table.Td>{f.feeType}</Table.Td>
       <Table.Td>{`PHP ${Number(f.amount).toLocaleString()}`}</Table.Td>
       <Table.Td>{f.description}</Table.Td>
@@ -338,6 +342,7 @@ export default function FeesPage() {
                 description: "",
               }
         }
+        type={editFee ? "update" : "create"}
       />
 
       <Modal

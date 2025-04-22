@@ -20,6 +20,7 @@ import {
   LogOut,
 } from "lucide-react";
 
+
 const menuItems = [
   {
     title: "MENU",
@@ -57,6 +58,7 @@ const Menu = () => {
   const [role, setRole] = useState<string>("");
   const [mounted, setMounted] = useState<boolean>(false);
   const router = useRouter();
+
 
   useEffect(() => {
     setMounted(true);
@@ -107,6 +109,7 @@ const Menu = () => {
                   className="flex items-center gap-4 text-gray-300 py-2 px-2 rounded-md hover:bg-[#2A2F4D]"
                 >
                   {item.icon}
+
                   <span className="hidden lg:block">{item.label}</span>
                 </Link>
               )

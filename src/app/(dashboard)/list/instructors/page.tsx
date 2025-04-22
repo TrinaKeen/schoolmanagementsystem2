@@ -314,16 +314,18 @@ export default function InstructorsPage() {
 
       <FormModal
         opened={modalOpen} // Whether the modal is open
-        onClose={() => {setModalOpen(false);
-                        setEditInstructor(null);
-        }} 
+        onClose={() => {
+          setModalOpen(false);
+          setEditInstructor(null);
+        }}
         onSubmit={handleAddInstructor} // Function to handle form submit
-        fields={editInstructor
-          ? instructorFields
-          : instructorFields.filter(
-              (field) => field.name !== "employeeNumber"
-          )
-        } 
+        fields={
+          editInstructor
+            ? instructorFields
+            : instructorFields.filter(
+                (field) => field.name !== "employeeNumber"
+              )
+        }
         title={editInstructor ? "Edit Instructor" : "Add New Instructor"} // Modal title
         initialValues={
           editInstructor
@@ -347,6 +349,7 @@ export default function InstructorsPage() {
                 dob: "",
               }
         }
+        type={editInstructor ? "update" : "create"}
       />
 
       <Modal

@@ -21,6 +21,7 @@
     "@mantine/notifications": "^7.17.4",
     "@prisma/client": "^6.6.0",
     "@tabler/icons-react": "^3.31.0",
+    "@types/react-icons": "^3.0.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
