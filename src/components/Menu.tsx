@@ -20,6 +20,7 @@ import {
   LogOut,
 } from "lucide-react";
 
+
 const menuItems = [
   {
     title: "MENU",
@@ -45,18 +46,19 @@ const menuItems = [
   {
     title: "OTHER",
     items: [
-      { icon: "/profile.png", label: "Add New Employee", href: "/list/addNewEmployee", visible: ["admin"] },
-      { icon: "/setting.png", label: "Add New User", href: "/list/addNewUser", visible: ["admin"] },
-      { icon: "/profile.png", label: "Profile", href: "/list/profile", visible: ["admin", "instructor", "student"] },
-      { icon: "/logout.png", label: "Logout", href: "#", visible: ["admin", "instructor", "student"], onClick: true },
+      { icon: <UserPlus size={18} />, label: "Add New Employee", href: "/list/addNewEmployee", visible: ["admin"] },
+      { icon: <UserPlus size={18} />, label: "Add New User", href: "/list/addNewUser", visible: ["admin"] },
+      { icon: <User size={18} />, label: "Profile", href: "/list/profile", visible: ["admin", "instructor", "student"] },
+      { icon: <LogOut size={18} />, label: "Logout", href: "#", visible: ["admin", "instructor", "student"], onClick: true },
     ],
   },
 ];
 
 const Menu = () => {
-  const [role, setRole] = useState<string>('');
-  const [mounted, setMounted] = useState<boolean>(false); // State to track if the component is mounted
-  const router = useRouter(); // Initialize useRouter
+  const [role, setRole] = useState<string>("");
+  const [mounted, setMounted] = useState<boolean>(false);
+  const router = useRouter();
+
 
   useEffect(() => {
     setMounted(true);
@@ -66,15 +68,15 @@ const Menu = () => {
     if (mounted) {
       const token = localStorage.getItem("token");
       if (token) {
-        const decodedToken: any = JSON.parse(atob(token.split('.')[1])); // Decode token manually
-        setRole(decodedToken.role); // Set the role from decoded token
+        const decodedToken: any = JSON.parse(atob(token.split(".")[1]));
+        setRole(decodedToken.role);
       }
     }
   }, [mounted]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/sign-in'); // Redirect to login page
+    localStorage.removeItem("token");
+    router.push("/sign-in");
   };
 
   return (
@@ -87,17 +89,17 @@ const Menu = () => {
 
       {menuItems.map((menu) => (
         <div className="flex flex-col gap-2" key={menu.title}>
-          <span className="hidden lg:block text-gray-400 font-light my-4">{menu.title}</span>
+          <span className="text-gray-400 font-light my-4">{menu.title}</span>
           {menu.items
-            .filter((item) => item.visible.includes(role)) // Filter items based on role
-            .map((item) => (
+            .filter((item) => item.visible.includes(role))
+            .map((item) =>
               item.onClick ? (
                 <button
                   key={item.label}
-                  onClick={handleLogout}  // Call handleLogout on click
-                  className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
+                  onClick={handleLogout}
+                  className="flex items-center gap-4 text-gray-300 py-2 px-2 rounded-md hover:bg-[#2A2F4D]"
                 >
-                  <Image src={item.icon} alt={item.label} width={20} height={20} />
+                  {item.icon}
                   <span className="hidden lg:block">{item.label}</span>
                 </button>
               ) : (
@@ -106,7 +108,8 @@ const Menu = () => {
                   key={item.label}
                   className="flex items-center gap-4 text-gray-300 py-2 px-2 rounded-md hover:bg-[#2A2F4D]"
                 >
-                  <Image src={item.icon} alt={item.label} width={20} height={20} />
+                  {item.icon}
+
                   <span className="hidden lg:block">{item.label}</span>
                 </Link>
               )

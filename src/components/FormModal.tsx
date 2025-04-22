@@ -23,9 +23,10 @@ import {
   AutocompleteProps,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { read } from "fs";
 import axios from "axios";
 import { Children, useEffect, useState } from "react";
+import { read } from "fs";
+
 // useForm is a hook that manages form state, validation, and input control
 
 // Type Definitions
@@ -273,19 +274,49 @@ FormModalProps) {
                   mt="sm"
                 />
               );
-            })}
-            {!readonly && (
-              <Group justify="flex-end" mt="md">
-                <Button type="submit">
-                {type === "update" ? "Submit" : "Add"}
+            }
+
+            if (field.type === "password") {
+              return (
+                <PasswordInput
+                  key={field.name}
+                  label={field.label}
+                  required={field.required}
+                  disabled={field.readonly}
+                  {...form.getInputProps(field.name)}
+                  mt="sm"
+                />
+              );
+            }
+
+            return (
+              <TextInput
+                key={field.name}
+                label={field.label}
+                type={field.type || "text"}
+                required={field.required}
+                disabled={readonly || field.readonly}
+                {...form.getInputProps(field.name)}
+                onChange={(e) => {
+                  form.setFieldValue(field.name, e.currentTarget.value);
+                  onFieldChange?.(field.name, e.currentTarget.value);
+                }}
+                mt="sm"
+              />
+            );
+          })}
+          {!readonly && (
+            <Group justify="flex-end" mt="md">
+              <Button type="submit">
+                {type === "update" ? "Update" : "Add"}
               </Button>
               </Group>
             )}
 
-            {children}
-          </Box>
-        )}
-      </Modal>
-    );
-  }
-  
+          {children}
+        </Box>
+      )}
+    </Modal>
+  );
+}
+
