@@ -1,10 +1,9 @@
-const paymentFields = (studentOptions: { label: string; value: string }[] = []) => [
+const paymentFields = (studentOptions: { label: string; value: string }[]) => [
   {
     name: "studentId",
     label: "Student",
     type: "select",
     required: true,
-    async: true, // Enables async search with Autocomplete
     data: studentOptions,
   },
   {
@@ -12,19 +11,21 @@ const paymentFields = (studentOptions: { label: string; value: string }[] = []) 
     label: "Amount Paid",
     type: "number",
     required: true,
+    data: [],
   },
   {
     name: "paymentDate",
     label: "Payment Date",
     type: "date",
     required: true,
+    data: [],
   },
   {
     name: "paymentStatus",
     label: "Status",
     type: "select",
     required: true,
-    options: [
+    data: [
       { label: "Pending", value: "PENDING" },
       { label: "Completed", value: "COMPLETED" },
       { label: "Failed", value: "FAILED" },
