@@ -321,6 +321,7 @@ export default function EmployeePage() {
                 dateHired: "",
               }
         }
+        type={editEmployee ? "update" : "create"}
       />
 
       <Modal

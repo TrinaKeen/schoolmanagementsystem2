@@ -23,6 +23,7 @@ import {
   AutocompleteProps,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { read } from "fs";
 import axios from "axios";
 import { Children, useEffect, useState } from "react";
 // useForm is a hook that manages form state, validation, and input control
@@ -52,6 +53,7 @@ interface FormModalProps {
   data?: any;
   children?: React.ReactNode; // Optional: children to render inside the modal
   onFieldChange?: (field: string, value: any) => void;
+  readonly?: boolean; // Optional: whether the form is read-only
 }
 
 // Component Definition
@@ -68,6 +70,7 @@ export default function FormModal({
   data,
   children,
   onFieldChange,
+  readonly = false, // Default to false if not provided
 }: // Initialize Form State
 FormModalProps) {
   const form = useForm({
@@ -228,7 +231,7 @@ FormModalProps) {
                     label={field.label}
                     data={field.options ?? field.data ?? []}
                     required={field.required}
-                    disabled={field.readonly}
+                    disabled={readonly || field.readonly}
                     {...form.getInputProps(field.name)}
                     onChange={(value) => {
                       form.setFieldValue(field.name, value);
@@ -261,7 +264,7 @@ FormModalProps) {
                   label={field.label}
                   type={field.type || "text"}
                   required={field.required}
-                  disabled={field.readonly}
+                  disabled={readonly || field.readonly}
                   {...form.getInputProps(field.name)}
                   onChange={(e) => {
                     form.setFieldValue(field.name, e.currentTarget.value);
@@ -271,11 +274,14 @@ FormModalProps) {
                 />
               );
             })}
-  
-            <Group justify="flex-end" mt="md">
-              <Button type="submit">Submit</Button>
-            </Group>
-  
+            {!readonly && (
+              <Group justify="flex-end" mt="md">
+                <Button type="submit">
+                {type === "update" ? "Submit" : "Add"}
+              </Button>
+              </Group>
+            )}
+
             {children}
           </Box>
         )}

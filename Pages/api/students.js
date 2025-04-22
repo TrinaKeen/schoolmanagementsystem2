@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -6,24 +6,24 @@ export default async function handler(req, res) {
   const { method } = req;
 
   switch (method) {
-    case 'GET':
+    case "GET":
       try {
         const students = await prisma.student.findMany({
           include: {
             studentApplication: {
-              orderBy: { submissionDate: 'desc' },
+              orderBy: { submissionDate: "desc" },
               take: 1,
               include: {
-                program: true, // ✅ Include the related program info
+                program: true,
               },
             },
           },
         });
-        
 
         const studentsWithStatus = students.map((student) => {
           const latestApp = student.studentApplication[0];
-          const status = latestApp?.status === 'approved' ? 'Active' : 'Inactive';
+          const status =
+            latestApp?.status === "approved" ? "Active" : "Inactive";
           return {
             ...student,
             status,
@@ -32,11 +32,11 @@ export default async function handler(req, res) {
 
         res.status(200).json(studentsWithStatus);
       } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch students' });
+        res.status(500).json({ error: "Failed to fetch students" });
       }
       break;
 
-    case 'POST':
+    case "POST":
       try {
         const {
           studentNumber,
@@ -84,16 +84,18 @@ export default async function handler(req, res) {
 
         res.status(201).json(newStudent);
       } catch (error) {
-        if (error.code === 'P2002') {
+        if (error.code === "P2002") {
           return res
             .status(409)
             .json({ error: `Duplicate field: ${error.meta?.target}` });
         }
-        res.status(500).json({ error: 'Failed to create student', detail: error.message });
+        res
+          .status(500)
+          .json({ error: "Failed to create student", detail: error.message });
       }
       break;
 
-    case 'PUT':
+    case "PUT":
       try {
         const {
           id,
@@ -143,11 +145,13 @@ export default async function handler(req, res) {
 
         res.status(200).json(updatedStudent);
       } catch (error) {
-        res.status(500).json({ error: 'Failed to update student', detail: error.message });
+        res
+          .status(500)
+          .json({ error: "Failed to update student", detail: error.message });
       }
       break;
 
-    case 'DELETE':
+    case "DELETE":
       try {
         const { id } = req.query;
 
@@ -157,12 +161,14 @@ export default async function handler(req, res) {
 
         res.status(204).end();
       } catch (error) {
-        res.status(500).json({ error: 'Failed to delete student', detail: error.message });
+        res
+          .status(500)
+          .json({ error: "Failed to delete student", detail: error.message });
       }
       break;
 
     default:
-      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
       break;
   }

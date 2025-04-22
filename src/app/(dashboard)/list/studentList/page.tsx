@@ -20,12 +20,13 @@ import {
   IconSearch,
   IconSelector,
   IconTrash,
-  IconEye ,
+  IconEye,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import FormModal from "@/components/FormModal";
 import { useNotification } from "@/context/notificationContent";
+import studentFields from "@/utils/fields/studentListFields";
 
 interface Student {
   id: number;
@@ -45,6 +46,12 @@ interface ThProps {
   reversed: boolean;
   sorted: boolean;
   onSort: () => void;
+}
+
+export enum ModalMode {
+  Create = "create",
+  Update = "update",
+  Delete = "delete",
 }
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
@@ -79,6 +86,7 @@ export default function StudentPage() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const { addNotification } = useNotification();
+  const [viewOnly, setViewOnly] = useState(false);
 
   const fetchStudents = async () => {
     try {
@@ -171,7 +179,6 @@ export default function StudentPage() {
         {s.firstName} {s.middleName} {s.lastName}
       </Table.Td>
       <Table.Td>{s.email}</Table.Td>
-   
 
       <Table.Td>{new Date(s.dob).toLocaleDateString()}</Table.Td>
       <Table.Td>Active</Table.Td>
@@ -184,6 +191,7 @@ export default function StudentPage() {
             onClick={() => {
               setEditStudent(s);
               setModalOpen(true);
+              setViewOnly(false);
             }}
           >
             Edit
@@ -208,6 +216,7 @@ export default function StudentPage() {
             onClick={() => {
               setEditStudent(s);
               setModalOpen(true);
+              setViewOnly(true);
             }}
           >
             View Account
@@ -223,7 +232,14 @@ export default function StudentPage() {
         <Text fw={700} size="xl">
           List of Students
         </Text>
-        <Button onClick={() => setModalOpen(true)}>Add Student</Button>
+        <Button
+          onClick={() => {
+            setViewOnly(false);
+            setModalOpen(true);
+          }}
+        >
+          Add Student
+        </Button>
       </Group>
 
       <TextInput
@@ -299,58 +315,14 @@ export default function StudentPage() {
           setEditStudent(null);
         }}
         onSubmit={handleSaveStudent}
-        title={editStudent ? "Edit Student" : "Add New Student"}
-        fields={[
-          {
-            name: "studentNumber",
-            label: "Student Number",
-            type: "text",
-            required: true,
-          },
-          {
-            name: "firstName",
-            label: "First Name",
-            type: "text",
-            required: true,
-          },
-          { name: "middleName", label: "Middle Name", type: "text" },
-          {
-            name: "lastName",
-            label: "Last Name",
-            type: "text",
-            required: true,
-          },
-          { name: "email", label: "Email", type: "email", required: true },
-          { name: "dob", label: "Date of Birth", type: "date", required: true },
-          { name: "gender", label: "Gender", type: "text" },
-          { name: "age", label: "Age", type: "number" },
-          { name: "nationality", label: "Nationality", type: "text" },
-          { name: "placeOfBirth", label: "Place of Birth", type: "text" },
-          { name: "phoneNumber", label: "Phone Number", type: "text" },
-          { name: "homeAddress", label: "Home Address", type: "text" },
-          {
-            name: "emergencyContactName",
-            label: "Emergency Contact Name",
-            type: "text",
-          },
-          {
-            name: "emergencyContactPhoneNumber",
-            label: "Emergency Contact Phone",
-            type: "text",
-          },
-          {
-            name: "emergencyContactRelationship",
-            label: "Emergency Contact Relationship",
-            type: "text",
-          },
-          { name: "previousSchools", label: "Previous Schools", type: "text" },
-          {
-            name: "yearOfGraduation",
-            label: "Year of Graduation",
-            type: "text",
-          },
-          { name: "gpa", label: "GPA", type: "number" },
-        ]}
+        title={
+          viewOnly
+            ? "Student Details"
+            : editStudent
+            ? "Edit Student"
+            : "Add New Student"
+        }
+        fields={studentFields}
         initialValues={
           editStudent
             ? {
@@ -378,6 +350,8 @@ export default function StudentPage() {
                 gpa: 0,
               }
         }
+        type={editStudent ? ModalMode.Update : ModalMode.Create}
+        readonly={viewOnly}
       />
 
       <Modal

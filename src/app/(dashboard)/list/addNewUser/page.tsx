@@ -292,6 +292,7 @@ export default function AddNewUserPage() {
             ? { ...editUser, password: "" }
             : { role: "", username: "", email: "", password: "" }
         }
+        type={editUser ? "update" : "create"}
       />
       <Modal
         opened={deleteUserId !== null}
