@@ -12,8 +12,10 @@ import {
   ScrollArea,
   Center,
   Modal,
+  Stack,
 } from "@mantine/core";
 import {
+  IconAlertTriangle,
   IconChevronDown,
   IconChevronUp,
   IconPencil,
@@ -46,7 +48,6 @@ interface Course {
   };
 }
 
-// Header column type for sortable headers
 interface ThProps {
   children: React.ReactNode;
   sorted: boolean;
@@ -54,7 +55,6 @@ interface ThProps {
   onSort: () => void;
 }
 
-// Sortable table header component
 function Th({ children, sorted, reversed, onSort }: ThProps) {
   const Icon = sorted
     ? reversed
@@ -79,15 +79,18 @@ function Th({ children, sorted, reversed, onSort }: ThProps) {
 }
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]); // Holds the array of courses returned from the backend
-  const [modalOpen, setModalOpen] = useState(false); // Controls whether the modal is open or closed
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<keyof Course | null>(null);
   const [reversed, setReversed] = useState(false);
   const [search, setSearch] = useState("");
   const [editCourse, setEditCourse] = useState<Course | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [warningModal, setWarningModal] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
   const { addNotification } = useNotification();
+
   const [instructorOptions, setInstructorOptions] = useState<
     { label: string; value: string }[]
   >([]);
@@ -95,15 +98,14 @@ export default function CoursesPage() {
     { label: string; value: string }[]
   >([]);
 
-  // API fetch form the instructors table
   const fetchCourses = async () => {
     try {
       const res = await axios.get("/api/courses");
       setCourses(res.data);
-    } catch (err) {
+    } catch {
       notifications.show({
         title: "Error",
-        message: "Failed to fetch instructors.",
+        message: "Failed to fetch courses.",
         color: "red",
       });
     }
@@ -116,34 +118,33 @@ export default function CoursesPage() {
         axios.get("/api/programs"),
       ]);
 
-      const instructors = instructorsRes.data.map((i: any) => ({
-        value: i.id.toString(),
-        label: `${i.firstName} ${i.middleName ?? ""} ${i.lastName}`.trim(),
-      }));
+      setInstructorOptions(
+        instructorsRes.data.map((i: any) => ({
+          value: i.id.toString(),
+          label: `${i.firstName} ${i.middleName ?? ""} ${i.lastName}`.trim(),
+        }))
+      );
 
-      const programs = programsRes.data.map((p: any) => ({
-        value: p.id.toString(),
-        label: `${p.programCode} - ${p.programName}`,
-      }));
-
-      setInstructorOptions(instructors);
-      setProgramOptions(programs);
+      setProgramOptions(
+        programsRes.data.map((p: any) => ({
+          value: p.id.toString(),
+          label: `${p.programCode} - ${p.programName}`,
+        }))
+      );
     } catch {
       notifications.show({
         title: "Error",
-        message: "Failed to fetch dropdown options",
+        message: "Failed to fetch dropdown options.",
         color: "red",
       });
     }
   };
 
-  // Fetch courses on first render only
   useEffect(() => {
     fetchCourses();
     fetchDropdowns();
   }, []);
 
-  // Add new course function
   const handleAddCourses = async (values: Record<string, any>) => {
     try {
       if (editCourse) {
@@ -155,7 +156,7 @@ export default function CoursesPage() {
       }
       setModalOpen(false);
       setEditCourse(null);
-      fetchCourses(); // Reloads the table to show the new course
+      fetchCourses();
     } catch {
       notifications.show({
         title: "Error",
@@ -172,21 +173,29 @@ export default function CoursesPage() {
       addNotification(`Course ${selectedCourse.courseName} deleted`);
       setDeleteModal(false);
       fetchCourses();
-    } catch {
-      notifications.show({
-        title: "Error",
-        message: "Failed to delete Course.",
-        color: "red",
-      });
+    } catch (error: any) {
+      const errMsg = error?.response?.data?.error || "";
+
+      if (errMsg.includes("Foreign key constraint")) {
+        setDeleteModal(false);
+        setWarningMessage(
+          `Cannot delete ${selectedCourse.courseName} because they are assigned to a course and/or schedule.`
+        );
+        setWarningModal(true);
+      } else {
+        notifications.show({
+          title: "Delete Failed",
+          message: errMsg || "Failed to delete course.",
+          color: "red",
+        });
+      }
     }
   };
 
-  // Search logic
   const filtered = courses.filter((c) =>
     Object.values(c).join(" ").toLowerCase().includes(search.toLowerCase())
   );
 
-  // Sort logic
   const sorted = sortBy
     ? [...filtered].sort((a, b) => {
         const aValue = a[sortBy] ?? "";
@@ -258,12 +267,12 @@ export default function CoursesPage() {
         </Text>
         <Button
           onClick={() => {
-            setEditCourse(null), setModalOpen(true);
+            setEditCourse(null);
+            setModalOpen(true);
           }}
         >
           Add Course
         </Button>
-        {/* Clears the modal when clicking on add new course */}
       </Group>
 
       <TextInput
@@ -332,16 +341,17 @@ export default function CoursesPage() {
       </ScrollArea>
 
       <FormModal
-        opened={modalOpen} // Whether the modal is open
-        onClose={() => setModalOpen(false)} // Function to close it
-        onSubmit={handleAddCourses} // Function to handle form submit
-        fields={courseFields(instructorOptions, programOptions)} // Field configuration from external file
-        title={editCourse ? "Edit Course" : "Add New Course"} // Modal title
+        opened={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditCourse(null);
+        }}
+        onSubmit={handleAddCourses}
+        fields={courseFields(instructorOptions, programOptions)}
+        title={editCourse ? "Edit Course" : "Add New Course"}
         initialValues={
           editCourse
             ? {
-                // Manually map out the fields necessary - ChatGPT
-                // Was getting errors passing through ...editCourse directtly
                 courseCode: editCourse.courseCode,
                 courseName: editCourse.courseName,
                 courseDescription: editCourse.courseDescription || "",
@@ -377,6 +387,28 @@ export default function CoursesPage() {
             Delete
           </Button>
         </Group>
+      </Modal>
+      <Modal
+        opened={warningModal}
+        onClose={() => setWarningModal(false)}
+        title={
+          <Group>
+            <IconAlertTriangle color="orange" size={20} />
+            <Text fw={600}>Cannot Delete Course</Text>
+          </Group>
+        }
+        centered
+      >
+        <Stack gap="sm">
+          <Text size="sm" c="dimmed">
+            {warningMessage}
+          </Text>
+          <Group justify="flex-end" mt="xs">
+            <Button onClick={() => setWarningModal(false)} color="blue">
+              OK
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </Box>
   );

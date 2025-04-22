@@ -26,6 +26,7 @@ import {
   ScrollArea,
   Center,
   Modal,
+  Stack,
 } from "@mantine/core";
 
 import {
@@ -35,6 +36,7 @@ import {
   IconSearch,
   IconSelector,
   IconTrash,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 import axios from "axios";
 import FormModal from "@/components/FormModal";
@@ -99,6 +101,9 @@ export default function InstructorsPage() {
   const [selectedInstructor, setSelectedInstructor] =
     useState<Instructor | null>(null);
   const { addNotification } = useNotification();
+  const [warningModal, setWarningModal] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
+
 
   // API fetch form the instructors table
   const fetchInstructors = async () => {
@@ -148,19 +153,46 @@ export default function InstructorsPage() {
 
   const handleDelete = async () => {
     if (!selectedInstructor) return;
+  
     try {
       await axios.delete(`/api/instructors?id=${selectedInstructor.id}`);
-      addNotification(`Instructor ${selectedInstructor.firstName} deleted`);
+      
+      notifications.show({
+        title: "Success",
+        message: `Instructor ${selectedInstructor.firstName} deleted successfully.`,
+        color: "green",
+      });
+  
       setDeleteModal(false);
       fetchInstructors();
-    } catch {
-      notifications.show({
-        title: "Error",
-        message: "Failed to delete instructor.",
-        color: "red",
-      });
+  
+    } catch (error: any) {
+      console.error("Delete error:", error.response?.data?.error); // Debug log
+  
+      // ✅ Foreign key constraint warning popup
+      if (
+        error.response?.data?.error?.includes("Foreign key constraint") || 
+        error.response?.data?.error?.includes("P2003") // Prisma-specific error
+      ) {
+        setDeleteModal(false); // Close original modal
+        setWarningMessage(
+          `Cannot delete ${selectedInstructor.firstName} ${selectedInstructor.lastName} because they are assigned to a course and/or schedule.`
+        );
+        setWarningModal(true); // Show warning modal
+      } else {
+        // Default error fallback
+        notifications.show({
+          title: "Delete Failed",
+          message: error.response?.data?.error || "Failed to delete instructor.",
+          color: "red",
+        });
+      }
     }
   };
+  
+  
+  
+  
 
   // Search logic
   const filtered = instructors.filter((ins) =>
@@ -373,6 +405,28 @@ export default function InstructorsPage() {
             Delete
           </Button>
         </Group>
+      </Modal>
+      <Modal
+        opened={warningModal}
+        onClose={() => setWarningModal(false)}
+        title={
+          <Group>
+            <IconAlertTriangle color="orange" size={20} />
+            <Text fw={600}>Cannot Delete Instructor</Text>
+          </Group>
+        }
+        centered
+      >
+        <Stack gap="sm">
+          <Text size="sm" c="dimmed">
+            {warningMessage}
+          </Text>
+          <Group justify="flex-end" mt="xs">
+            <Button onClick={() => setWarningModal(false)} color="blue">
+              OK
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </Box>
   );

@@ -56,6 +56,33 @@ export default async function handler(req, res) {
       console.error("PUT /api/schedule error:", err);
       return res.status(500).json({ error: "Failed to update schedule" });
     }
+  }
+
+    else if (req.method === "DELETE") {
+      const { id } = req.query;
+  
+      if (!id || Array.isArray(id)) {
+        return res.status(400).json({ error: "Missing or invalid ID" });
+      }
+  
+      try {
+        await prisma.schedule.delete({
+          where: { id: parseInt(id) },
+        });
+        return res.status(200).json({ message: "Schedule deleted successfully" });
+      } catch (err) {
+        console.error("DELETE /api/schedule error:", err);
+  
+        // Foreign key constraint (Prisma error code)
+        if (err.code === "P2003") {
+          return res.status(400).json({
+            error:
+              "Cannot delete schedule due to foreign key constraint. Instructor or course may still be linked.",
+          });
+        }
+  
+        return res.status(500).json({ error: "Failed to delete schedule" });
+      }
   } else {
     res.status(405).json({ error: "Method not allowed" });
   }
