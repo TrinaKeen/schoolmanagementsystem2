@@ -181,8 +181,8 @@ FormModalProps) {
               <Button type="submit">
                 {type === "update" ? "Update" : "Add"}
               </Button>
-            </Group>
-          )}
+              </Group>
+            )}
 
           {children}
         </Box>
