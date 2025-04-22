@@ -33,6 +33,6 @@
     "prisma/seed.js",
     "app/page.tsx",
     "Pages/api/users.js"
-, "Pages/api/programs.js", "Pages/api/courses.js", "Pages/api/fees.js", "Pages/api/instructors.js", "Pages/api/search.js"  ],
+, "Pages/api/programs.js", "Pages/api/courses.js", "Pages/api/fees.js", "Pages/api/instructors.js"  ],
   "exclude": ["node_modules"]
 }
