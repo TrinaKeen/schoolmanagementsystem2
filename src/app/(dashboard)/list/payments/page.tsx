@@ -30,6 +30,7 @@ import paymentFields from "@/utils/fields/paymentFields";
 interface Payment {
   id: number;
   studentId: number;
+  feeId: number,
   amountPaid: number;
   paymentDate: string;
   paymentStatus: "paid" | "unpaid" | "pending";
@@ -83,6 +84,9 @@ export default function PaymentsPage() {
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [editPayment, setEditPayment] = useState<Payment | null>(null);
   const { addNotification } = useNotification();
+  const [fees, setFees] = useState<{ id: number; feeType: string }[]>([]);
+
+  
 
   const fetchPayments = async () => {
     try {
@@ -110,10 +114,31 @@ export default function PaymentsPage() {
     }
   };
 
+  const fetchFees = async () => {
+    try {
+      const res = await axios.get("/api/fees");
+      setFees(res.data);
+    } catch {
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch fees.",
+        color: "red",
+      });
+    }
+  };
+  
+
   useEffect(() => {
     fetchPayments();
     fetchStudents();
+    fetchFees();
   }, []);
+
+  const feeOptions = fees.map((f) => ({
+    label: f.feeType,
+    value: f.id.toString(),
+  }));
+  
 
   useEffect(() => {
     console.log("studentOptions", studentOptions);
@@ -123,6 +148,7 @@ export default function PaymentsPage() {
     console.log("Submitting payment:", values);
     const payment = {
       studentId: parseInt(values.studentId),
+      feeId: parseInt(values.feeId),
       amountPaid: parseFloat(values.amountPaid),
       paymentDate: values.paymentDate,
       paymentStatus: values.paymentStatus,
@@ -195,6 +221,11 @@ export default function PaymentsPage() {
         {studentOptions.find((s) => s.value === p.studentId.toString())
           ?.label || p.studentId}
       </Table.Td>
+      <Table.Td>
+  {feeOptions.find((f) => f.value === String(p.feeId))?.label || p.feeId}
+</Table.Td>
+
+
       <Table.Td>{`PHP ${p.amountPaid}`}</Table.Td>
       <Table.Td>{new Date(p.paymentDate).toLocaleDateString()}</Table.Td>
       <Table.Td>
@@ -260,6 +291,13 @@ export default function PaymentsPage() {
                 Student
               </Th>
               <Th
+                sorted={sortBy === "feeId"}
+                reversed={reverseSortDirection}
+                onSort={() => setSorting("feeId")}
+              >
+                Fee Type
+              </Th>
+              <Th
                 sorted={sortBy === "amountPaid"}
                 reversed={reverseSortDirection}
                 onSort={() => setSorting("amountPaid")}
@@ -299,31 +337,34 @@ export default function PaymentsPage() {
 
       {studentOptions.length > 0 && (
         <FormModal
-          opened={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-            setEditPayment(null);
-          }}
-          onSubmit={handleSavePayment}
-          fields={paymentFields(studentOptions)}
-          title={editPayment ? "Edit Payment" : "Add Payment"}
-          initialValues={
-            editPayment
-              ? {
-                  studentId: editPayment.studentId.toString(),
-                  amountPaid: editPayment.amountPaid.toString(),
-                  paymentDate: editPayment.paymentDate.slice(0, 10),
-                  paymentStatus: editPayment.paymentStatus,
-                }
-              : {
-                  studentId: "",
-                  amountPaid: "",
-                  paymentDate: "",
-                  paymentStatus: "",
-                }
-          }
-          type={editPayment ? "update" : "create"}
-        />
+        opened={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditPayment(null);
+        }}
+        onSubmit={handleSavePayment}
+        fields={paymentFields(studentOptions, feeOptions)}
+        title={editPayment ? "Edit Payment" : "Add Payment"}
+        initialValues={
+          editPayment
+            ? {
+              studentId: editPayment?.studentId.toString() || "",
+              feeId: editPayment?.feeId?.toString() || "", // Make sure feeId is safe to call toString on
+              amountPaid: editPayment?.amountPaid.toString() || "",
+              paymentDate: editPayment?.paymentDate.slice(0, 10) || "",
+              paymentStatus: editPayment?.paymentStatus || "",
+              }
+            : {
+                studentId: "",
+                feeId: "",
+                amountPaid: "",
+                paymentDate: "",
+                paymentStatus: "",
+              }
+        }
+        type={editPayment ? "update" : "create"}
+      />
+      
       )}
 
       <Modal

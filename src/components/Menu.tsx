@@ -87,23 +87,13 @@ const menuItems = [
         href: "/list/apply-admission",
         visible: ["student"],
       },
-      {
-        icon: <ClipboardList size={18} />,
-        label: "Application Status",
-        href: "/list/apply-admission2",
-        visible: ["student"],
-      },
-      {
-        icon: <BookOpen size={18} />,
-        label: "Courses",
-        href: "/list/courses",
-        visible: ["student"],
-      },
+
+
       {
         icon: <Banknote size={18} />,
         label: "Fees",
         href: "/list/fees",
-        visible: ["student"],
+        visible: [""],
       },
     ],
   },

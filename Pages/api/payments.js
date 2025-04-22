@@ -19,11 +19,12 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Failed to fetch payments" });
     }
   } else if (method === "POST") {
-    const { studentId, amountPaid, paymentDate, paymentStatus } = req.body;
+    const { studentId, feeId, amountPaid, paymentDate, paymentStatus } = req.body;
 
     console.log("API received:", {
       studentId,
       amountPaid,
+      feeId,
       paymentDate,
       paymentStatus,
     });
@@ -32,6 +33,7 @@ export default async function handler(req, res) {
       const newPayment = await prisma.payment.create({
         data: {
           studentId: parseInt(studentId),
+          feeId: parseFloat(feeId),
           amountPaid: parseFloat(amountPaid),
           paymentDate: new Date(paymentDate),
           paymentStatus: PaymentStatus[paymentStatus.toUpperCase()],
@@ -44,10 +46,11 @@ export default async function handler(req, res) {
     }
   } else if (method === "PUT") {
     const { id } = req.query;
-    const { studentId, amountPaid, paymentDate, paymentStatus } = req.body;
+    const { studentId, feeId,amountPaid, paymentDate, paymentStatus } = req.body;
 
     console.log("PUT request received for ID:", id, {
       studentId,
+      feeId,
       amountPaid,
       paymentDate,
       paymentStatus,
@@ -60,6 +63,7 @@ export default async function handler(req, res) {
         where: { id: parseInt(id) },
         data: {
           studentId: parseInt(studentId),
+          feeId: parseFloat(feeId),
           amountPaid: parseFloat(amountPaid),
           paymentDate: new Date(paymentDate),
           paymentStatus: PaymentStatus[paymentStatus.toUpperCase()],

@@ -1,4 +1,7 @@
-const paymentFields = (studentOptions: { label: string; value: string }[]) => [
+const paymentFields = (
+  studentOptions: { label: string; value: string }[],
+  feeOptions: { label: string; value: string }[]
+) => [
   {
     name: "studentId",
     label: "Student",
@@ -7,18 +10,25 @@ const paymentFields = (studentOptions: { label: string; value: string }[]) => [
     data: studentOptions,
   },
   {
+    name: "feeId",
+    label: "Fee Type",
+    type: "select",
+    data: feeOptions,
+    required: true,
+  },
+  {
     name: "amountPaid",
     label: "Amount Paid",
     type: "number",
     required: true,
-    data: [],
+    data: [], // No need for data here
   },
   {
     name: "paymentDate",
     label: "Payment Date",
     type: "date",
     required: true,
-    data: [],
+    data: [], // No need for data here
   },
   {
     name: "paymentStatus",

@@ -57,6 +57,7 @@ export default async function handler(req, res) {
           yearOfGraduation,
           gpa,
           programId,
+          userId, // Assuming the userId is passed as part of the request body
         } = fields;
 
         // Look for existing student by email
@@ -89,10 +90,14 @@ export default async function handler(req, res) {
               previousSchools: String(previousSchools),
               yearOfGraduation: parseInt(yearOfGraduation, 10),
               gpa: parseFloat(gpa),
+
+              // Associate student with the user
+              userId: parseInt(userId), // Ensure userId is passed as a number (or string depending on your database)
             },
           });
         }
 
+        // Create new student application
         const newApplication = await prisma.studentApplication.create({
           data: {
             studentId: student.id,
@@ -101,6 +106,7 @@ export default async function handler(req, res) {
           },
         });
 
+        // Handle document uploads
         const documentUploads = await Promise.all(
           Object.entries(files).map(async ([docType, fileObj]) => {
             const file = Array.isArray(fileObj) ? fileObj[0] : fileObj;

@@ -144,6 +144,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import dayjs from 'dayjs';
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -177,6 +178,8 @@ const Dashboard = () => {
       });
   }, []);
 
+    
+  
   const handlePasswordChange = async () => {
     if (!email || !currentPassword || !newPassword) {
       alert("Please fill in all fields.");
@@ -217,10 +220,14 @@ const Dashboard = () => {
             Student Info
           </h3>
           <p>
-            <strong>Name:</strong> {student.firstName}{" "}
+            <strong>Name: </strong> {student.firstName}{" "}
             {student.middleName ? `${student.middleName} ` : ""}
             {student.lastName}
-          </p>
+        </p>
+        <p><strong>Date of Birth:  </strong>{dayjs(student.dob).format('YYYY-MM-DD')}{" "}</p>
+        <p><strong>Nationality:  </strong>{student.nationality}{" "}</p>
+        <p><strong>Email:  </strong>{student.email}{" "}</p>
+        <p><strong>Address:  </strong>{student.homeAddress}{" "}</p>
         </div>
       );
     }
@@ -263,6 +270,7 @@ const Dashboard = () => {
     return (
       <p className="text-center mt-10 text-gray-500">Loading profile...</p>
     );
+
 
   return (
     <div className="max-w-3xl mx-auto p-6">
