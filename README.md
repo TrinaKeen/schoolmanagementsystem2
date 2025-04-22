@@ -27,6 +27,7 @@ npm install @mantine/core @mantine/hooks @mantine/form
 npm install @@types/react-icons
 yarn add lucide-react
 npm install react-icons
+npm install dayjs
 
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

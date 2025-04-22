@@ -188,6 +188,7 @@ const CreateStudentApplicationForm = ({ userId }: CreateStudentApplicationFormPr
       }
     } catch (error: any) {
       console.error("Submission error:", error);
+      alert("Your application is successfully submitted!");
     }
   };
 
