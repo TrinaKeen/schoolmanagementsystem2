@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import axios from "axios";
+import { FaFemale, FaMale } from "react-icons/fa";
 
 export default function CountChart() {
   const [maleCount, setMaleCount] = useState(0);
@@ -33,10 +33,11 @@ export default function CountChart() {
   }, []);
 
   const total = maleCount + femaleCount;
+
   const data = [
     { name: "Total Students", count: total, fill: "white" },
-    { name: "Girls", count: femaleCount, fill: "#FAE27C" },
-    { name: "Boys", count: maleCount, fill: "#C3EBFA" },
+    { name: "Girls", count: femaleCount, fill: "#ff90c1" },
+    { name: "Boys", count: maleCount, fill: "#659edc" },
   ];
 
   return (
@@ -60,28 +61,27 @@ export default function CountChart() {
             <RadialBar background dataKey="count" />
           </RadialBarChart>
         </ResponsiveContainer>
-        <Image
-          src="/maleFemale.png"
-          alt="Gender Icon"
-          width={50}
-          height={50}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
+
+        {/* Center Gender Icons */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center">
+          <FaMale size={50} color="#659edc" className="mr-[-13px]" />
+          <FaFemale size={50} color="#ff90c1" />
+        </div>
       </div>
 
       {/* LEGEND */}
       <div className="flex justify-center gap-16 mt-2">
         <div className="flex flex-col items-center gap-1">
-          <div className="w-5 h-5 bg-lamaSky rounded-full" />
+          <div className="w-5 h-5 bg-[#659edc] rounded-full" />
           <h1 className="font-bold">{maleCount.toLocaleString()}</h1>
-          <h2 className="text-xs text-gray-400">
+          <h2 className="text-xs text-gray-600">
             Boys ({total > 0 ? Math.round((maleCount / total) * 100) : 0}%)
           </h2>
         </div>
         <div className="flex flex-col items-center gap-1">
-          <div className="w-5 h-5 bg-lamaYellow rounded-full" />
+          <div className="w-5 h-5 bg-[#ff90c1] rounded-full" />
           <h1 className="font-bold">{femaleCount.toLocaleString()}</h1>
-          <h2 className="text-xs text-gray-400">
+          <h2 className="text-xs text-gray-600">
             Girls ({total > 0 ? Math.round((femaleCount / total) * 100) : 0}%)
           </h2>
         </div>
