@@ -43,40 +43,27 @@ export default async function handler(req, res) {
         }
 
         // Editing a program
-  if (req.method === 'PUT') {
-    const {
-      programCode,
-      programName,
-      programDescription,
-      duration,
-      tuitionFee,
-    } = req.body;
-
-    const { id } = req.query;
-
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ error: 'Missing or invalid ID' });
-    }
-
-    try {
-      const updatedProgram = await prisma.program.update({
-        where: { id: Number(id) },
-        data: {
-          programCode,
-          programName,
-          programDescription,
-          duration: parseInt(duration),
-          tuitionFee: tuitionFee ? parseFloat(tuitionFee) : null,
-        },
-      });
-
-      return res.status(200).json(updatedProgram);
-    } catch (err) {
-      console.error('PUT /api/program error:', err);
-      return res.status(500).json({ error: 'Failed to update programs' });
-    }
-  }
-
+        if (req.method === "PUT") {
+          const { id } = req.query;
+          const { tuitionFee } = req.body;
+        
+          if (!id || isNaN(id)) {
+            return res.status(400).json({ error: "Invalid program ID" });
+          }
+        
+          try {
+            const updatedProgram = await prisma.program.update({
+              where: { id: Number(id) },
+              data: { tuitionFee: parseFloat(tuitionFee) },
+            });
+        
+            return res.status(200).json(updatedProgram);
+          } catch (err) {
+            console.error("PUT /api/programs error:", err);
+            return res.status(500).json({ error: "Failed to update tuition fee" });
+          }
+        }
+        
 
   // Program deletion
   if (req.method === 'DELETE') {

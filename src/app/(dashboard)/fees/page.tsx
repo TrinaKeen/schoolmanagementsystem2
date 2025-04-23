@@ -141,19 +141,25 @@ export default function FeesPage() {
 
   const allFees: Fee[] = [...tuitionFeeRows, ...fees];
 
-  // Add new instructor function
   const handleAddFees = async (values: Record<string, any>) => {
     try {
+      const formattedValues = {
+        ...values,
+        programId: parseInt(values.programId),
+        amount: parseFloat(values.amount),
+      };
+  
       if (editFee) {
-        await axios.put(`/api/fees?id=${editFee.id}`, values);
+        await axios.put(`/api/fees?id=${editFee.id}`, formattedValues);
         addNotification(`${values.feeType} fee updated`);
       } else {
-        await axios.post("/api/fees", values);
+        await axios.post("/api/fees", formattedValues);
         addNotification(`${values.feeType} fee added`);
       }
+  
       setModalOpen(false);
       setEditFee(null);
-      fetchFees(); // Reloads the table to show the new instructor
+      fetchFees();
     } catch (err) {
       notifications.show({
         title: "Error",
@@ -162,6 +168,7 @@ export default function FeesPage() {
       });
     }
   };
+  
 
   const handleDelete = async () => {
     if (!selectedFee || selectedFee.isTuition) return; // prevent deleting virtual fee
@@ -227,21 +234,18 @@ export default function FeesPage() {
       <Table.Td>{f.description}</Table.Td>
       <Table.Td>
         <Group gap="xs">
-          <Button
-            size="xs"
-            variant="light"
-            leftSection={<IconPencil size={14} />}
-            onClick={() => {
-              if (f.isTuition) {
-                // Optionally let editing tuition create a new override
-                setEditFee(f);
-                setModalOpen(true);
-              }
-            }}
-            disabled={f.isTuition} // Disable for tuition fees
+        <Button
+          size="xs"
+          variant="light"
+          leftSection={<IconPencil size={14} />}
+          onClick={() => {
+            setEditFee(f);
+            setModalOpen(true);
+          }}
           >
             Edit
           </Button>
+
           <Button
             size="xs"
             color="red"
@@ -333,7 +337,10 @@ export default function FeesPage() {
         initialValues={
           editFee
             ? {
-                ...editFee,
+                programId: editFee.programId.toString(),
+                feeType: editFee.feeType,
+                amount: editFee.amount.toString(),
+                description: editFee.description || "",
               }
             : {
                 programId: "",
