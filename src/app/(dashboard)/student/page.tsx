@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Dashboard = () => {
-  const [user, setUser] = useState<{ userId: string | null; name: string | null; role: string | null }>({
+  const [user, setUser] = useState<{
+    userId: string | null;
+    name: string | null;
+    role: string | null;
+    email: string | null;
+  }>({
     userId: null,
     name: null,
     role: null,
+    email: null,
   });
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -15,9 +21,10 @@ const Dashboard = () => {
     const userId = localStorage.getItem("userId");
     const name = localStorage.getItem("name");
     const role = localStorage.getItem("role");
+    const email = localStorage.getItem("email");
 
     if (userId && name && role) {
-      setUser({ userId, name, role });
+      setUser({ userId, name, role, email });
       fetchApplications(userId);
     } else {
       window.location.href = "/signin";
@@ -39,9 +46,12 @@ const Dashboard = () => {
 
   const handleWithdraw = async (applicationId: number) => {
     try {
-      const response = await fetch(`/api/studentApplicationStatus?applicationId=${applicationId}`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `/api/studentApplicationStatus?applicationId=${applicationId}`,
+        {
+          method: "POST",
+        }
+      );
 
       const result = await response.json();
 
@@ -88,7 +98,9 @@ const Dashboard = () => {
           <tbody>
             {applications.map((app) => (
               <tr key={app.id} className="border-b">
-                <td className="px-4 py-2">{app.student?.studentNumber || "Student not found"}</td>
+                <td className="px-4 py-2">
+                  {app.student?.studentNumber || "Student not found"}
+                </td>
                 <td className="px-4 py-2">
                   {app.program?.programName
                     ? `${app.program.programName} (${app.program.programDescription})`
@@ -119,9 +131,6 @@ const Dashboard = () => {
         <h2 className="text-2xl font-semibold mb-4">👤 My Info</h2>
         <p>
           <strong>Name:</strong> {user.name}
-        </p>
-        <p>
-          <strong>Email:</strong> your-email@example.com
         </p>
         <p>
           <strong>Role:</strong> {user.role}
