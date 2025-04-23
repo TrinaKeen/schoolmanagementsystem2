@@ -16,9 +16,7 @@ model User {
   createdAt    DateTime    @default(now())
 
   student     Student?    @relation("UserToStudent")
-  instructor  Instructor? @relation("UserToInstructor")
-  admin       Admin?      @relation("UserToAdmin")
-
+  
   // Notifications
   notifications Notification[]
 }
@@ -68,9 +66,6 @@ model Instructor {
   dob             DateTime  // Date of birth
   dateHired       DateTime  // Date hired
 
- // Foreign key to User
-  userId    Int?    @unique
-  user      User?   @relation("UserToInstructor", fields: [userId], references: [id])
 
   courses         Course[]
   schedules       Schedule[]
@@ -87,9 +82,6 @@ model Admin {
   dob                 DateTime  // Date of birth
   dateHired           DateTime  // Date hired
 
- // Foreign key to User
-  userId    Int?    @unique
-  user      User?   @relation("UserToAdmin", fields: [userId], references: [id])
   studentApplication  StudentApplication[]
 }
 
